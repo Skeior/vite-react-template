@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #1e3a5f; /* koyu denim */
+  background-color: #e0f0ff; /* açık denim */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,24 +15,25 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #004080; /* denim link */
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #00264d; /* hover koyu denim */
 }
 
 body {
   margin: 0;
   display: flex;
+  flex-direction: column;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #e0f0ff; /* açık denim body */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3 {
+  color: #1e3a5f;
 }
 
 button {
@@ -42,27 +43,25 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #004080; /* denim button */
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.25s;
 }
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background-color: #00264d;
+  transform: scale(1.05);
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #1e3a5f;
+    background-color: #e0f0ff;
   }
   a:hover {
-    color: #747bff;
+    color: #00264d;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #004080;
   }
 }
