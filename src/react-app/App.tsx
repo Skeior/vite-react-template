@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-
+import viteLogo from "/vite.svg";
 import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
 import honoLogo from "./assets/hono.svg";
 import "./App.css";
+import ReactAudioPlayer from 'react-audio-player';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -14,9 +15,10 @@ function App() {
   return (
     <>
       <div>
-      <audio controls>
-        <source src="https://alemfm.radyotvonline.net/alemfmaac?/;stream.mp3" type="audio/ogg"> </source>
-      </audio>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
@@ -33,16 +35,13 @@ function App() {
       </div>
       <h1>Vite + React + Hono + Cloudflare</h1>
       <div className="card">
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          aria-label="increment"
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <ReactAudioPlayer
+          src="https://alemfm.radyotvonline.net/alemfmaac?/;stream.mp3"
+          autoPlay
+          controls
+        />
       </div>
+
       <div className="card">
         <button
           onClick={() => {
