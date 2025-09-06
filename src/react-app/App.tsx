@@ -9,7 +9,7 @@ import "./App.css";
 import ReactAudioPlayer from 'react-audio-player';
 
 function App() {
-  const [count, setCount] = useState(0);
+
   const [name, setName] = useState("unknown");
 
   return (
