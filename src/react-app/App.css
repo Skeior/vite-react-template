@@ -10,9 +10,10 @@ body {
   min-height: 100vh;
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: #1f2937;
-  background: linear-gradient(-45deg, #f7f8fa, #dbeafe, #ede9fe, #f0fdfa);
+  background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #d1c4e9, #bbdefb);
   background-size: 400% 400%;
   animation: gradientBG 20s ease infinite;
+
   position: relative;
 }
 
@@ -42,7 +43,6 @@ body {
   backdrop-filter: blur(12px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border-radius: 12px;
-
   position: sticky;
   top: 0;
   flex-wrap: nowrap;

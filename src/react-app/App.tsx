@@ -14,7 +14,7 @@ function App() {
           {/* Navbar */}
           <nav className="navbar" style={{ position: "relative", zIndex: 10 }}>
             <NavLink to="/" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-              About Me
+              Home
             </NavLink>
             <NavLink to="/portfolio" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
               Portfolio
