@@ -15,21 +15,25 @@ function HomePage() {
       {/* About / Skills */}
       <section className="section-card">
         <h2>Hakkımda</h2>
-        <p>
-          Erciyes Üniversitesi Bilgisayar Mühendisliği 4. sınıf öğrencisiyim.
-          Gömülü sistemler ve güç elektroniği alanında çalışıyorum. Efficiency Challenge yarışmalarında telemetri sistemleri ve BLDC motor sürücü tasarımları yaptım. Şu anda Hidromobil kategorisi takım kaptanı olarak görev almaktayım.
-        </p>
+            <p>
+            Erciyes Üniversitesi Bilgisayar Mühendisliği 4. sınıf öğrencisiyim ve gömülü sistemler ile güç elektroniği alanında kapsamlı pratik deneyime sahibim. C ve C++ dilleri ile yazılım geliştirme, Çok katmanlı devre tasarımı konularında yetkinim.
+            </p>
+            <p>
+            Gömülü yazılım ve donanım tasarım süreçlerinde hem teorik bilgi hem de uygulamalı deneyim sahibi olarak, projelerde sistem entegrasyonu ve optimizasyon çalışmaları yürüttüm. Özellikle yerli ve verimli donanım-yazılım entegre sistemler geliştirmeye odaklanıyor; sürdürülebilir, ölçeklenebilir ve inovatif çözümler üretmeye tutkuyla bağlıyım.
+            </p>
+            <p>
+            Sahip olduğum teknik bilgi ve deneyimleri, verimli, ölçeklenebilir ve yenilikçi donanım-yazılım entegre sistemler geliştirmek için kullanmayı hedefliyorum.
+            </p>
       </section>
 
       <section className="section-card">
         <h2>Yetenekler</h2>
-        <ul>
-          <li>C / C++ ile gömülü yazılım geliştirme</li>
-          <li>STM32 (HAL, DMA, UART, SPI, I2C)</li>
-          <li>PCB Tasarımı (Altium Designer)</li>
-          <li>BLDC Motor Sürücü Tasarımı</li>
-          <li>Batarya Yönetim Sistemleri</li>
-        </ul>
+            <ul>
+            <li>Mikrodenetleyici tabanlı gömülü sistem geliştirme ve haberleşme protokolleri (C/C++, UART, SPI, I2C, HAL)</li>
+            <li>PCB tasarımı ve elektronik devre entegrasyonu (Altium Designer kullanımı)</li>
+            <li>BLDC motor kontrol ve sürücü tasarımı (PWM, FOC, SixStep Motor Kontrol algoritmaları)</li>
+            <li>Batarya yönetim sistemleri ve enerji optimizasyonu</li>
+            </ul>
       </section>
     </div>
   );

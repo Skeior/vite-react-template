@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import "./Contact.css";
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -15,7 +16,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="app-container">
 
       {/* Header */}
       <motion.header
@@ -24,44 +25,33 @@ const ContactPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-4xl font-bold mb-2">İletişim</h1>
-        <p className="text-lg text-gray-600">
+        <h1 className="header-title">İletişim</h1>
+        <p className="header-subtitle">
           Bana ulaşmak için aşağıdaki formu kullanabilirsiniz veya direkt iletişim bilgilerini kullanabilirsiniz.
         </p>
       </motion.header>
 
-      {/* Contact Info */}
+      {/* Contact Info + Form Card */}
       <motion.section
-        className="text-center mb-8 space-y-2"
+        className="contact-card"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
       >
-        <p>
-          <a href="mailto:talhakarasu2@gmail.com" className="text-blue-600 underline">
-            talhakarasu2@gmail.com
-          </a>
-        </p>
-        <p>
-          <a href="https://github.com/skeior" className="text-blue-600 underline">
-            GitHub
-          </a>{" | "}
-          <a href="https://linkedin.com/in/talhakarasu" className="text-blue-600 underline">
-            LinkedIn
-          </a>
-        </p>
-      </motion.section>
+        <div className="contact-info">
+          <p>
+            <a href="mailto:talhakarasu2@gmail.com" className="contact-link">
+              talhakarasu2@gmail.com
+            </a>
+          </p>
+          <p className="contact-links">
+            <a href="https://github.com/skeior" className="contact-link" target="_blank">GitHub</a>
+            <a href="https://linkedin.com/in/talhakarasu" className="contact-link" target="_blank">LinkedIn</a>
+          </p>
+        </div>
 
-      {/* Contact Form */}
-      <motion.section
-        className="max-w-md mx-auto"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="contact-form">
           <input
             type="text"
             name="name"
@@ -69,7 +59,7 @@ const ContactPage: React.FC = () => {
             onChange={handleChange}
             placeholder="Adınız"
             required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="contact-input"
           />
           <input
             type="email"
@@ -78,7 +68,7 @@ const ContactPage: React.FC = () => {
             onChange={handleChange}
             placeholder="Email"
             required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="contact-input"
           />
           <textarea
             name="message"
@@ -87,12 +77,9 @@ const ContactPage: React.FC = () => {
             placeholder="Mesajınız"
             required
             rows={5}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="contact-input"
           />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-          >
+          <button type="submit" className="button">
             Gönder
           </button>
         </form>

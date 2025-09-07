@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import HomePage from "./Pages/HomePage/HomePage";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
+import ReactAudioPlayer from 'react-audio-player';
 
 import "./App.css";
 
@@ -12,11 +13,21 @@ function App() {
     <BrowserRouter>
       <div className="app-container">
         {/* Navbar */}
-        <nav className="navbar">
+      <nav className="navbar">
+        <div className="nav-links">
           <Link to="/">Home</Link>
           <Link to="/portfolio">Portfolio</Link>
           <Link to="/contact">Contact</Link>
-        </nav>
+        </div>
+
+        <div className="audio-player-wrapper">
+          <ReactAudioPlayer
+            src="https://alemfm.radyotvonline.net/alemfmaac?/;stream.mp3"
+            controls
+          />
+        </div>
+      </nav>
+
 
         {/* Routes */}
         <Routes>
