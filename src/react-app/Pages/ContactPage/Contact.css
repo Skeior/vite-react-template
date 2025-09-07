@@ -1,7 +1,13 @@
 /* -------------------------
    Contact Page Genel
 ---------------------------*/
-
+.app-container {
+  max-width: 800px; /* <--- burası dar */
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
 /* Header */
 .header-title {
   font-size: 2.5rem;
