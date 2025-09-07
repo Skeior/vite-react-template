@@ -1,30 +1,40 @@
 // AboutPage.tsx
 import React from "react";
-import { FaMicrochip, FaProjectDiagram, FaCogs, FaBatteryHalf } from "react-icons/fa";
+import { FaMicrochip, FaProjectDiagram, FaCogs, FaBatteryHalf, FaRocket } from "react-icons/fa";
 import Timeline from "../Timeline/Timeline"; 
 import "./About.css";
 
 const skills = [
-  { icon: <FaMicrochip />, label: "Embedded systems development & communication protocols (C/C++, UART, SPI, I2C, HAL)" },
-  { icon: <FaProjectDiagram />, label: "PCB design & electronic circuit integration (Altium Designer)" },
-  { icon: <FaCogs />, label: "BLDC motor control & driver design (PWM, FOC, SixStep Motor Control algorithms)" },
-  { icon: <FaBatteryHalf />, label: "Battery management systems & energy optimization" }
+  { icon: <FaMicrochip />, label: "Embedded systems development (STM32, C/C++)" },
+  { icon: <FaProjectDiagram />, label: "PCB design & electronics integration (Altium Designer)" },
+  { icon: <FaCogs />, label: "BLDC motor control & driver design (PWM, FOC, SixStep)" },
+  { icon: <FaBatteryHalf />, label: "Battery Management Systems & energy optimization" },
+  { icon: <FaRocket />, label: "Leadership in R&D projects (electric & hydrogen vehicles)" }
 ];
 
 const AboutPage: React.FC = () => {
   return (
     <div className="about-container">
       {/* Header */}
-      <header className="about-header">
+      <header className="about-header section-card">
         <h1>Talha Karasu</h1>
-        <p>Embedded Systems - R&D Engineer</p>
+        <p>Embedded Systems Engineer - R&D Engineer</p>
+        <a href="src\react-app\res.pdf" download className="button" style={{ marginTop: "15px" }}>
+          Download CV
+        </a>
       </header>
 
       {/* Summary */}
       <section className="about-summary section-card">
-        <h2>Summary</h2>
+        <h2>About Me</h2>
         <p>
-          Final-year Computer Engineering student with practical experience in embedded systems, PCB design, and C/C++ firmware development. Skilled in STM32 microcontrollers, motor control, and telemetry design. Proven leadership in electric and hydrogen-powered vehicle R&D projects. Passionate about building local, efficient, and scalable hardware-software integrated systems.
+          Erciyes University, final-year Computer Engineering student with practical experience in embedded systems and power electronics. Skilled in C and C++ programming and multi-layer PCB design.
+        </p>
+        <p>
+          Experienced in both theoretical knowledge and hands-on embedded software & hardware design. Focused on local and efficient hardware-software integrated systems development, aiming for scalable and innovative solutions.
+        </p>
+        <p>
+          My goal is to leverage technical skills and practical experience to build efficient, scalable, and innovative hardware-software integrated systems.
         </p>
       </section>
 
