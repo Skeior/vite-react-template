@@ -2,44 +2,28 @@
    About & Skills Container
 ---------------------------*/
 .about-skill-container {
-  max-width: 1000px;   /* sayfa genişliği sınırı */
-  width: 100%;         /* responsive */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 0px;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
 }
 
-/* About Card */
+/* About & Skills Card */
 .about-card {
+  flex: 0 1 calc(50% - 10px);
+  min-width: 300px;
   background: #fff;
-  padding: 25px;
-  margin-bottom: 25px;
+  padding: 20px;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-.about-card h2 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-}
-
-.about-card h1 {
-  font-size: 2.2rem;
-  margin-bottom: 12px;
-}
-
-.about-card p {
-  font-size: 1rem;
-  margin-bottom: 12px;
-  line-height: 1.6;
-}
-
-/* Skills Card */
+/* Skills List */
 .about-skills ul {
   list-style: none;
   padding: 0;
@@ -50,51 +34,94 @@
 }
 
 .skill-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  cursor: pointer;
+  flex-wrap: nowrap;
+  transition: transform 0.3s ease;
 }
 
+/* Icon */
 .skill-icon {
   font-size: 1.6rem;
   color: #4f46e5;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
 }
 
-.skill-label {
+/* Label + Stars container */
+.skill-text-container {
+  position: relative;
   flex: 1;
-  font-size: 1rem;
+  min-height: 24px; /* label yüksekliğine göre ayarla */
 }
 
-.skill-stars {
+/* Label */
+.skill-label {
   display: flex;
-  gap: 2px;
+  align-items: center;
+  transition: all 0.4s ease;
 }
 
+/* Stars */
+.skill-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+/* Hover efektleri */
+.skill-item:hover .skill-label {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.skill-item:hover .skill-stars {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Icon hover animasyonu */
+.skill-item:hover .skill-icon {
+  transform: scale(1.2) rotate(-10deg);
+  animation: swing 0.5s ease-in-out;
+}
+
+/* Dolmuş yıldızlar */
 .skill-stars .filled {
   color: #fbbf24;
 }
 
+/* Sallanma animasyonu */
+@keyframes swing {
+  0% { transform: scale(1.2) rotate(-10deg); }
+  50% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1.2) rotate(-10deg); }
+}
+
+/* Timeline Container */
+.timeline-container {
+  max-width: 1000px;
+  width: 100%;
+  margin: 40px auto 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
 /* -------------------------
-   Mobile Adjustments
+   Mobile
 ---------------------------*/
 @media (max-width: 768px) {
-  .about-skill-container {
-    padding: 15px;
-    gap: 25px;
-  }
-
-  .about-card h2 {
-    font-size: 1.5rem;
-  }
-
-  .about-card h1 {
-    font-size: 1.8rem;
-  }
-
-  .about-card p {
-    font-size: 0.95rem;
+  .about-card {
+    flex: 1 1 100%;
   }
 
   .skill-item {
@@ -102,11 +129,8 @@
     align-items: flex-start;
   }
 
-  .skill-label {
-    font-size: 0.95rem;
-  }
-
+  /* Yıldızlar başlangıçta gizli kalacak, hover ile gelecek */
   .skill-stars {
-    margin-top: 4px;
+    margin-top: 4px; /* boşluk için */
   }
 }

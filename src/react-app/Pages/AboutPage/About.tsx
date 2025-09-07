@@ -34,42 +34,42 @@ const AboutPage: React.FC = () => {
   return (
     <>
       <div className="about-skill-container fade-in">
-        <div className="about-main">
-          <section className="about-card about-summary">
-            <h2>About Me</h2>
-            <h1>Talha Karasu</h1>
-            <p>Embedded Systems - R&D Engineer</p>
-            <p>
-              Erciyes University, final-year Computer Engineering student with practical experience in embedded systems and power electronics. Skilled in C and C++ programming and multi-layer PCB design.
-            </p>
-            <p>
-              Experienced in both theoretical knowledge and hands-on embedded software & hardware design. Focused on local and efficient hardware-software integrated systems development, aiming for scalable and innovative solutions.
-            </p>
-            <p>
-              My goal is to leverage technical skills and practical experience to build efficient, scalable, and innovative hardware-software integrated systems.
-            </p>
-            <a href="/res.pdf" download className="button">
-              Download CV
-            </a>
-          </section>
+        <section className="about-card about-summary">
+          <h2>About Me</h2>
+          <h1>Talha Karasu</h1>
+          <p>Embedded Systems - R&D Engineer</p>
+          <p>
+            Erciyes University, final-year Computer Engineering student with practical experience in embedded systems and power electronics. Skilled in C and C++ programming and multi-layer PCB design.
+          </p>
+          <p>
+            Experienced in both theoretical knowledge and hands-on embedded software & hardware design. Focused on local and efficient hardware-software integrated systems development, aiming for scalable and innovative solutions.
+          </p>
+          <p>
+            My goal is to leverage technical skills and practical experience to build efficient, scalable, and innovative hardware-software integrated systems.
+          </p>
+          <a href="/res.pdf" download className="button">
+            Download CV
+          </a>
+        </section>
 
-          <section className="about-card about-skills">
-            <h2>Skills</h2>
-            <ul>
-              {skills.map((skill, idx) => (
-                <li key={idx} className="skill-item">
-                  <span className="skill-icon">{skill.icon}</span>
+        <section className="about-card about-skills">
+          <h2>Skills</h2>
+          <ul>
+            {skills.map((skill, idx) => (
+              <li key={idx} className="skill-item">
+                <span className="skill-icon">{skill.icon}</span>
+                <span className="skill-text-container">
                   <span className="skill-label">{skill.label}</span>
                   <span className="skill-stars">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <FaStar key={i} className={i < skill.stars ? "filled" : ""} />
                     ))}
                   </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
 
       <div className="timeline-container fade-in">
