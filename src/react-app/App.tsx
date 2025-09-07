@@ -1,10 +1,10 @@
+// App.tsx
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import ReactAudioPlayer from 'react-audio-player';
 
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-
-import HomePage from "./Pages/HomePage/HomePage";
+import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
-import ReactAudioPlayer from 'react-audio-player';
 
 import "./App.css";
 
@@ -14,9 +14,24 @@ function App() {
       <div className="app-container">
         {/* Navbar */}
         <nav className="navbar">
-          <Link to="/">Hakkımda</Link>
-          <Link to="/portfolio">Portfolyo</Link>
-          <Link to="/contact">İletişim</Link>
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+          >
+            Hakkımda
+          </NavLink>
+          <NavLink 
+            to="/portfolio" 
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+          >
+            Portfolyo
+          </NavLink>
+          <NavLink 
+            to="/contact" 
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+          >
+            İletişim
+          </NavLink>
 
           <div className="audio-player-wrapper">
             <ReactAudioPlayer
@@ -27,10 +42,9 @@ function App() {
           </div>
         </nav>
 
-
         {/* Routes */}
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<AboutPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Routes>

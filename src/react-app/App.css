@@ -25,7 +25,6 @@ body {
   box-sizing: border-box;
 }
 
-
 /* -------------------------
    Navbar
 ---------------------------*/
@@ -35,8 +34,8 @@ body {
   justify-content: center;
   gap: 2rem;
   padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.6); /* şeffaf */
-  backdrop-filter: blur(12px); /* cam efekti */
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border-radius: 12px;
   position: sticky;
@@ -44,6 +43,7 @@ body {
   z-index: 1000;
   flex-wrap: nowrap;
 }
+
 .navbar a {
   color: #1f2937;
   text-decoration: none;
@@ -54,7 +54,8 @@ body {
   background-color: transparent;
 }
 
-.navbar a:hover {
+.navbar a:hover,
+.navbar a.active {
   color: #ffffff;
   background-color: #4f46e5;
   transform: scale(1.08);
@@ -72,24 +73,15 @@ body {
   max-width: 180px;
   width: 100%;
 }
-  
+
 .audio-player-wrapper audio {
-  background-color: #4f46e5; 
-  border-radius: 16px;
-  width: 100%;
-  max-width: 180px;
-  outline: none;
-  box-sizing: border-box;
-}
-.audio-player-wrapper audio::-webkit-media-controls-panel {
   background-color: #4f46e5;
   border-radius: 16px;
+  width: 100%;
+  outline: none;
 }
-
-.audio-player-wrapper audio::-webkit-media-controls-play-button,
-.audio-player-wrapper audio::-webkit-media-controls-volume-slider {
-  filter: invert(0);
-}
+.audio-player-wrapper audio::-webkit-media-controls-panel { background-color: #4f46e5; border-radius: 16px; }
+.audio-player-wrapper audio::-webkit-media-controls-play-button, .audio-player-wrapper audio::-webkit-media-controls-volume-slider { filter: invert(0); }
 
 /* -------------------------
    Section Kartları
@@ -98,11 +90,9 @@ body {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
   padding: 30px;
-
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px 0;
   transition: all 0.4s ease;
   opacity: 0;
   transform: translateY(20px);
@@ -134,7 +124,7 @@ body {
 }
 
 .button:hover {
-  background-color: #4338ca; 
+  background-color: #4338ca;
   transform: scale(1.08);
   box-shadow: 0 6px 18px rgba(0,0,0,0.15);
   animation: pulse 0.6s;
@@ -161,6 +151,54 @@ a {
 a:hover {
   color: #4338ca;
   text-decoration: underline;
+}
+
+/* -------------------------
+   Animasyonlar
+---------------------------*/
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1.05); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* -------------------------
+   Responsive
+---------------------------*/
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 1rem;
+  }
+
+  .section-card {
+    padding: 20px;
+  }
+
+  .button {
+    padding: 10px 22px;
+  }
+
+  .audio-player-wrapper {
+    position: static;
+    transform: none;
+    margin-top: 15px;
+    max-width: 100%;
+  }
 }
 
 /* -------------------------

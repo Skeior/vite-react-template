@@ -1,0 +1,80 @@
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+}
+
+.section-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  margin-bottom: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.section-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  background-color: #f0f4ff;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.about-header h1 {
+  font-size: 2.5rem;
+  color: #4f46e5;
+  margin-bottom: 0.5rem;
+}
+
+.about-header p {
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.about-summary h2,
+.about-skills h2,
+.about-timeline h2 {
+  color: #4f46e5;
+  margin-bottom: 1rem;
+}
+
+.about-skills ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.skill-item:hover {
+  transform: translateX(10px);
+  color: #4f46e5;
+}
+
+.skill-icon {
+  margin-right: 12px;
+  font-size: 1.5rem;
+  color: #4f46e5;
+  min-width: 30px;
+}
+
+/* Timeline card ile uyumlu yapmak için */
+.about-timeline {
+  padding: 0;
+}
+
+.about-timeline h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
