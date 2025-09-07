@@ -1,34 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import "./Portfolio.css";
 
-const projects = [
-  {
-    title: "BLDC Motor Sürücü Tasarımı",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
-    link: "https://github.com/skeior/bldc-driver",
-  },
-  {
-    title: "Telemetri Sistemi",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
-    link: "https://github.com/skeior/telemetry-system",
-  },
-  {
-    title: "Batarya Dengeleme Devresi",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
-    link: "https://github.com/skeior/bms-balancing",
-  },
-  {
-    title: "Mini Ornihopter (Bitirme Projesi)",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
-    link: "https://github.com/skeior/ornihopter",
-  },
-];
+const motorDriverProject = {
+  title: "BLDC Motor Sürücü Tasarımı",
+  features: [
+    "12-85V Input voltage",
+    "20V-80V / 165A Output Spec",
+    "Compatitible With FOC and SixStep Algorithms",
+    "Phase-to-phase Voltage measurements",
+    "Phase current Measurements",
+    "Overcurrent protection",
+    "UART-TTL & RS232 Communication",
+    "Hall Effect and Encoder Sensor readings",
+    "6-layer PCB",
+    "10x10 cm boyutunda kart"
+  ],
+  simulation: "LTspice simülasyonları ile MOSFET anahtarlama davranışı ve motor akım dalgalanmaları analiz edilmiştir.",
+  test: "Motor Pilot yazılımı ile yüksüz ve yük altında testler gerçekleştirilmiş, nominal verim %99,6 olarak ölçülmüştür.",
+  previewImage: "/images/onarka.jpg", // ÖN İZLEME GÖRSELİ
+  images: [
+    "/images/ongoruntu.jpg",
+    "/images/arkagoruntu.jpg",
+    "/images/layer1.png",
+    "/images/layer2.png",
+    "/images/layer3.png",
+    "/images/layer4.png"
+  ],
+  videos: [
+    "/images/arabavideo.mp4",
+    "/images/yerlilikvideo.mp4"
+  ],
+  link: "https://github.com/skeior/bldc-driver"
+};
 
 const PortfolioPage: React.FC = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="app-container">
-      {/* Header */}
       <motion.header
         className="portfolio-header"
         initial={{ opacity: 0, y: -50 }}
@@ -41,33 +51,80 @@ const PortfolioPage: React.FC = () => {
         </p>
       </motion.header>
 
-      {/* Project Cards */}
-      <motion.section
-        className="portfolio-grid"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: {},
-          visible: { transition: { staggerChildren: 0.2 } },
-        }}
+      <motion.div
+        className="portfolio-card"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.02 }}
       >
-        {projects.map((project, idx) => (
-          <motion.a
-            key={idx}
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="portfolio-card"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: idx * 0.1 }}
-            whileHover={{ scale: 1.05 }}
+        {/* ÖN İZLEME GÖRSELİ */}
+        <img
+          src={motorDriverProject.previewImage}
+          alt="Motor Driver Preview"
+          className="card-preview-image"
+        />
+
+        <h3 className="card-title">{motorDriverProject.title}</h3>
+
+        {/* Öne çıkan özellikler */}
+        <ul className="card-features">
+          {motorDriverProject.features.slice(0, 3).map((f, i) => (
+            <li key={i}>{f}</li>
+          ))}
+        </ul>
+
+        {/* Daha fazla göster butonu */}
+        <button onClick={() => setOpen(!open)} className="show-more-btn">
+          {open ? "Daha az göster" : "Detayları göster"}
+        </button>
+
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4 }}
+            className="card-details"
           >
-            <h3 className="card-title">{project.title}</h3>
-            <p className="card-desc">{project.desc}</p>
-          </motion.a>
-        ))}
-      </motion.section>
+            <ul>
+              {motorDriverProject.features.slice(3).map((f, i) => (
+                <li key={i}>{f}</li>
+              ))}
+            </ul>
+
+            <h4>Simülasyon Çalışmaları</h4>
+            <p>{motorDriverProject.simulation}</p>
+
+            <h4>Test ve Verim</h4>
+            <p>{motorDriverProject.test}</p>
+
+            <div className="project-images">
+              {motorDriverProject.images.map((img, i) => (
+                <img key={i} src={img} alt={`Motor Driver ${i}`} />
+              ))}
+            </div>
+
+            <div className="project-videos">
+              <h4>Videolar</h4>
+              {motorDriverProject.videos.map((vid, i) => (
+                <video key={i} controls width="300">
+                  <source src={vid} type="video/mp4" />
+                  Tarayıcınız video etiketini desteklemiyor.
+                </video>
+              ))}
+            </div>
+
+            <a
+              href={motorDriverProject.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-link"
+            >
+              GitHub Repository
+            </a>
+          </motion.div>
+        )}
+      </motion.div>
     </div>
   );
 };
