@@ -1,0 +1,82 @@
+/* Genel Container */
+.portfolio-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Header */
+.portfolio-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.portfolio-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.portfolio-subtitle {
+  font-size: 1.2rem;
+  color: #4b5563;
+}
+
+/* Grid */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* Card */
+.portfolio-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.4s ease;
+  border: 1px solid transparent;
+}
+
+.portfolio-card:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+  transform: translateY(-6px);
+  background: linear-gradient(135deg, #ffffff, #f0f4ff);
+}
+
+/* Card İçerik */
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #111827;
+  transition: color 0.3s ease;
+}
+
+.card-desc {
+  color: #374151;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.portfolio-card:hover .card-title {
+  color: #4f46e5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .portfolio-title {
+    font-size: 2rem;
+  }
+  .portfolio-subtitle {
+    font-size: 1rem;
+  }
+  .portfolio-card {
+    padding: 20px;
+  }
+}

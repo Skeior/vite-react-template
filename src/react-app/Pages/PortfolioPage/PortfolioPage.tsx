@@ -1,45 +1,49 @@
 import React from "react";
 import { motion } from "framer-motion";
+import "./Portfolio.css";
 
 const projects = [
   {
     title: "BLDC Motor Sürücü Tasarımı",
-    desc: "STM32G431RBT6 tabanlı, tamamen yerli tasarlanmış BLDC motor sürücü geliştirdim. Güç elektroniği, akım ölçümü ve kontrol algoritmalarını içeriyor.",
+    desc: "STM32G431RBT6 tabanlı, tamamen yerli tasarlanmış BLDC motor sürücü geliştirdim.",
+    link: "https://github.com/skeior/bldc-driver",
   },
   {
     title: "Telemetri Sistemi",
-    desc: "Araç verilerini TTL UART üzerinden toplayıp LoRa modülü ile 1.5 km mesafeden yer istasyonuna ilettim.",
+    desc: "Araç verilerini TTL UART üzerinden toplayıp LoRa ile 1.5 km mesafeden ilettim.",
+    link: "https://github.com/skeior/telemetry-system",
   },
   {
     title: "Batarya Dengeleme Devresi",
-    desc: "STM32F407 ve INA2134UA kullanarak 20 hücreli Li-Po batarya için mikrodenetleyici kontrollü pasif dengeleme devresi tasarladım.",
+    desc: "STM32F407 ve INA2134UA kullanarak 20 hücreli Li-Po batarya için pasif dengeleme devresi.",
+    link: "https://github.com/skeior/bms-balancing",
   },
   {
     title: "Mini Ornihopter (Bitirme Projesi)",
-    desc: "Kanat çırpma hareketi ile doğal görünümlü, kamufle olabilen ve kamera ile görüntü aktarabilen bir hava aracı geliştirme üzerine çalışıyorum.",
+    desc: "Kanat çırpma hareketi ile doğal görünümlü, kamera ile görüntü aktarabilen hava aracı.",
+    link: "https://github.com/skeior/ornihopter",
   },
 ];
 
 const PortfolioPage: React.FC = () => {
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-
+    <div className="portfolio-container">
       {/* Header */}
       <motion.header
-        className="text-center mb-12"
+        className="portfolio-header"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-4xl font-bold mb-2">Projelerim</h1>
-        <p className="text-lg text-gray-600">
+        <h1 className="portfolio-title">Projelerim</h1>
+        <p className="portfolio-subtitle">
           Embedded Systems & Power Electronics projelerim
         </p>
       </motion.header>
 
       {/* Project Cards */}
       <motion.section
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        className="portfolio-grid"
         initial="hidden"
         animate="visible"
         variants={{
@@ -48,17 +52,20 @@ const PortfolioPage: React.FC = () => {
         }}
       >
         {projects.map((project, idx) => (
-          <motion.div
+          <motion.a
             key={idx}
-            className="p-4 border rounded-lg shadow-md hover:shadow-lg"
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="portfolio-card"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: idx * 0.1 }}
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.05 }}
           >
-            <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-            <p>{project.desc}</p>
-          </motion.div>
+            <h3 className="card-title">{project.title}</h3>
+            <p className="card-desc">{project.desc}</p>
+          </motion.a>
         ))}
       </motion.section>
     </div>
