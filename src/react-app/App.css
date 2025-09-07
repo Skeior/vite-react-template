@@ -16,28 +16,7 @@ body {
   position: relative;
 }
 
-/* -------------------------
-   Particle / Visualizer Container
----------------------------*/
-#tsparticles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0; /* arka planda */
-}
 
-.audio-visualizer-container {
-  position: relative;
-  z-index: 10; /* particles üstünde */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  width: 90%;
-  max-width: 1200px;
-}
 
 /* -------------------------
    App Container
@@ -48,7 +27,6 @@ body {
   padding: 20px;
   box-sizing: border-box;
   position: relative; /* particles ve nav için */
-  z-index: 5;
 }
 
 /* -------------------------
@@ -64,9 +42,9 @@ body {
   backdrop-filter: blur(12px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border-radius: 12px;
+
   position: sticky;
   top: 0;
-  z-index: 20; /* particles üstünde */
   flex-wrap: nowrap;
 }
 
@@ -96,9 +74,8 @@ body {
   right: 1.5rem; 
   top: 50%;
   transform: translateY(-50%);
-  max-width: 180px;
+  max-width: 19%;
   width: 100%;
-  z-index: 15;
 }
 
 .audio-player-wrapper audio {
