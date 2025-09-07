@@ -1,3 +1,4 @@
+/* Genel Container */
 .about-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -6,7 +7,9 @@
   color: #1f2937;
 }
 
-.section-card {
+/* Ortak kart stilleri */
+.section-card,
+.about-card {
   background: #fff;
   padding: 2rem;
   border-radius: 12px;
@@ -15,12 +18,14 @@
   transition: all 0.3s ease;
 }
 
-.section-card:hover {
+.section-card:hover,
+.about-card:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 12px 25px rgba(0,0,0,0.15);
   background-color: #f0f4ff;
 }
 
+/* Header */
 .about-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -37,6 +42,32 @@
   color: #6b7280;
 }
 
+.button {
+  display: inline-block;
+  background: #4f46e5;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.button:hover {
+  background: #3730a3;
+}
+
+/* About Me + Skills yan yana */
+.about-main {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap; /* Mobilde alt alta gelsin */
+}
+
+.about-card {
+  flex: 1 1 350px; /* Eşit genişlik, minimum 350px */
+}
+
+/* Başlıklar */
 .about-summary h2,
 .about-skills h2,
 .about-timeline h2 {
@@ -44,6 +75,7 @@
   margin-bottom: 1rem;
 }
 
+/* Skills listesi */
 .about-skills ul {
   list-style: none;
   padding-left: 0;
@@ -69,7 +101,7 @@
   min-width: 30px;
 }
 
-/* Timeline card ile uyumlu yapmak için */
+/* Timeline */
 .about-timeline {
   padding: 0;
 }
