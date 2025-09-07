@@ -13,20 +13,19 @@ function App() {
     <BrowserRouter>
       <div className="app-container">
         {/* Navbar */}
-      <nav className="navbar">
-        <div className="nav-links">
+        <nav className="navbar">
           <Link to="/">Home</Link>
           <Link to="/portfolio">Portfolio</Link>
           <Link to="/contact">Contact</Link>
-        </div>
 
-        <div className="audio-player-wrapper">
-          <ReactAudioPlayer
-            src="https://alemfm.radyotvonline.net/alemfmaac?/;stream.mp3"
-            controls
-          />
-        </div>
-      </nav>
+          <div className="audio-player-wrapper">
+            <ReactAudioPlayer
+              src="https://alemfm.radyotvonline.net/alemfmaac?/;stream.mp3"
+              volume={0.3}
+              controls
+            />
+          </div>
+        </nav>
 
 
         {/* Routes */}

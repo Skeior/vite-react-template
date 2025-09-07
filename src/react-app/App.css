@@ -28,36 +28,56 @@ body {
 ---------------------------*/
 .navbar {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  background: #ffffff;
-  padding: 15px 0;
+  align-items: center;
+  justify-content: center; /* Linkleri ortalar */
+  gap: 2rem; /* Linkler arası boşluk */
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  transition: all 0.3s ease;
+  position: relative;
 }
 
 .navbar a {
-  text-decoration: none;
   color: #1f2937;
+  text-decoration: none;
   font-weight: 500;
-  font-size: 1.05em;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 8px 16px; /* buton hissi için */
+  border-radius: 8px; /* yuvarlak köşeler */
   transition: all 0.3s ease;
+  background-color: transparent;
 }
 
 .navbar a:hover {
   color: #ffffff;
-  background-color: #4f46e5; /* soft profesyonel mavi */
-  transform: scale(1.05);
+  background-color: #4f46e5; /* hover mavi */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+.audio-player-wrapper {
+  position: absolute;
+  right: 1.5rem; /* Ses oynatıcı sağda */
+  top: 50%;
+  transform: translateY(-50%);
+}
+.audio-player-wrapper audio {
+  background-color: #4f46e5; /* arka plan beyaz */
+  border-radius: 16px;
+  width: 250px; /* isteğe göre genişlik */
+  outline: none;
 }
 
-.audio-player-wrapper {
-  display: flex;
-  align-items: center;
+/* opsiyonel: kontrollerin renklerini özelleştirmek */
+.audio-player-wrapper audio::-webkit-media-controls-panel {
+  background-color: #4f46e5;
+  border-radius: 12px;
 }
+
+.audio-player-wrapper audio::-webkit-media-controls-play-button,
+.audio-player-wrapper audio::-webkit-media-controls-volume-slider {
+  filter: invert(0); /* renkleri beyaz/uyumlu yap */
+}
+
 /* -------------------------
    Section Kartları
 ---------------------------*/
