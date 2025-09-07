@@ -16,7 +16,7 @@
 .about-card {
   flex: 0 1 calc(50% - 10px);
   min-width: 300px;
-  background: #fff;
+  background: #ffffff;
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
@@ -55,7 +55,7 @@
 .skill-text-container {
   position: relative;
   flex: 1;
-  min-height: 24px; /* Label yüksekliğine göre ayarlayın */
+  min-height: 24px;
 }
 
 /* Label */
@@ -78,7 +78,7 @@
   transition: all 0.4s ease;
 }
 
-/* Hover */
+/* Hover efektleri */
 .skill-item:hover .skill-label {
   opacity: 0;
   transform: translateY(-10px);
@@ -116,7 +116,9 @@
   box-sizing: border-box;
 }
 
-/* Mobile */
+/* -------------------------
+   Mobile
+---------------------------*/
 @media (max-width: 768px) {
   .about-card {
     flex: 1 1 100%;
@@ -128,9 +130,16 @@
   }
 
   .skill-stars {
-    opacity: 1;
-    transform: translateY(0);
     margin-top: 4px;
   }
 }
-  
+
+@media (max-width: 480px) {
+  .skill-icon {
+    font-size: 1.4rem;
+  }
+
+  .skill-text-container {
+    min-height: 20px;
+  }
+}

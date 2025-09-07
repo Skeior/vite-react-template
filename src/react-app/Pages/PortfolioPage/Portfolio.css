@@ -1,7 +1,13 @@
 /* -------------------------
    Genel Container ve Arkaplan
 ---------------------------*/
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
 
+}
 
 /* -------------------------
    Başlıklar
@@ -15,19 +21,18 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #111827; /* Contact başlık rengi ile aynı */
 }
 
 .portfolio-subtitle {
   font-size: 1.2rem;
-  color: #374151; /* Contact subtitle ile uyumlu */
+  color: #6b7280;
 }
 
 /* -------------------------
    Kart Stilleri
 ---------------------------*/
 .portfolio-card {
-  background-color: #f9fafb; /* Açık gri ton, Contact kartlarıyla uyumlu */
+  background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
@@ -44,18 +49,17 @@
 .card-preview-image {
   width: 100%;
   height: auto;
-  max-height: 450px;
-  object-fit: contain;
+  max-height: 500px;
+  object-fit: cover; /* Kesme yerine tüm alanı doldurur */
   border-radius: 8px;
   margin-bottom: 1rem;
-  background-color: #e5e7eb; /* açık gri dolgu */
+  background-color: #e5e7eb;
 }
 
 /* Başlık ve özellikler */
 .card-title {
   font-size: 1.8rem;
   margin-bottom: 1rem;
-  color: #111827;
 }
 
 .card-features {
@@ -71,7 +75,7 @@
 
 /* Show more butonu */
 .show-more-btn {
-  background-color: #4f46e5; /* Contact sayfası mavi tonu */
+  background-color: #4f46e5;
   color: #ffffff;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -97,15 +101,13 @@
   list-style-type: circle;
   padding-left: 1.5rem;
   margin-bottom: 1rem;
-  color: #374151;
 }
 
-/* Simülasyon, test ve verim */
 .card-details h4 {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
-  color: #6fcf97; /* Contact sayfasındaki yeşil ton */
+  color: #6fcf97;
 }
 
 .card-details p {
@@ -144,14 +146,14 @@
 .project-link {
   display: inline-block;
   margin-top: 1rem;
-  color: #4f46e5; /* Contact link rengiyle uyumlu */
+  color: #4f46e5;
   text-decoration: none;
   font-weight: 500;
 }
 
 .project-link:hover {
-  text-decoration: underline;
   color: #4338ca;
+  text-decoration: underline;
 }
 
 /* -------------------------

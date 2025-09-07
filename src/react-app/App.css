@@ -41,7 +41,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border-radius: 12px;
   position: relative;
-  top: 0;
+  top: 15px;
   width:auto;
   flex-wrap: nowrap;
   min-width: 800px;
@@ -71,7 +71,7 @@ body {
 .audio-player-wrapper {
   position: absolute;
   right: 1.5rem; 
-  top: 50%;
+  top: 53%;
   transform: translateY(-50%);
   max-width: 19%;
   width: 100%;
@@ -194,6 +194,7 @@ a:hover {
     flex-direction: column;
     gap: 15px;
     padding: 1rem;
+    min-width: auto !important;
   }
 
   .section-card {
