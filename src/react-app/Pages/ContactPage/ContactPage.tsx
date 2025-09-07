@@ -14,11 +14,10 @@ const ContactPage: React.FC = () => {
     e.preventDefault();
 
     const templateParams = {
-      from_name: formData.name,
-      from_email: formData.email,
+      name: formData.name,
+      email: formData.email,
       message: formData.message
     };
-
     emailjs.send(
       "service_pnwsiys",   // EmailJS Service ID
       "template_ey6j43e",  // EmailJS Template ID
@@ -28,6 +27,7 @@ const ContactPage: React.FC = () => {
     .then(() => {
       alert("Mesajınız gönderildi! Teşekkürler.");
       setFormData({ name: "", email: "", message: "" });
+      console.log("Gönderilen formData:", formData);
     })
     .catch((err) => {
       console.error("EmailJS error:", err);
