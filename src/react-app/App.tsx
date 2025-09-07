@@ -14,9 +14,9 @@ function App() {
       <div className="app-container">
         {/* Navbar */}
         <nav className="navbar">
-          <Link to="/">Home</Link>
-          <Link to="/portfolio">Portfolio</Link>
-          <Link to="/contact">Contact</Link>
+          <Link to="/">Hakkımda</Link>
+          <Link to="/portfolio">Portfolyo</Link>
+          <Link to="/contact">İletişim</Link>
 
           <div className="audio-player-wrapper">
             <ReactAudioPlayer

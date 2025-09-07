@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import emailjs from "emailjs-com";
 import "./Contact.css";
 
 const ContactPage: React.FC = () => {
@@ -11,13 +12,31 @@ const ContactPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Mesajınız gönderildi! Teşekkürler.");
-    setFormData({ name: "", email: "", message: "" });
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      message: formData.message
+    };
+
+    emailjs.send(
+      "service_pnwsiys",   // EmailJS Service ID
+      "template_ey6j43e",  // EmailJS Template ID
+      templateParams,
+      "dd49VlOMNa9v-NiJ-"    // EmailJS Public Key
+    )
+    .then(() => {
+      alert("Mesajınız gönderildi! Teşekkürler.");
+      setFormData({ name: "", email: "", message: "" });
+    })
+    .catch((err) => {
+      console.error("EmailJS error:", err);
+      alert("Mesaj gönderilemedi. Lütfen tekrar deneyin.");
+    });
   };
 
   return (
     <div className="app-container">
-
       {/* Header */}
       <motion.header
         className="text-center mb-12"

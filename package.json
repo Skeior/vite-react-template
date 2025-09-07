@@ -15,6 +15,7 @@
     "publish": true
   },
   "dependencies": {
+    "emailjs-com": "^3.2.0",
     "framer-motion": "^12.23.12",
     "hono": "4.8.2",
     "react": "19.0.0",
