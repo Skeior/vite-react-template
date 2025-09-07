@@ -5,22 +5,22 @@ import "./Portfolio.css";
 const projects = [
   {
     title: "BLDC Motor Sürücü Tasarımı",
-    desc: "STM32G431RBT6 tabanlı, tamamen yerli tasarlanmış BLDC motor sürücü geliştirdim.",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
     link: "https://github.com/skeior/bldc-driver",
   },
   {
     title: "Telemetri Sistemi",
-    desc: "Araç verilerini TTL UART üzerinden toplayıp LoRa ile 1.5 km mesafeden ilettim.",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
     link: "https://github.com/skeior/telemetry-system",
   },
   {
     title: "Batarya Dengeleme Devresi",
-    desc: "STM32F407 ve INA2134UA kullanarak 20 hücreli Li-Po batarya için pasif dengeleme devresi.",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
     link: "https://github.com/skeior/bms-balancing",
   },
   {
     title: "Mini Ornihopter (Bitirme Projesi)",
-    desc: "Kanat çırpma hareketi ile doğal görünümlü, kamera ile görüntü aktarabilen hava aracı.",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dicta ex deleniti, sapiente magni ipsa eum eligendi eos mollitia ullam magnam quidem sed, laborum consequatur doloribus natus molestiae. Rerum quia maxime, delectus temporibus voluptas quis vel perspiciatis deleniti vero magni assumenda facere et possimus veniam illo aliquid ratione tempora consectetur?",
     link: "https://github.com/skeior/ornihopter",
   },
 ];
