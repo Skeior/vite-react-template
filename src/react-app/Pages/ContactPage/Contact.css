@@ -1,13 +1,6 @@
 /* -------------------------
    Contact Page Genel
 ---------------------------*/
-.app-container {
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
-}
 
 /* Header */
 .header-title {

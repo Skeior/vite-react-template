@@ -27,7 +27,7 @@ const projects = [
 
 const PortfolioPage: React.FC = () => {
   return (
-    <div className="portfolio-container">
+    <div className="app-container">
       {/* Header */}
       <motion.header
         className="portfolio-header"
