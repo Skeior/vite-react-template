@@ -49,7 +49,7 @@ const AboutPage: React.FC = () => {
               My goal is to leverage technical skills and practical experience to build efficient, scalable, and innovative hardware-software integrated systems.
             </p>
 
-            <a href="src\react-app\res.pdf" download className="button">
+            <a href="src\react-app\assets\res.pdf" download className="button">
               Download CV
             </a>
           </section>
