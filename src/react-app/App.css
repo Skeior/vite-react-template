@@ -1,6 +1,6 @@
 /* -------------------------
    Genel Arka Plan ve Font
----------------------------*/
+-------------------------*/
 body {
   margin: 0;
   display: flex;
@@ -13,15 +13,12 @@ body {
   background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #d1c4e9, #bbdefb);
   background-size: 400% 400%;
   animation: gradientBG 20s ease infinite;
-
   position: relative;
 }
 
-
-
 /* -------------------------
    App Container
----------------------------*/
+-------------------------*/
 .app-container {
   max-width: 1200px;
   width: 100%;
@@ -32,7 +29,7 @@ body {
 
 /* -------------------------
    Navbar
----------------------------*/
+-------------------------*/
 .navbar {
   display: flex;
   align-items: center;
@@ -43,7 +40,7 @@ body {
   backdrop-filter: blur(12px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border-radius: 12px;
-  position: sticky;
+  position: relative;
   top: 0;
   width:auto;
   flex-wrap: nowrap;
@@ -69,7 +66,7 @@ body {
 
 /* -------------------------
    Audio Player
----------------------------*/
+-------------------------*/
 .audio-player-wrapper {
   position: absolute;
   right: 1.5rem; 
@@ -96,16 +93,16 @@ body {
 
 /* -------------------------
    Section Kartları
----------------------------*/
+-------------------------*/
 .section-card {
   position: relative;
   z-index: 10; /* particles üstünde */
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
-  padding: 30px;
+  padding: 25px !important;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  margin: 30px 0;
+
   transition: all 0.4s ease;
   opacity: 0;
   transform: translateY(20px);
@@ -120,7 +117,7 @@ body {
 
 /* -------------------------
    Butonlar
----------------------------*/
+-------------------------*/
 .button {
   border-radius: 12px;
   border: none;
@@ -145,7 +142,7 @@ body {
 
 /* -------------------------
    Başlıklar ve Linkler
----------------------------*/
+-------------------------*/
 h1, h2, h3 {
   color: #111827;
   margin: 0 0 12px 0;
@@ -168,7 +165,7 @@ a:hover {
 
 /* -------------------------
    Animasyonlar
----------------------------*/
+-------------------------*/
 @keyframes fadeInUp {
   to {
     opacity: 1;
@@ -190,7 +187,7 @@ a:hover {
 
 /* -------------------------
    Responsive
----------------------------*/
+-------------------------*/
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
@@ -212,5 +209,4 @@ a:hover {
     margin-top: 15px;
     max-width: 100%;
   }
-
 }

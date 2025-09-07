@@ -1,6 +1,7 @@
+/* Timeline Container */
 .timeline-container {
   position: relative;
-  padding: 50px 20px;
+  padding: 0px 20px;
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -99,22 +100,34 @@
   margin-bottom: 8px;
 }
 
-/* Fade-in handled by framer-motion */
-
-/* Mobile */
+/* -------------------------
+   Mobile Adjustments
+---------------------------*/
 @media (max-width: 768px) {
   .timeline-item {
     width: 100%;
+    left: 0 !important;       /* solda sabitle */
     text-align: left !important;
     padding-left: 60px;
     margin-bottom: 30px;
   }
 
   .timeline-dot {
-    left: 20px !important;
+    left: 20px !important;    /* her zaman solda */
   }
 
   .timeline-line {
-    left: 20px !important;
+    left: 20px !important;    /* solda sabitle */
+  }
+
+  .timeline-title {
+    font-size: 1.5rem;
+  }
+
+  /* Sağ-sol sınıflar mobilde geçersiz */
+  .timeline-item.left,
+  .timeline-item.right {
+    text-align: left;
+    left: 0;
   }
 }
