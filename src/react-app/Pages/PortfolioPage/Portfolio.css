@@ -1,17 +1,16 @@
 /* -------------------------
    Genel Container ve Arkaplan
----------------------------*/
-.app-container {
+-------------------------*/
+.portfolio-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Inter', sans-serif;
-
 }
 
 /* -------------------------
    Başlıklar
----------------------------*/
+-------------------------*/
 .portfolio-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -29,15 +28,29 @@
 }
 
 /* -------------------------
+   Grid Layout
+-------------------------*/
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  align-items: start; /* Kartlar bağımsız büyüsün */
+}
+
+/* -------------------------
    Kart Stilleri
----------------------------*/
+-------------------------*/
 .portfolio-card {
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
-  margin-bottom: 2rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 800px ; /* Ön izleme için eşit boyut */
+  position: relative;
 }
 
 .portfolio-card:hover {
@@ -49,8 +62,8 @@
 .card-preview-image {
   width: 100%;
   height: auto;
-  max-height: 500px;
-  object-fit: cover; /* Kesme yerine tüm alanı doldurur */
+  max-height: 350px;
+  object-fit: cover;
   border-radius: 8px;
   margin-bottom: 1rem;
   background-color: #e5e7eb;
@@ -58,8 +71,8 @@
 
 /* Başlık ve özellikler */
 .card-title {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-features {
@@ -70,7 +83,7 @@
 }
 
 .card-features li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 /* Show more butonu */
@@ -78,7 +91,7 @@
   background-color: #4f46e5;
   color: #ffffff;
   border: none;
-  padding: 0.6rem 1.2rem;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   margin-bottom: 1rem;
@@ -107,7 +120,7 @@
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
-  color: #6fcf97;
+  color: #111827;
 }
 
 .card-details p {
@@ -156,16 +169,28 @@
   text-decoration: underline;
 }
 
-/* -------------------------
-   Responsive Ayarlar
----------------------------*/
+/* Responsive */
+@media (max-width: 1024px) {
+  .portfolio-card {
+    min-height: 400px; /* Büyük tabletler */
+  }
+}
+
 @media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: 1fr; /* Tek kolon mobilde */
+  }
+
   .project-images img {
     width: 100%;
   }
 
   .card-preview-image {
-    max-height: 350px;
+    max-height: 300px;
+  }
+
+  .portfolio-card {
+    min-height: auto; /* Kartlar içerik boyutuna uyumlu */
   }
 }
 
@@ -179,6 +204,6 @@
   }
 
   .card-preview-image {
-    max-height: 250px;
+    max-height: 200px;
   }
 }
