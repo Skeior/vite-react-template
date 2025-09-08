@@ -7,9 +7,9 @@ const data = [
   { year: "2023 - 2025", title: "Associate Degree", place: "Anadolu University", desc: "Web Design and Coding.", icon: <FaLaptopCode /> },
 
   // İş ve takım deneyimleri
-  { year: "2022 - 2023", title: "Telemetry Systems Developer", place: "VoltaCAR", desc: "Developed LoRa-based telemetry system with 1.5 km range.", icon: <FaBriefcase /> },
-  { year: "2023 - 2024", title: "Motor Driver Unit Leader", place: "VoltaCAR", desc: "Designed STM32G431 based 6-layer BLDC driver with PID.", icon: <FaCar /> },
-  { year: "2024 - 2025", title: "Team Captain", place: "VoltaFCEV", desc: "Led hydrogen fuel cell electric vehicle R&D for Teknofest.", icon: <FaTrophy /> },
+  { year: "2022 - 2023", title: "Telemetry Systems Developer", place: "VoltaCAR", desc: "Developed LoRa-based telemetry system.", icon: <FaBriefcase /> },
+  { year: "2023 - 2024", title: "Motor Driver Unit Leader", place: "VoltaCAR", desc: "Designed BLDC motor driver for Teknofest Efficiency Challange.", icon: <FaCar /> },
+  { year: "2024 - 2025", title: "Team Captain", place: "VoltaFCEV", desc: "Team Captain of Hydromobile Teknofest Efficiency Challange.", icon: <FaTrophy /> },
   { year: "2024 - 2025", title: "Embedded Mentor", place: "Göktim Akademi", desc: "Mentored high school students in microcontrollers & embedded systems.", icon: <FaLaptopCode /> },
 ];
 
