@@ -72,29 +72,31 @@ const projects = [
     ],
     link: "https://github.com/skeior/lorastation"
   },
-  {
-    title: "Göktim Academy - Robotics & Embedded Systems Instructor",
-    description: `Conducted hands-on workshops on Arduino and embedded systems, teaching fundamental components such as ADCs, sensors, and basic engineering concepts through interactive exercises.`,
-    features: [
-      "Arduino & Microcontroller Workshops",
-      "Teaching ADCs, Sensors, and Basic Electronics",
-      "Hands-on Embedded Systems Projects",
-      "STEM Education & Problem Solving"
-    ],
-    technologies: [
-      "Arduino",
-      "C/C++",
-      "Electronics Fundamentals",
-      "STEM Education",
-      "Mentoring"
-    ],
-    previewImage: "/images/goktim_preview.jpg",
-    images: [
-      "/images/goktim_1.jpg",
-      "/images/goktim_2.jpg"
-    ],
-    link: "#"
-  },
+{
+  title: "Göktim Academy - Robotics & Embedded Systems Instructor",
+  description: `Introduced students to the foundations of engineering and embedded systems through interactive lessons. Demonstrated how sensors work in real life, and showed how microcontrollers communicate with external devices. Designed weekly hands-on projects.`,
+  features: [
+    "Teaching the basics of binary logic",
+    "How sensors and components work.",
+    "How microcontrollers interact with the outside world",
+    "Weekly project-based learning to reinforce concepts",
+    "Encouraging curiosity, teamwork, and problem-solving skills"
+  ],
+  technologies: [
+    "Arduino",
+    "C/C++",
+    "STEM Education",
+    "Electronics Fundamentals",
+    "Mentoring & Teaching"
+  ],
+  previewImage: "/images/goktim_preview.jpg",
+  images: [
+    "/images/goktim_1.jpg",
+    "/images/goktim_2.jpg"
+  ],
+  link: "#"
+},
+
   {
     title: "Efficiency Challenge Participation (2022-2024)",
     description: `Participated in Teknofest Efficiency Challenge with VoltaFCEV team. 
