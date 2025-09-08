@@ -70,11 +70,12 @@ body {
 -------------------------*/
 .audio-player-wrapper {
   position: absolute;
-  right: 1.5rem; 
-  top: 53%;
+  right: 0.2rem; 
+  top: 55%;
   transform: translateY(-50%);
   max-width: 19%;
   width: 100%;
+  
 }
 
 .audio-player-wrapper audio {
