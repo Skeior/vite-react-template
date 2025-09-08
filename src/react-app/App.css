@@ -44,7 +44,7 @@ body {
   top: 15px;
   width:auto;
   flex-wrap: nowrap;
-  min-width: 800px;
+  min-width: 1200px;
 }
 
 .navbar a {

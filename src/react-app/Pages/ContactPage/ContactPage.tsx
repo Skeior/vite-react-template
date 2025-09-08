@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import emailjs from "emailjs-com";
+import { FaGithub, FaLinkedin } from "react-icons/fa"; // ← ikonları import ettik
 import "./Contact.css";
 
 const ContactPage: React.FC = () => {
@@ -19,19 +20,19 @@ const ContactPage: React.FC = () => {
       message: formData.message
     };
     emailjs.send(
-      "service_pnwsiys",   // EmailJS Service ID
-      "template_ey6j43e",  // EmailJS Template ID
+      "service_pnwsiys",
+      "template_ey6j43e",
       templateParams,
-      "dd49VlOMNa9v-NiJ-"    // EmailJS Public Key
+      "dd49VlOMNa9v-NiJ-"
     )
     .then(() => {
-      alert("Mesajınız gönderildi! Teşekkürler.");
+      alert("Your message has been sent! Thank you.");
       setFormData({ name: "", email: "", message: "" });
-      console.log("Gönderilen formData:", formData);
+      console.log("Sent formData:", formData);
     })
     .catch((err) => {
       console.error("EmailJS error:", err);
-      alert("Mesaj gönderilemedi. Lütfen tekrar deneyin.");
+      alert("Message could not be sent. Please try again.");
     });
   };
 
@@ -39,17 +40,16 @@ const ContactPage: React.FC = () => {
     <div className="app-container">
       {/* Header */}
       <motion.header
-        className="text-center mb-12"
+        className="portfolio-header text-center mb-12" // portfolio-header sınıfını ekledik
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="header-title">İletişim</h1>
-        <p className="header-subtitle">
-          Bana ulaşmak için aşağıdaki formu kullanabilirsiniz veya direkt iletişim bilgilerini kullanabilirsiniz.
+        <h1 className="portfolio-title">Contact</h1>
+        <p className="portfolio-subtitle">
+          You can reach out using the form below or by using the direct contact information.
         </p>
       </motion.header>
-
       {/* Contact Info + Form Card */}
       <motion.section
         className="contact-card"
@@ -65,8 +65,12 @@ const ContactPage: React.FC = () => {
             </a>
           </p>
           <p className="contact-links">
-            <a href="https://github.com/skeior" className="contact-link" target="_blank">GitHub</a>
-            <a href="https://linkedin.com/in/talhakarasu" className="contact-link" target="_blank">LinkedIn</a>
+            <a href="https://github.com/skeior" className="contact-link" target="_blank" rel="noreferrer">
+              <FaGithub size={24} style={{ marginRight: "8px" }} /> GitHub
+            </a>
+            <a href="https://linkedin.com/in/talhakarasu" className="contact-link" target="_blank" rel="noreferrer">
+              <FaLinkedin size={24} style={{ marginRight: "8px" }} /> LinkedIn
+            </a>
           </p>
         </div>
 
@@ -76,7 +80,7 @@ const ContactPage: React.FC = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Adınız"
+            placeholder="Your Name"
             required
             className="contact-input"
           />
@@ -93,13 +97,13 @@ const ContactPage: React.FC = () => {
             name="message"
             value={formData.message}
             onChange={handleChange}
-            placeholder="Mesajınız"
+            placeholder="Your Message"
             required
             rows={5}
             className="contact-input"
           />
           <button type="submit" className="button">
-            Gönder
+            Send
           </button>
         </form>
       </motion.section>
