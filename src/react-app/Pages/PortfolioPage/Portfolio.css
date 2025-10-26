@@ -35,7 +35,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.75rem;
-  align-items: start; /* cards align independently */
+  align-items: stretch; /* stretch cards to equal height per row */
 }
 
 /* -------------------------
@@ -51,6 +51,8 @@
   flex-direction: column;
   justify-content: flex-start;
   min-height: auto;
+  /* allow the card to stretch to the grid row height so all cards match */
+  height: 100%;
   position: relative;
   border-left: 4px solid var(--layer-3);
 }

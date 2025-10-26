@@ -5,7 +5,7 @@
   --accent: #e3342f;     /* strong red */
   --accent-2: #fb7185;   /* pinky red accent */
   --bg: #071125;         /* deep navy/near-black */
-  --vanta-opacity: 1; /* opacity for Vanta canvas (0-1) — lower makes nets more transparent */
+  --vanta-opacity: 0.345; /* opacity for Vanta canvas (0-1) — lower makes nets more transparent */
   --layer-1: #0b1220;    /* dark layer */
   --layer-2: #0f1724;
   --layer-3: #06111b;

@@ -66,6 +66,19 @@ function App() {
         const NET = (VANTA as any).default || (VANTA as any).NET || VANTA;
         const three = (THREE as any).default || THREE;
 
+        // Defensive: ensure THREE.Material prototype has a default for vertexColors
+        // so that when Vanta creates materials it doesn't pass `undefined` and
+        // trigger the console warning. Setting the prototype property here is
+        // best-effort and safe — it only defines the default when materials
+        // inspect the prototype.
+        try {
+          if (three && (three as any).Material && (three as any).Material.prototype) {
+            (three as any).Material.prototype.vertexColors = false;
+          }
+        } catch (e) {
+          // ignore — best-effort
+        }
+
         try {
           const accent = (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#e3342f').trim();
           const bg = (getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#071125').trim();
@@ -82,13 +95,62 @@ function App() {
             scale: 1.0,
             scaleMobile: 1.0,
             color: accent || '#e3342f',
-            // keep the canvas background transparent and use the container's CSS background
-            backgroundColor: 'transparent',
+              // use the CSS background color as the default; we'll make the renderer clear color
+              // transparent after initialization to avoid passing the string 'transparent'
+              backgroundColor: bg || '#071125',
             // Custom user-requested Vanta.NET density
-            points: 25.0,
-            maxDistance: 6.0,
-            spacing: 10.0
+            points: 9.0,
+            maxDistance: 20.0,
+            spacing: 15.0
           });
+            // Try to make the Three renderer use a transparent clear color so the canvas
+            // only draws the nets and lets the CSS container background show through.
+            try {
+              const renderer = vantaEffect.current && (vantaEffect.current as any).renderer;
+              if (renderer && typeof renderer.setClearColor === 'function') {
+                // setClearColor accepts (color, alpha). Use numeric color and 0 alpha.
+                renderer.setClearColor(0x000000, 0);
+              }
+
+              // Normalize materials helper — traverses scene and fixes undefined vertexColors
+              const normalizeMaterials = () => {
+                try {
+                  const scene = vantaEffect.current && (vantaEffect.current as any).scene;
+                  if (scene && typeof scene.traverse === 'function') {
+                    scene.traverse((obj: any) => {
+                      try {
+                        if (obj && obj.isMesh && obj.material) {
+                          const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+                          mats.forEach((mat: any) => {
+                            if (mat && typeof mat.vertexColors === 'undefined') {
+                              mat.vertexColors = false;
+                              mat.needsUpdate = true;
+                            }
+                          });
+                        }
+                      } catch (inner) {
+                        // ignore per-object failures
+                      }
+                    });
+                  }
+                } catch (innerAll) {
+                  // ignore
+                }
+              };
+
+              // Run normalization immediately and a few times after to catch materials
+              // that Vanta may create asynchronously (HMR/dev timing). These retries
+              // are lightweight and safe.
+              normalizeMaterials();
+              setTimeout(normalizeMaterials, 50);
+              setTimeout(normalizeMaterials, 200);
+              setTimeout(normalizeMaterials, 600);
+              // Also run on next animation frames a couple of times.
+              requestAnimationFrame(() => normalizeMaterials());
+              requestAnimationFrame(() => requestAnimationFrame(() => normalizeMaterials()));
+            } catch (e) {
+              // ignore failures — this is best-effort and non-critical
+            }
         } catch (err) {
           // ignore runtime errors
         }
