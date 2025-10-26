@@ -59,8 +59,8 @@ function App() {
         const three = (THREE as any).default || THREE;
 
         try {
-          const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#7c3aed';
-          const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#071125';
+          const accent = (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#e3342f').trim();
+          const bg = (getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#071125').trim();
 
           vantaEffect.current = NET({
             el: vantaRef.current,
@@ -68,23 +68,22 @@ function App() {
             mouseControls: true,
             touchControls: true,
             gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
+            minHeight: 200.0,
+            minWidth: 200.0,
             scale: 1.0,
             scaleMobile: 1.0,
-            color: accent.trim() || '#7c3aed',
-            backgroundColor: bg.trim() || '#071125',
+            color: accent || '#e3342f',
+            backgroundColor: bg || '#071125',
             points: 12.0,
             maxDistance: 24.0,
             spacing: 20.0
           });
         } catch (err) {
           // ignore runtime errors
-          // console.warn('Vanta init failed', err);
         }
       })
-      .catch((err) => {
-        // console.warn('Vanta import failed', err);
+      .catch(() => {
+        // ignore import errors
       });
 
     return () => {

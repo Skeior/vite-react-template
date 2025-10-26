@@ -2,8 +2,8 @@
    Variables live here and are used across page-level styles. */
 
 :root {
-  --accent: #7c3aed;     /* vibrant violet */
-  --accent-2: #06b6d4;   /* cyan/teal accent */
+  --accent: #e3342f;     /* strong red */
+  --accent-2: #fb7185;   /* pinky red accent */
   --bg: #071125;         /* deep navy/near-black */
   --layer-1: #0b1220;    /* dark layer */
   --layer-2: #0f1724;
@@ -108,7 +108,7 @@ a:hover { color: #9be8ff }
 -------------------------*/
 .lang-toggle { display:flex; gap:8px; }
 .lang-btn { padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text); font-weight:700 }
-.lang-btn.active { background:var(--accent); color:#071125; box-shadow:0 8px 20px rgba(2,6,12,0.6) }
+.lang-btn.active { background:var(--accent); color:#071125; box-shadow:0 8px 20px rgba(2,6,12,0.6); border-color: rgba(0,0,0,0.08) }
 
 /* -------------------------
    Decorative background (SVG)
