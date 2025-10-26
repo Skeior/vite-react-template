@@ -9,7 +9,7 @@
   --layer-2: #0f1724;
   --layer-3: #06111b;
   --text: #e6eef8;       /* pale icy text */
-  --muted: rgba(230,238,248,0.78);
+  --muted: #cbd5dc;
 }
 
 /* -------------------------
@@ -50,7 +50,7 @@ body {
   align-items: center;
   gap: 1rem;
   padding: 0.9rem 1.25rem;
-  background: rgba(6,10,18,0.6);
+  background: var(--layer-3); /* solid background */
   backdrop-filter: blur(8px);
   box-shadow: 0 6px 20px rgba(2,6,12,0.6);
   border-radius: 12px;
@@ -81,8 +81,8 @@ body {
 .section-card {
   position: relative;
   z-index: 10;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.04);
+  background: var(--layer-2); /* solid card background */
+  border: 1px solid var(--layer-3);
   padding: 24px;
   border-radius: 14px;
   box-shadow: 0 12px 30px rgba(2,6,12,0.6);
@@ -107,14 +107,23 @@ a:hover { color: #9be8ff }
    Language toggle
 -------------------------*/
 .lang-toggle { display:flex; gap:8px; }
-.lang-btn { padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text); font-weight:700 }
+.lang-btn { padding:6px 10px; border-radius:8px; border:1px solid var(--layer-3); background:transparent; color:var(--text); font-weight:700 }
 .lang-btn.active { background:var(--accent); color:#071125; box-shadow:0 8px 20px rgba(2,6,12,0.6); border-color: rgba(0,0,0,0.08) }
+
+/* Background toggle in navbar */
+/* Background toggle removed — Vanta is always enabled by default now. */
 
 /* -------------------------
    Decorative background (SVG)
 -------------------------*/
-.bg-decor { position: fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden }
+.bg-decor { position: fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; background: var(--bg) !important; }
 .bg-decor .geo-illustration { position:absolute; width:100%; height:100%; left:0; top:0; will-change:transform; filter: blur(6px) saturate(1.02); opacity:0.95 }
+.bg-decor .vanta-container { position:absolute; inset:0; width:100%; height:100%; background: var(--bg) !important; z-index:0; pointer-events:none; min-width:100vw; min-height:100vh }
+
+/* When background is toggled off, hide the entire decorative layer to stop
+  both the Vanta canvas and any SVG/CSS animations. Use !important to ensure
+  this overrides existing animation rules. */
+
 .bg-decor .geo-illustration polygon { will-change: transform, opacity }
 
 @keyframes float-slower { 0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)} }
@@ -128,32 +137,17 @@ a:hover { color: #9be8ff }
 @keyframes hueShift { 0%{filter:saturate(1.02) hue-rotate(0deg) blur(6px)}50%{filter:saturate(1.06) hue-rotate(6deg) blur(6px)}100%{filter:saturate(1.02) hue-rotate(0deg) blur(6px)} }
 .bg-decor .geo-illustration{animation:hueShift 28s ease-in-out infinite}
 
-/* Animated color shifts for the layer fills (subtle) */
-@keyframes colorShiftA {
-  0% { fill: var(--layer-1); }
-  50% { fill: color-mix(in srgb, var(--layer-1) 60%, var(--accent) 40%); }
-  100% { fill: var(--layer-1); }
-}
-@keyframes colorShiftB {
-  0% { fill: var(--layer-2); }
-  50% { fill: color-mix(in srgb, var(--layer-2) 60%, var(--accent-2) 40%); }
-  100% { fill: var(--layer-2); }
-}
-@keyframes colorShiftC {
-  0% { fill: var(--layer-3); }
-  50% { fill: color-mix(in srgb, var(--layer-3) 60%, var(--accent) 40%); }
-  100% { fill: var(--layer-3); }
-}
+/* Color-shift animations removed per user request; keep static fills and only motion
+  animations (float / tilt) for subtle depth without hue changes. */
+.geo-illustration .layer-1 { fill: var(--layer-1); }
+.geo-illustration .layer-2 { fill: var(--layer-2); }
+.geo-illustration .layer-3 { fill: var(--layer-3); }
 
-.geo-illustration .layer-1 { animation: colorShiftA 12s ease-in-out infinite; }
-.geo-illustration .layer-2 { animation: colorShiftB 16s ease-in-out infinite 2s; }
-.geo-illustration .layer-3 { animation: colorShiftC 20s ease-in-out infinite 4s; }
-
-/* Slight pulsating scale to add motion depth */
+/* Slight pulsating scale to add motion depth (no color changes) */
 .geo-illustration .layer { transform-origin: center; }
-.geo-illustration .layer-1 { animation-name: colorShiftA, float-slower; animation-duration: 12s, 18s; animation-timing-function: ease-in-out, ease-in-out; animation-iteration-count: infinite, infinite; }
-.geo-illustration .layer-2 { animation-name: colorShiftB, float-slow; animation-duration: 16s, 22s; animation-timing-function: ease-in-out, ease-in-out; animation-iteration-count: infinite, infinite; }
-.geo-illustration .layer-3 { animation-name: colorShiftC, subtle-tilt; animation-duration: 20s, 26s; animation-timing-function: ease-in-out, ease-in-out; animation-iteration-count: infinite, infinite; }
+.geo-illustration .layer-1 { animation-name: float-slower; animation-duration: 18s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.geo-illustration .layer-2 { animation-name: float-slow; animation-duration: 22s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.geo-illustration .layer-3 { animation-name: subtle-tilt; animation-duration: 26s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .geo-illustration .layer-1,

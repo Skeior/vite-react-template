@@ -4,7 +4,7 @@ import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
 import "./App.css";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useLayoutEffect } from "react";
 import { useLanguage } from "./Components/LanguageProvider";
 import LanguageToggle from "./Components/LanguageToggle";
 
@@ -44,10 +44,18 @@ function App() {
   }, []);
   
   // Initialize Vanta.NET background (dynamic import so it only runs in browser)
-  useEffect(() => {
+  useLayoutEffect(() => {
     let mounted = true;
-    if (vantaEffect.current) return;
     if (!vantaRef.current) return;
+    // If there is an existing vanta effect (from HMR or previous init), destroy it first
+    if (vantaEffect.current && typeof vantaEffect.current.destroy === 'function') {
+      try {
+        vantaEffect.current.destroy();
+      } catch (e) {
+        // ignore
+      }
+      vantaEffect.current = null;
+    }
 
     Promise.all([
       import("vanta/dist/vanta.net.min"),
@@ -62,6 +70,7 @@ function App() {
           const accent = (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#e3342f').trim();
           const bg = (getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#071125').trim();
 
+          // Reduced density: lower points and maxDistance to make the net lighter
           vantaEffect.current = NET({
             el: vantaRef.current,
             THREE: three,
@@ -74,9 +83,9 @@ function App() {
             scaleMobile: 1.0,
             color: accent || '#e3342f',
             backgroundColor: bg || '#071125',
-            points: 12.0,
-            maxDistance: 24.0,
-            spacing: 20.0
+            points: 6.0,
+            maxDistance: 14.0,
+            spacing: 30.0
           });
         } catch (err) {
           // ignore runtime errors
@@ -97,17 +106,11 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-wrapper">
-        {/* Decorative background: Vanta container (Vanta will initialize into this div) */}
+        {/* Decorative background: render Vanta only when enabled; render SVG only when disabled
+            This ensures only Vanta.NET runs when background is enabled and prevents
+            the SVG/CSS animations from appearing together with Vanta. */}
         <div className="bg-decor" aria-hidden="true">
           <div ref={vantaRef} className="vanta-container" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }} />
-          {/* Keep the geometric SVG as a subtle overlay (non-essential) */}
-          <svg ref={geoRef} className="geo-illustration" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style={{ position: 'absolute', inset: 0 }}>
-            <g>
-              <rect x="0" y="0" width="1200" height="800" fill="none" className="layer layer-1" />
-              <path className="layer layer-2" d="M0,160 C220,40 420,120 600,80 C820,30 980,110 1200,50 L1200,800 L0,800 Z" fill="none" opacity="0.6" />
-              <path className="layer layer-3" d="M0,320 C180,220 380,300 580,260 C820,200 980,300 1200,240 L1200,800 L0,800 Z" fill="none" opacity="0.5" />
-            </g>
-          </svg>
         </div>
   {/* Navbar */}
         <nav className="navbar">

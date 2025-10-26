@@ -25,7 +25,7 @@
 
 .portfolio-subtitle {
   font-size: 1.2rem;
-  color: rgba(230,238,248,0.8);
+  color: var(--muted);
 }
 
 /* -------------------------
@@ -42,7 +42,7 @@
    Kart Stilleri
 -------------------------*/
 .portfolio-card {
-  background-color: rgba(255,255,255,0.03);
+  background-color: var(--layer-2);
   border-radius: 14px;
   box-shadow: 0 14px 36px rgba(2,6,12,0.6);
   padding: 1.35rem;
@@ -52,7 +52,7 @@
   justify-content: flex-start;
   min-height: auto;
   position: relative;
-  border-left: 4px solid rgba(255,255,255,0.02);
+  border-left: 4px solid var(--layer-3);
 }
 
 .portfolio-card:hover {
@@ -67,7 +67,7 @@
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 1rem;
-  background-color: rgba(255,255,255,0.02);
+  background-color: var(--layer-3);
   box-shadow: 0 8px 22px rgba(2,6,12,0.5);
 }
 
@@ -80,7 +80,7 @@
 
 .card-description {
   margin-bottom: 1rem;
-  color: rgba(230,238,248,0.85);
+  color: var(--muted);
   line-height: 1.6;
   font-size: 0.98rem;
 }
@@ -96,7 +96,7 @@
   font-size: 0.75rem;
   padding: 6px 8px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.03);
+  background: var(--layer-2);
   color: var(--accent);
   font-weight: 600;
 }
@@ -150,7 +150,7 @@
 .card-details p {
   margin-bottom: 1rem;
   line-height: 1.5;
-  color: rgba(230,238,248,0.9);
+  color: var(--muted);
 }
 
 /* Resimler ve videolar */
