@@ -17,10 +17,8 @@
   transform: scale(0);
   transition: all 0.3s ease, box-shadow 0.3s ease;
   z-index: 1000;
-  background: linear-gradient(45deg, #4f46e5, #3b82f6, #9333ea, #4f46e5);
-  background-size: 300% 300%;
-  animation: gradientMove 3s ease infinite;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background: var(--accent);
+  box-shadow: 0 6px 18px rgba(2,6,12,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,7 +36,7 @@
 }
 
 .scroll-to-top:hover {
-  transform: scale(1.2);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  filter: drop-shadow(0 0 10px #ffffff);
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(2,6,12,0.7);
+  filter: drop-shadow(0 0 12px rgba(6,182,212,0.18));
 }

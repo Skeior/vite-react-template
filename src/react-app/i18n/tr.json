@@ -1,0 +1,145 @@
+{
+  "portfolio": {
+    "title": "Projeler & Deneyimler",
+    "subtitle": "Elektronik & Gömülü Sistemler",
+    "showDetails": "Detayları Göster",
+    "showLess": "Daha Az Göster",
+    "technologiesUsed": "Kullanılan Teknolojiler",
+    "videos": "Videolar",
+    "githubRepository": "GitHub Deposu"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "portfolio": "Portfolyo",
+    "contact": "İletişim"
+  },
+  "about": {
+    "name": "Talha Karasu",
+    "subtitle": "Gömülü Sistemler - Ar-Ge Mühendisi",
+    "aboutHeading": "Hakkımda",
+    "downloadCV": "CV İndir",
+    "skillsHeading": "Yetenekler",
+    "paragraphs": [
+      "Erciyes Üniversitesi, son sınıf Bilgisayar Mühendisliği öğrencisi; gömülü sistemler ve güç elektroniği alanında uygulamalı deneyim.",
+      "Hem teorik bilgiye hem de pratik gömülü yazılım ve donanım tasarımına hakim. Yerel ve verimli donanım-yazılım entegre sistemler geliştirmeye odaklı.",
+      "Hedefim, teknik becerilerimi ve deneyimlerimi kullanarak verimli, ölçeklenebilir ve yenilikçi çözümler üretmektir."
+    ]
+  },
+  "contact": {
+    "title": "İletişim",
+    "subtitle": "Aşağıdaki formu veya doğrudan iletişim bilgilerini kullanarak ulaşabilirsiniz.",
+    "placeholderName": "Adınız",
+    "placeholderEmail": "E-posta",
+    "placeholderMessage": "Mesajınız",
+    "send": "Gönder",
+    "sentAlert": "Mesajınız gönderildi! Teşekkürler.",
+    "errorAlert": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
+  },
+  "timeline": {
+    "title": "Yolculuğum",
+    "data": [
+      {
+        "year": "2020 - 2025",
+        "title": "Bilgisayar Mühendisliği (Lisans)",
+        "place": "Erciyes Üniversitesi",
+        "desc": "Gömülü sistemler, PCB tasarımı ve motor kontrolü odaklı lisans eğitimi."
+      },
+      {
+        "year": "2023 - 2025",
+        "title": "Önlisans",
+        "place": "Anadolu Üniversitesi",
+        "desc": "Web tasarımı ve kodlama eğitimleri."
+      },
+      {
+        "year": "2022 - 2023",
+        "title": "Telemetri Sistemleri Geliştiricisi",
+        "place": "VoltaCAR",
+        "desc": "LoRa tabanlı telemetri sistemi geliştirildi ve entegrasyonu yapıldı."
+      },
+      {
+        "year": "2023 - 2024",
+        "title": "Motor Sürücü Birimi Lideri",
+        "place": "VoltaCAR",
+        "desc": "Teknofest Verimlilik Yarışması için BLDC motor sürücü tasarımı ve liderliği."
+      },
+      {
+        "year": "2024 - 2025",
+        "title": "Takım Kaptanı",
+        "place": "VoltaFCEV",
+        "desc": "Hidrojen destekli Teknofest Verimlilik Yarışması'nda takım kaptanlığı görevleri."
+      },
+      {
+        "year": "2024 - 2025",
+        "title": "Gömülü Sistemler Eğitmeni",
+        "place": "Göktim Akademi",
+        "desc": "Lise düzeyinde mikrodenetleyiciler ve gömülü sistemler üzerine mentorluk ve eğitim."
+      }
+    ]
+  },
+  "projects": [
+    {
+      "title": "Elektrikli Araç için BLDC Motor Sürücüsü",
+      "description": "Bu proje TÜBİTAK 2209-A programı kapsamında 'Elektrikli Araçlar için FOC Tabanlı 6 Katmanlı PID Kontrolörü' başlığıyla geliştirildi. Teknofest Verimlilik Yarışması 2025'te sunuldu ve ödül aldı.",
+      "features": [
+        "12-85V Giriş gerilimi",
+        "0-80V / 165A Çıkış Özelliği",
+        "FOC ve Six-Step Algoritmaları ile uyumlu",
+        "Faz-faz Gerilim Ölçümleri",
+        "Faz Akım Ölçümleri",
+        "Aşırı akım koruması",
+        "Hall Effect ve Encoder sensör okumaları",
+        "6 katmanlı PCB",
+        "Boyut: 10x10 cm"
+      ],
+      "technologies": [
+        "Gömülü C / HAL Kütüphaneleri",
+        "Altium Designer (PCB Tasarım)",
+        "UART & RS232 & I2C İletişimi",
+        "Field Oriented Control (FOC)",
+        "Six-Step Commutation"
+      ]
+    },
+    {
+      "title": "Elektrikli Araç Yer İstasyonu",
+      "description": "Araç kontrol kartlarından gerçek zamanlı veri toplayan ve yer istasyonunda gösteren uzaktan izleme/telemetri uygulaması.",
+      "features": [
+        "LoRa iletişimi (8 km'ye kadar)",
+        "Gerçek zamanlı telemetri",
+        "Kullanıcı dostu yer istasyonu GUI'si",
+        "Araç elektroniği ile seri iletişim",
+        "Hız, sıcaklık, gerilim, kalan enerji gibi veriler",
+        "Güvenli veri kaydı"
+      ],
+      "technologies": [
+        "STM32 Mikrodenetleyici",
+        "LoRa Kablosuz Modüller",
+        "Gömülü C / Hal",
+        "UART / SPI / I2C İletişimi",
+        "C# GUI Geliştirme"
+      ]
+    },
+    {
+      "title": "Göktim Akademi - Robotik & Gömülü Sistem Eğitmeni",
+      "description": "Öğrencilere mühendislik temellerini ve gömülü sistemleri etkileşimli derslerle anlattım ve haftalık pratik projeler tasarladım.",
+      "features": [
+        "İkili mantık temellerini öğretme",
+        "Sensörlerin ve bileşenlerin çalışma prensipleri",
+        "Mikrodenetleyicilerin dış dünya ile etkileşimi",
+        "Haftalık proje tabanlı öğrenme",
+        "Merak ve takım çalışmasını teşvik etme"
+      ],
+      "technologies": ["Arduino", "C/C++", "STEM Eğitimi", "Elektronik Temelleri"]
+    },
+    {
+      "title": "Verimlilik Yarışması Katılımları (2022-2024)",
+      "description": "VoltaFCEV takımı ile Teknofest Verimlilik Yarışması'na çeşitli rollerde katıldım.",
+      "features": ["Telemetri Sistemi Üyesi (2022)", "Motor Sürücü Birimi Lideri (2023)", "Takım Kaptanı (2024)"],
+      "technologies": ["STM32 Mikrodenetleyiciler", "BLDC Motor Kontrolü", "LoRa Telemetri"]
+    },
+    {
+      "title": "Desteklenen / Ödüllü Akademik Projeler",
+      "description": "Ulusal araştırma fonları tarafından desteklenen veya akademik başarı ile tanınan projeler.",
+      "features": ["Bilimsel Araştırma Projesi (BAP) - Hidrojen Yakıt Hücreli Araç", "Mini Ornitorenk Tasarımı - TUSAŞ Lift-Up", "TÜBİTAK 2209-A BLDC Sürücü Tasarımı"]
+    }
+  ]
+}

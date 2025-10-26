@@ -4,8 +4,9 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #1e3a5f; /* koyu denim */
-  background-color: #e0f0ff; /* açık denim */
+  /* use theme variables when available, with safe fallbacks */
+  color: var(--text, #1e3a5f);
+  background-color: var(--bg, #e0f0ff);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,11 +16,11 @@
 
 a {
   font-weight: 500;
-  color: #004080; /* denim link */
+  color: var(--accent-2, #004080); /* accent fallback */
   text-decoration: inherit;
 }
 a:hover {
-  color: #00264d; /* hover koyu denim */
+  color: var(--accent, #00264d); /* hover fallback */
 }
 
 body {
@@ -28,11 +29,12 @@ body {
   flex-direction: column;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #e0f0ff; /* açık denim body */
+  background-color: var(--bg, #e0f0ff);
+  color: var(--text, #1e3a5f);
 }
 
 h1, h2, h3 {
-  color: #1e3a5f;
+  color: var(--text, #1e3a5f);
 }
 
 button {
@@ -42,25 +44,20 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #004080; /* denim button */
-  color: #fff;
+  background-color: var(--accent, #004080);
+  color: var(--button-text, #fff);
   cursor: pointer;
   transition: all 0.25s;
 }
 button:hover {
-  background-color: #00264d;
-  transform: scale(1.05);
+  filter: brightness(0.95);
+  transform: scale(1.02);
 }
 
+/* keep prefers-color-scheme available but variables allow overriding in App.css */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #1e3a5f;
-    background-color: #e0f0ff;
-  }
-  a:hover {
-    color: #00264d;
-  }
-  button {
-    background-color: #004080;
+    color: var(--text, #1e3a5f);
+    background-color: var(--bg, #e0f0ff);
   }
 }

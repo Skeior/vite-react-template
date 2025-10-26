@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import emailjs from "emailjs-com";
 import { FaGithub, FaLinkedin } from "react-icons/fa"; // ← ikonları import ettik
 import "./Contact.css";
+import { useLanguage } from "../../Components/LanguageProvider";
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const { t } = useLanguage();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,13 +28,13 @@ const ContactPage: React.FC = () => {
       "dd49VlOMNa9v-NiJ-"
     )
     .then(() => {
-      alert("Your message has been sent! Thank you.");
+      alert(t("contact.sentAlert"));
       setFormData({ name: "", email: "", message: "" });
       console.log("Sent formData:", formData);
     })
     .catch((err) => {
       console.error("EmailJS error:", err);
-      alert("Message could not be sent. Please try again.");
+      alert(t("contact.errorAlert"));
     });
   };
 
@@ -45,10 +47,8 @@ const ContactPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="portfolio-title">Contact</h1>
-        <p className="portfolio-subtitle">
-          You can reach out using the form below or by using the direct contact information.
-        </p>
+        <h1 className="portfolio-title">{t("contact.title")}</h1>
+        <p className="portfolio-subtitle">{t("contact.subtitle")}</p>
       </motion.header>
       {/* Contact Info + Form Card */}
       <motion.section
@@ -68,7 +68,7 @@ const ContactPage: React.FC = () => {
             <a href="https://github.com/skeior" className="contact-link" target="_blank" rel="noreferrer">
               <FaGithub size={24} style={{ marginRight: "8px" }} /> GitHub
             </a>
-            <a href="https://linkedin.com/in/talhakarasu" className="contact-link" target="_blank" rel="noreferrer">
+            <a href="https://linkedin.com/in/talha-karasu" className="contact-link" target="_blank" rel="noreferrer">
               <FaLinkedin size={24} style={{ marginRight: "8px" }} /> LinkedIn
             </a>
           </p>
@@ -80,7 +80,7 @@ const ContactPage: React.FC = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Your Name"
+            placeholder={t("contact.placeholderName")}
             required
             className="contact-input"
           />
@@ -89,7 +89,7 @@ const ContactPage: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Email"
+            placeholder={t("contact.placeholderEmail")}
             required
             className="contact-input"
           />
@@ -97,13 +97,13 @@ const ContactPage: React.FC = () => {
             name="message"
             value={formData.message}
             onChange={handleChange}
-            placeholder="Your Message"
+            placeholder={t("contact.placeholderMessage")}
             required
             rows={5}
             className="contact-input"
           />
           <button type="submit" className="button">
-            Send
+            {t("contact.send")}
           </button>
         </form>
       </motion.section>

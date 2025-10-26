@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import "./Portfolio.css";
+import { useLanguage } from "../../Components/LanguageProvider";
+import LanguageToggle from "../../Components/LanguageToggle";
 
 const projects = [
   {
@@ -137,21 +139,34 @@ const projects = [
 
 const PortfolioPage: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { t } = useLanguage();
 
   return (
-    <div className="portfolio-main-container">
+    <div className="portfolio-container">
       <motion.header
         className="portfolio-header"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="portfolio-title">Projects & Experience</h1>
-        <p className="portfolio-subtitle">Electronics & Embedded Systems</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, width: "100%" }}>
+          <div>
+            <h1 className="portfolio-title">{t("portfolio.title")}</h1>
+            <p className="portfolio-subtitle">{t("portfolio.subtitle")}</p>
+          </div>
+          <LanguageToggle />
+        </div>
       </motion.header>
 
       <div className="projects-grid">
-        {projects.map((project, index) => (
+        {projects.map((project, index) => {
+          const pTrans: any = t(`projects.${index}`) || {};
+          const title = pTrans?.title ?? project.title;
+          const description = pTrans?.description ?? project.description;
+          const features = pTrans?.features ?? project.features;
+          const technologies = pTrans?.technologies ?? project.technologies;
+
+          return (
           <motion.div
             key={index}
             className="portfolio-card"
@@ -161,16 +176,26 @@ const PortfolioPage: React.FC = () => {
           >
             <img
               src={project.previewImage}
-              alt={`${project.title} Preview`}
+              alt={`${title} Preview`}
               className="card-preview-image"
             />
 
-            <h3 className="card-title">{project.title}</h3>
 
-            <p className="card-description">{project.description}</p>
+            <h3 className="card-title">{title}</h3>
+
+            {/* Technology badges (first 3) */}
+            {technologies && technologies.length > 0 && (
+              <div className="tech-badges">
+                {technologies.slice(0, 3).map((tech: string, i: number) => (
+                  <span className="tech-badge" key={i}>{tech}</span>
+                ))}
+              </div>
+            )}
+
+            <p className="card-description">{description}</p>
 
             <ul className="card-features">
-              {project.features.slice(0, 3).map((f, i) => (
+              {features.slice(0, 3).map((f: string, i: number) => (
                 <li key={i}>{f}</li>
               ))}
             </ul>
@@ -179,7 +204,7 @@ const PortfolioPage: React.FC = () => {
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
               className="show-more-btn"
             >
-              {openIndex === index ? "Show Less" : "Show Details"}
+              {openIndex === index ? t("portfolio.showLess") : t("portfolio.showDetails")}
             </button>
 
             {openIndex === index && (
@@ -191,16 +216,16 @@ const PortfolioPage: React.FC = () => {
                 className="card-details"
               >
                 <ul>
-                  {project.features.slice(3).map((f, i) => (
+                  {features.slice(3).map((f: string, i: number) => (
                     <li key={i}>{f}</li>
                   ))}
                 </ul>
 
-                {project.technologies && (
+                {technologies && (
                   <div className="project-technologies">
-                    <h4>Technologies Used</h4>
+                    <h4>{t("portfolio.technologiesUsed")}</h4>
                     <ul>
-                      {project.technologies.map((tech, i) => (
+                      {technologies.map((tech: string, i: number) => (
                         <li key={i}>{tech}</li>
                       ))}
                     </ul>
@@ -210,14 +235,14 @@ const PortfolioPage: React.FC = () => {
                 {project.images && (
                   <div className="project-images">
                     {project.images.map((img, i) => (
-                      <img key={i} src={img} alt={`${project.title} ${i}`} />
+                      <img key={i} src={img} alt={`${title} ${i}`} />
                     ))}
                   </div>
                 )}
 
                 {project.videos && (
                   <div className="project-videos">
-                    <h4>Videos</h4>
+                    <h4>{t("portfolio.videos")}</h4>
                     {project.videos.map((vid, i) => (
                       <video key={i} controls width="300">
                         <source src={vid} type="video/mp4" />
@@ -234,13 +259,14 @@ const PortfolioPage: React.FC = () => {
                     rel="noopener noreferrer"
                     className="project-link"
                   >
-                    GitHub Repository
+                    {t("portfolio.githubRepository")}
                   </a>
                 )}
               </motion.div>
             )}
           </motion.div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

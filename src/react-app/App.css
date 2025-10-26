@@ -1,6 +1,21 @@
+/* Dark theme stylesheet for the app. Keeps the decorative SVG background and animations.
+   Variables live here and are used across page-level styles. */
+
+:root {
+  --accent: #7c3aed;     /* vibrant violet */
+  --accent-2: #06b6d4;   /* cyan/teal accent */
+  --bg: #071125;         /* deep navy/near-black */
+  --layer-1: #0b1220;    /* dark layer */
+  --layer-2: #0f1724;
+  --layer-3: #06111b;
+  --text: #e6eef8;       /* pale icy text */
+  --muted: rgba(230,238,248,0.78);
+}
+
 /* -------------------------
-   Genel Arka Plan ve Font
+   Base / Layout
 -------------------------*/
+* { box-sizing: border-box; }
 body {
   margin: 0;
   display: flex;
@@ -9,22 +24,22 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color: #1f2937;
-  background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #d1c4e9, #bbdefb);
-  background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
+  color: var(--text);
+  background: var(--bg);
   position: relative;
 }
 
-/* -------------------------
-   App Container
--------------------------*/
+.app-wrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
 .app-container {
   max-width: 1200px;
   width: 100%;
   padding: 20px;
-  box-sizing: border-box;
-  position: relative; /* particles ve nav için */
+  margin: 0 auto;
+  position: relative;
 }
 
 /* -------------------------
@@ -33,183 +48,123 @@ body {
 .navbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  background: rgba(6,10,18,0.6);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 20px rgba(2,6,12,0.6);
   border-radius: 12px;
-  position: relative;
-  top: 15px;
-  width:auto;
-  flex-wrap: nowrap;
-  min-width: 1200px;
+  width: calc(100% - 40px);
+  max-width: 1200px;
+  margin: 16px auto;
 }
 
+.nav-links { display:flex; gap: 12px; align-items:center; }
 .navbar a {
-  color: #1f2937;
+  color: var(--text);
   text-decoration: none;
-  font-weight: 500;
-  padding: 8px 16px; 
-  border-radius: 8px; 
-  transition: all 0.3s ease;
-  background-color: transparent;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.18s ease;
 }
-
-.navbar a:hover,
-.navbar a.active {
-  color: #ffffff;
-  background-color: #4f46e5;
-  transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.navbar a.active,
+.navbar a:hover {
+  background: var(--accent);
+  color: #071125;
+  transform: translateY(-1px) scale(1.02);
 }
 
 /* -------------------------
-   Audio Player
--------------------------*/
-.audio-player-wrapper {
-  position: absolute;
-  right: 0.2rem; 
-  top: 55%;
-  transform: translateY(-50%);
-  max-width: 19%;
-  width: 100%;
-  
-}
-
-.audio-player-wrapper audio {
-  background-color: #4f46e5;
-  border-radius: 16px;
-  width: 100%;
-  outline: none;
-}
-.audio-player-wrapper audio::-webkit-media-controls-panel {
-  background-color: #4f46e5; 
-  border-radius: 16px;
-}
-.audio-player-wrapper audio::-webkit-media-controls-play-button,
-.audio-player-wrapper audio::-webkit-media-controls-volume-slider { 
-  filter: invert(0); 
-}
-
-/* -------------------------
-   Section Kartları
+   Cards / Sections
 -------------------------*/
 .section-card {
   position: relative;
-  z-index: 10; /* particles üstünde */
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 25px !important;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-
-  transition: all 0.4s ease;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.8s forwards;
+  z-index: 10;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(2,6,12,0.6);
+  transition: all 0.28s ease;
 }
+.section-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,12,0.72); }
 
-.section-card:hover {
-  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-  transform: translateY(-5px) scale(1.02);
-  background-color: rgba(240, 244, 255, 0.9);
+.button { /* global button */
+  border-radius: 10px; padding: 10px 18px; font-weight:600;
+  background: var(--accent); color: #071125; border: none; cursor: pointer;
+  box-shadow: 0 8px 22px rgba(2,6,12,0.5);
 }
+.button:hover { filter: brightness(0.95); transform: translateY(-2px); }
+
+/* Typography */
+h1,h2,h3 { color: var(--text); margin:0 0 12px 0 }
+p,li { color: var(--muted); line-height:1.6 }
+a { color: var(--accent-2); }
+a:hover { color: #9be8ff }
 
 /* -------------------------
-   Butonlar
+   Language toggle
 -------------------------*/
-.button {
-  border-radius: 12px;
-  border: none;
-  padding: 12px 28px;
-  font-weight: 500;
-  font-size: 1em;
-  background-color: #4f46e5; 
-  color: #ffffff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-decoration: none;
-  display: inline-block;
-}
-
-.button:hover {
-  background-color: #4338ca;
-  transform: scale(1.08);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-  animation: pulse 0.6s;
-}
+.lang-toggle { display:flex; gap:8px; }
+.lang-btn { padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text); font-weight:700 }
+.lang-btn.active { background:var(--accent); color:#071125; box-shadow:0 8px 20px rgba(2,6,12,0.6) }
 
 /* -------------------------
-   Başlıklar ve Linkler
+   Decorative background (SVG)
 -------------------------*/
-h1, h2, h3 {
-  color: #111827;
-  margin: 0 0 12px 0;
+.bg-decor { position: fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden }
+.bg-decor .geo-illustration { position:absolute; width:100%; height:100%; left:0; top:0; will-change:transform; filter: blur(6px) saturate(1.02); opacity:0.95 }
+.bg-decor .geo-illustration polygon { will-change: transform, opacity }
+
+@keyframes float-slower { 0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)} }
+@keyframes float-slow { 0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)} }
+@keyframes subtle-tilt { 0%{transform:rotate(0)}50%{transform:rotate(.2deg)}100%{transform:rotate(0)} }
+
+.bg-decor .geo-illustration polygon:nth-child(1){animation:float-slower 18s ease-in-out infinite;opacity:0.98}
+.bg-decor .geo-illustration polygon:nth-child(2){animation:float-slow 22s ease-in-out infinite;opacity:0.96}
+.bg-decor .geo-illustration polygon:nth-child(3){animation:subtle-tilt 26s ease-in-out infinite;opacity:0.94}
+
+@keyframes hueShift { 0%{filter:saturate(1.02) hue-rotate(0deg) blur(6px)}50%{filter:saturate(1.06) hue-rotate(6deg) blur(6px)}100%{filter:saturate(1.02) hue-rotate(0deg) blur(6px)} }
+.bg-decor .geo-illustration{animation:hueShift 28s ease-in-out infinite}
+
+/* Animated color shifts for the layer fills (subtle) */
+@keyframes colorShiftA {
+  0% { fill: var(--layer-1); }
+  50% { fill: color-mix(in srgb, var(--layer-1) 60%, var(--accent) 40%); }
+  100% { fill: var(--layer-1); }
+}
+@keyframes colorShiftB {
+  0% { fill: var(--layer-2); }
+  50% { fill: color-mix(in srgb, var(--layer-2) 60%, var(--accent-2) 40%); }
+  100% { fill: var(--layer-2); }
+}
+@keyframes colorShiftC {
+  0% { fill: var(--layer-3); }
+  50% { fill: color-mix(in srgb, var(--layer-3) 60%, var(--accent) 40%); }
+  100% { fill: var(--layer-3); }
 }
 
-p, li {
-  color: #374151;
-  line-height: 1.6;
-}
+.geo-illustration .layer-1 { animation: colorShiftA 12s ease-in-out infinite; }
+.geo-illustration .layer-2 { animation: colorShiftB 16s ease-in-out infinite 2s; }
+.geo-illustration .layer-3 { animation: colorShiftC 20s ease-in-out infinite 4s; }
 
-a {
-  color: #4f46e5;
-  transition: all 0.3s ease;
-}
+/* Slight pulsating scale to add motion depth */
+.geo-illustration .layer { transform-origin: center; }
+.geo-illustration .layer-1 { animation-name: colorShiftA, float-slower; animation-duration: 12s, 18s; animation-timing-function: ease-in-out, ease-in-out; animation-iteration-count: infinite, infinite; }
+.geo-illustration .layer-2 { animation-name: colorShiftB, float-slow; animation-duration: 16s, 22s; animation-timing-function: ease-in-out, ease-in-out; animation-iteration-count: infinite, infinite; }
+.geo-illustration .layer-3 { animation-name: colorShiftC, subtle-tilt; animation-duration: 20s, 26s; animation-timing-function: ease-in-out, ease-in-out; animation-iteration-count: infinite, infinite; }
 
-a:hover {
-  color: #4338ca;
-  text-decoration: underline;
-}
-
-/* -------------------------
-   Animasyonlar
--------------------------*/
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+@media (prefers-reduced-motion: reduce) {
+  .geo-illustration .layer-1,
+  .geo-illustration .layer-2,
+  .geo-illustration .layer-3 {
+    animation: none !important;
   }
 }
 
-@keyframes pulse {
-  0% { transform: scale(1.05); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1.05); }
-}
+@media (prefers-reduced-motion: reduce){ .bg-decor .geo-illustration, .bg-decor .geo-illustration polygon { animation:none !important; transition:none !important } }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+/* Ensure UI sits above the background */
+.app-wrapper > *:not(.bg-decor) { position:relative; z-index:2 }
 
-/* -------------------------
-   Responsive
--------------------------*/
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 15px;
-    padding: 1rem;
-    min-width: auto !important;
-  }
-
-  .section-card {
-    padding: 20px;
-  }
-
-  .button {
-    padding: 10px 22px;
-  }
-
-  .audio-player-wrapper {
-    position: static;
-    transform: none;
-    margin-top: 15px;
-    max-width: 100%;
-  }
-}

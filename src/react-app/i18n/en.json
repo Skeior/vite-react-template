@@ -1,0 +1,52 @@
+{
+  "nav": { "home": "Home", "portfolio": "Portfolio", "contact": "Contact" },
+  "portfolio": {
+    "title": "Projects & Experience",
+    "subtitle": "Electronics & Embedded Systems",
+    "showDetails": "Show Details",
+    "showLess": "Show Less",
+    "technologiesUsed": "Technologies Used",
+    "videos": "Videos",
+    "githubRepository": "GitHub Repository"
+  },
+  "about": {
+    "name": "Talha Karasu",
+    "subtitle": "Embedded Systems - R&D Engineer",
+    "aboutHeading": "About Me",
+    "downloadCV": "Download CV",
+    "skillsHeading": "Skills",
+    "paragraphs": [
+      "Erciyes University, final-year Computer Engineering student with practical experience in embedded systems and power electronics.",
+      "Experienced in both theoretical knowledge and hands-on embedded software & hardware design."
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "You can reach out using the form below or by using the direct contact information.",
+    "placeholderName": "Your Name",
+    "placeholderEmail": "Email",
+    "placeholderMessage": "Your Message",
+    "send": "Send",
+    "sentAlert": "Your message has been sent! Thank you.",
+    "errorAlert": "Message could not be sent. Please try again."
+  },
+  "timeline": {
+    "title": "My Journey",
+    "data": [
+      {
+        "year": "2020 - 2025",
+        "title": "B.Sc. Computer Engineering",
+        "place": "Erciyes University",
+        "desc": "Focus on Embedded Systems."
+      }
+    ]
+  },
+  "projects": [
+    {
+      "title": "BLDC Motor Driver for Electric Vehicle",
+      "description": "FOC-Based 6 Layer PID Controller, Teknofest 2025 award.",
+      "features": ["12-85V Input voltage", "0-80V / 165A Output Spec", "Compatible with FOC"],
+      "technologies": ["Embedded C", "Altium Designer"]
+    }
+  ]
+}

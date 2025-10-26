@@ -5,7 +5,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: var(--text);
 }
 
 /* -------------------------
@@ -24,7 +25,7 @@
 
 .portfolio-subtitle {
   font-size: 1.2rem;
-  color: #6b7280;
+  color: rgba(230,238,248,0.8);
 }
 
 /* -------------------------
@@ -32,47 +33,72 @@
 -------------------------*/
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
-  align-items: start; /* Kartlar bağımsız büyüsün */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
+  align-items: start; /* cards align independently */
 }
 
 /* -------------------------
    Kart Stilleri
 -------------------------*/
 .portfolio-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(2,6,12,0.6);
+  padding: 1.35rem;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 800px ; /* Ön izleme için eşit boyut */
+  min-height: auto;
   position: relative;
+  border-left: 4px solid rgba(255,255,255,0.02);
 }
 
 .portfolio-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(16,24,40,0.08);
 }
 
 /* Ön izleme görseli */
 .card-preview-image {
   width: 100%;
-  height: auto;
-  max-height: 350px;
+  height: 220px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
   margin-bottom: 1rem;
-  background-color: #e5e7eb;
+  background-color: rgba(255,255,255,0.02);
+  box-shadow: 0 8px 22px rgba(2,6,12,0.5);
 }
 
 /* Başlık ve özellikler */
 .card-title {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.2px;
+}
+
+.card-description {
+  margin-bottom: 1rem;
+  color: rgba(230,238,248,0.85);
+  line-height: 1.6;
+  font-size: 0.98rem;
+}
+
+.tech-badges {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0 10px 0;
+  flex-wrap: wrap;
+}
+
+.tech-badge {
+  font-size: 0.75rem;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .card-features {
@@ -88,21 +114,19 @@
 
 /* Show more butonu */
 .show-more-btn {
-  background-color: #4f46e5;
+  background-color: var(--accent);
   color: #ffffff;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
   cursor: pointer;
   margin-bottom: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  align-self: flex-start;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.show-more-btn:hover {
-  background-color: #4338ca;
-  transform: scale(1.05);
-}
+.show-more-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(16,24,40,0.06); background-color: #162a6b; }
 
 /* Detaylar açıldığında */
 .card-details {
@@ -120,13 +144,13 @@
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
-  color: #111827;
+  color: var(--text);
 }
 
 .card-details p {
   margin-bottom: 1rem;
   line-height: 1.5;
-  color: #111827;
+  color: rgba(230,238,248,0.9);
 }
 
 /* Resimler ve videolar */
@@ -159,13 +183,13 @@
 .project-link {
   display: inline-block;
   margin-top: 1rem;
-  color: #4f46e5;
+  color: var(--accent-2);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .project-link:hover {
-  color: #4338ca;
+  color: #9be8ff;
   text-decoration: underline;
 }
 
