@@ -98,23 +98,15 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-wrapper">
-        {/* Decorative geometric background (non-interactive) */}
+        {/* Decorative background: Vanta container (Vanta will initialize into this div) */}
         <div className="bg-decor" aria-hidden="true">
-          <svg ref={geoRef} className="geo-illustration" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            {/* New layered SVG: three offset soft polygons plus accent circles for sparkle */}
+          <div ref={vantaRef} className="vanta-container" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }} />
+          {/* Keep the geometric SVG as a subtle overlay (non-essential) */}
+          <svg ref={geoRef} className="geo-illustration" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style={{ position: 'absolute', inset: 0 }}>
             <g>
-              <rect x="0" y="0" width="1200" height="800" fill="var(--layer-1)" className="layer layer-1" />
-
-              <path className="layer layer-2" d="M0,160 C220,40 420,120 600,80 C820,30 980,110 1200,50 L1200,800 L0,800 Z" fill="var(--layer-2)" opacity="0.98" />
-
-              <path className="layer layer-3" d="M0,320 C180,220 380,300 580,260 C820,200 980,300 1200,240 L1200,800 L0,800 Z" fill="var(--layer-3)" opacity="0.96" />
-
-              {/* Accent circles for subtle highlights */}
-              <g className="accents" opacity="0.65">
-                <circle cx="240" cy="120" r="46" fill="var(--accent)" opacity="0.08" />
-                <circle cx="920" cy="60" r="60" fill="var(--accent-2)" opacity="0.06" />
-                <circle cx="720" cy="340" r="32" fill="var(--accent)" opacity="0.05" />
-              </g>
+              <rect x="0" y="0" width="1200" height="800" fill="none" className="layer layer-1" />
+              <path className="layer layer-2" d="M0,160 C220,40 420,120 600,80 C820,30 980,110 1200,50 L1200,800 L0,800 Z" fill="none" opacity="0.6" />
+              <path className="layer layer-3" d="M0,320 C180,220 380,300 580,260 C820,200 980,300 1200,240 L1200,800 L0,800 Z" fill="none" opacity="0.5" />
             </g>
           </svg>
         </div>
