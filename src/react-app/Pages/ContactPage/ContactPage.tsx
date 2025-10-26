@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import emailjs from "emailjs-com";
-import { FaGithub, FaLinkedin } from "react-icons/fa"; // ← ikonları import ettik
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import "./Contact.css";
 import { useLanguage } from "../../Components/LanguageProvider";
+import SEO from "../../Components/SEO";
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useLanguage();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -15,31 +17,43 @@ const ContactPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const templateParams = {
       name: formData.name,
       email: formData.email,
       message: formData.message
     };
+    
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_pnwsiys";
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_ey6j43e";
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "dd49VlOMNa9v-NiJ-";
+    
     emailjs.send(
-      "service_pnwsiys",
-      "template_ey6j43e",
+      serviceId,
+      templateId,
       templateParams,
-      "dd49VlOMNa9v-NiJ-"
+      publicKey
     )
     .then(() => {
       alert(t("contact.sentAlert"));
       setFormData({ name: "", email: "", message: "" });
-      console.log("Sent formData:", formData);
     })
     .catch((err) => {
       console.error("EmailJS error:", err);
       alert(t("contact.errorAlert"));
+    })
+    .finally(() => {
+      setIsSubmitting(false);
     });
   };
 
   return (
     <div className="app-container">
+      <SEO 
+        title={t("contact.title")}
+        description={t("contact.subtitle")}
+      />
       {/* Header */}
       <motion.header
         className="portfolio-header text-center mb-12" // portfolio-header sınıfını ekledik
@@ -102,8 +116,8 @@ const ContactPage: React.FC = () => {
             rows={5}
             className="contact-input"
           />
-          <button type="submit" className="button">
-            {t("contact.send")}
+          <button type="submit" className="button" disabled={isSubmitting}>
+            {isSubmitting ? t("contact.sending") || "Sending..." : t("contact.send")}
           </button>
         </form>
       </motion.section>

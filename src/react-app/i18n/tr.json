@@ -23,6 +23,28 @@
       "Erciyes Üniversitesi, son sınıf Bilgisayar Mühendisliği öğrencisi; gömülü sistemler ve güç elektroniği alanında uygulamalı deneyim.",
       "Hem teorik bilgiye hem de pratik gömülü yazılım ve donanım tasarımına hakim. Yerel ve verimli donanım-yazılım entegre sistemler geliştirmeye odaklı.",
       "Hedefim, teknik becerilerimi ve deneyimlerimi kullanarak verimli, ölçeklenebilir ve yenilikçi çözümler üretmektir."
+    ],
+    "skills": [
+      {
+        "label": "Gömülü sistem geliştirme (STM32, C/C++)",
+        "stars": 4
+      },
+      {
+        "label": "PCB tasarımı ve elektronik entegrasyonu (Altium Designer)",
+        "stars": 4
+      },
+      {
+        "label": "BLDC motor kontrolü ve sürücü tasarımı (PWM, FOC, SixStep)",
+        "stars": 4
+      },
+      {
+        "label": "Batarya Yönetim Sistemleri ve enerji optimizasyonu",
+        "stars": 3
+      },
+      {
+        "label": "Ar-Ge projelerinde liderlik (elektrikli ve hidrojen araçlar)",
+        "stars": 4
+      }
     ]
   },
   "contact": {
@@ -32,6 +54,7 @@
     "placeholderEmail": "E-posta",
     "placeholderMessage": "Mesajınız",
     "send": "Gönder",
+    "sending": "Gönderiliyor...",
     "sentAlert": "Mesajınız gönderildi! Teşekkürler.",
     "errorAlert": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
   },

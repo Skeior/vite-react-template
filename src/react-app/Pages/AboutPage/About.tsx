@@ -4,17 +4,17 @@ import Timeline from "../Timeline/Timeline";
 import { motion } from "framer-motion";
 import "./About.css";
 import { useLanguage } from "../../Components/LanguageProvider";
+import SEO from "../../Components/SEO";
 
-const skills = [
-  { icon: <FaMicrochip />, label: "Embedded systems development (STM32, C/C++)", stars: 4 },
-  { icon: <FaProjectDiagram />, label: "PCB design & electronics integration (Altium Designer)", stars: 4 },
-  { icon: <FaCogs />, label: "BLDC motor control & driver design (PWM, FOC, SixStep)", stars: 4 },
-  { icon: <FaBatteryHalf />, label: "Battery Management Systems & energy optimization", stars: 3 },
-  { icon: <FaCar />, label: "Leadership in R&D projects (electric & hydrogen vehicles)", stars: 4 }
-];
+const skillIcons = [<FaMicrochip />, <FaProjectDiagram />, <FaCogs />, <FaBatteryHalf />, <FaCar />];
 
 const AboutPage: React.FC = () => {
   const { t, lang } = useLanguage();
+  
+  // Get skills from translations or use empty array as fallback
+  const translatedSkills: any = t("about.skills");
+  const skills = Array.isArray(translatedSkills) ? translatedSkills : [];
+
   useEffect(() => {
     const fadeInElements = document.querySelectorAll(".fade-in");
 
@@ -36,6 +36,10 @@ const AboutPage: React.FC = () => {
 
   return (
     <>
+      <SEO 
+        title={t("about.name")}
+        description={t("about.subtitle")}
+      />
           <motion.header
             className="portfolio-header"
             initial={{ opacity: 0, y: -50 }}
@@ -81,14 +85,14 @@ const AboutPage: React.FC = () => {
         <section className="about-card about-skills">
           <h2>{t("about.skillsHeading")}</h2>
           <ul>
-            {skills.map((skill, idx) => (
+            {skills.map((skill: any, idx: number) => (
               <li key={idx} className="skill-item">
-                <span className="skill-icon">{skill.icon}</span>
+                <span className="skill-icon">{skillIcons[idx] || <FaMicrochip />}</span>
                 <span className="skill-text-container">
                   <span className="skill-label">{skill.label}</span>
                   <span className="skill-stars">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <FaStar key={i} className={i < skill.stars ? "filled" : ""} />
+                      <FaStar key={i} className={i < (skill.stars || 0) ? "filled" : ""} />
                     ))}
                   </span>
                 </span>

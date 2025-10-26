@@ -18,6 +18,28 @@
     "paragraphs": [
       "Erciyes University, final-year Computer Engineering student with practical experience in embedded systems and power electronics.",
       "Experienced in both theoretical knowledge and hands-on embedded software & hardware design."
+    ],
+    "skills": [
+      {
+        "label": "Embedded systems development (STM32, C/C++)",
+        "stars": 4
+      },
+      {
+        "label": "PCB design & electronics integration (Altium Designer)",
+        "stars": 4
+      },
+      {
+        "label": "BLDC motor control & driver design (PWM, FOC, SixStep)",
+        "stars": 4
+      },
+      {
+        "label": "Battery Management Systems & energy optimization",
+        "stars": 3
+      },
+      {
+        "label": "Leadership in R&D projects (electric & hydrogen vehicles)",
+        "stars": 4
+      }
     ]
   },
   "contact": {
@@ -27,6 +49,7 @@
     "placeholderEmail": "Email",
     "placeholderMessage": "Your Message",
     "send": "Send",
+    "sending": "Sending...",
     "sentAlert": "Your message has been sent! Thank you.",
     "errorAlert": "Message could not be sent. Please try again."
   },
@@ -37,7 +60,37 @@
         "year": "2020 - 2025",
         "title": "B.Sc. Computer Engineering",
         "place": "Erciyes University",
-        "desc": "Focus on Embedded Systems."
+        "desc": "Focus on Embedded Systems, PCB Design, and Motor Control."
+      },
+      {
+        "year": "2023 - 2025",
+        "title": "Associate Degree",
+        "place": "Anadolu University",
+        "desc": "Web Design and Coding."
+      },
+      {
+        "year": "2022 - 2023",
+        "title": "Telemetry Systems Developer",
+        "place": "VoltaCAR",
+        "desc": "Developed LoRa-based telemetry system."
+      },
+      {
+        "year": "2023 - 2024",
+        "title": "Motor Driver Unit Leader",
+        "place": "VoltaCAR",
+        "desc": "Designed BLDC motor driver for Teknofest Efficiency Challenge."
+      },
+      {
+        "year": "2024 - 2025",
+        "title": "Team Captain",
+        "place": "VoltaFCEV",
+        "desc": "Team Captain of Hydrogen-supported Teknofest Efficiency Challenge."
+      },
+      {
+        "year": "2024 - 2025",
+        "title": "Embedded Mentor",
+        "place": "Göktim Akademi",
+        "desc": "Mentored high school students in microcontrollers & embedded systems."
       }
     ]
   },

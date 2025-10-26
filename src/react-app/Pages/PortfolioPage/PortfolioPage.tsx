@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import "./Portfolio.css";
 import { useLanguage } from "../../Components/LanguageProvider";
 import LanguageToggle from "../../Components/LanguageToggle";
+import SEO from "../../Components/SEO";
 
 const projects = [
   {
@@ -143,6 +144,10 @@ const PortfolioPage: React.FC = () => {
 
   return (
     <div className="portfolio-container">
+      <SEO 
+        title={t("portfolio.title")}
+        description={t("portfolio.subtitle")}
+      />
       <motion.header
         className="portfolio-header"
         initial={{ opacity: 0, y: -50 }}
@@ -178,6 +183,7 @@ const PortfolioPage: React.FC = () => {
               src={project.previewImage}
               alt={`${title} Preview`}
               className="card-preview-image"
+              loading="lazy"
             />
 
 
@@ -235,7 +241,7 @@ const PortfolioPage: React.FC = () => {
                 {project.images && (
                   <div className="project-images">
                     {project.images.map((img, i) => (
-                      <img key={i} src={img} alt={`${title} ${i}`} />
+                      <img key={i} src={img} alt={`${title} ${i}`} loading="lazy" />
                     ))}
                   </div>
                 )}
@@ -244,7 +250,7 @@ const PortfolioPage: React.FC = () => {
                   <div className="project-videos">
                     <h4>{t("portfolio.videos")}</h4>
                     {project.videos.map((vid, i) => (
-                      <video key={i} controls width="300">
+                      <video key={i} controls width="300" preload="none">
                         <source src={vid} type="video/mp4" />
                         Your browser does not support the video tag.
                       </video>
