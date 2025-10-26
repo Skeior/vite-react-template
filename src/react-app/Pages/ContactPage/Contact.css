@@ -46,6 +46,19 @@
   transform: translateY(-2px);
 }
 
+/* Layout for the links row (GitHub / LinkedIn) */
+.contact-links {
+  display: flex;
+  gap: 18px; /* space between each link */
+  align-items: center;
+}
+
+.contact-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* space between icon and label */
+}
+
 /* -------------------------
    Form
 ---------------------------*/

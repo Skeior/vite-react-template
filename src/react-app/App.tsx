@@ -82,10 +82,12 @@ function App() {
             scale: 1.0,
             scaleMobile: 1.0,
             color: accent || '#e3342f',
-            backgroundColor: bg || '#071125',
-            points: 6.0,
-            maxDistance: 14.0,
-            spacing: 30.0
+            // keep the canvas background transparent and use the container's CSS background
+            backgroundColor: 'transparent',
+            // Custom user-requested Vanta.NET density
+            points: 25.0,
+            maxDistance: 6.0,
+            spacing: 10.0
           });
         } catch (err) {
           // ignore runtime errors

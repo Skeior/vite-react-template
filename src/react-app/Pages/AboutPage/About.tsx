@@ -14,7 +14,7 @@ const skills = [
 ];
 
 const AboutPage: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   useEffect(() => {
     const fadeInElements = document.querySelectorAll(".fade-in");
 
@@ -65,7 +65,15 @@ const AboutPage: React.FC = () => {
               </p>
             </>
           )}
-          <a href="/res.pdf" download className="button">
+          {/* Serve English CV by default; if language is Turkish, attempt to download Turkish CV.
+              Place `res.pdf` (English) and `res-tr.pdf` (Turkish) in the `public/` folder.
+              We use a friendly suggested download filename so users get a descriptive file name
+              (the server file name can remain `res.pdf` / `res-tr.pdf`). */}
+          <a
+            href={lang === "tr" ? "/res-tr.pdf" : "/res.pdf"}
+            download={lang === "tr" ? "TalhaKarasu-CV-TR.pdf" : "TalhaKarasu-CV-EN.pdf"}
+            className="button"
+          >
             {t("about.downloadCV")}
           </a>
         </section>

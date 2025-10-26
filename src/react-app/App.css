@@ -5,6 +5,7 @@
   --accent: #e3342f;     /* strong red */
   --accent-2: #fb7185;   /* pinky red accent */
   --bg: #071125;         /* deep navy/near-black */
+  --vanta-opacity: 1; /* opacity for Vanta canvas (0-1) — lower makes nets more transparent */
   --layer-1: #0b1220;    /* dark layer */
   --layer-2: #0f1724;
   --layer-3: #06111b;
@@ -119,6 +120,10 @@ a:hover { color: #9be8ff }
 .bg-decor { position: fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; background: var(--bg) !important; }
 .bg-decor .geo-illustration { position:absolute; width:100%; height:100%; left:0; top:0; will-change:transform; filter: blur(6px) saturate(1.02); opacity:0.95 }
 .bg-decor .vanta-container { position:absolute; inset:0; width:100%; height:100%; background: var(--bg) !important; z-index:0; pointer-events:none; min-width:100vw; min-height:100vh }
+
+/* Make the Vanta canvas semi-transparent so the net lines appear muted/transparent
+  while keeping the container background opaque via CSS. Adjust --vanta-opacity to taste. */
+.bg-decor .vanta-container canvas { opacity: var(--vanta-opacity); }
 
 /* When background is toggled off, hide the entire decorative layer to stop
   both the Vanta canvas and any SVG/CSS animations. Use !important to ensure
