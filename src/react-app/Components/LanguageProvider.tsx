@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import en from "../i18n/en.json";
 import tr from "../i18n/tr.json";
 
@@ -12,7 +12,8 @@ const translations: Record<Lang, any> = {
 type LanguageContextType = {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (key: string) => string;
+  // t() can return string or nested objects/arrays from the translations
+  t: (key: string) => any;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

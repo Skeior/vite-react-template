@@ -4,7 +4,7 @@ import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
 import "./App.css";
-import React, { useEffect, useRef, useLayoutEffect } from "react";
+import { useEffect, useRef, useLayoutEffect } from "react";
 import { useLanguage } from "./Components/LanguageProvider";
 import LanguageToggle from "./Components/LanguageToggle";
 

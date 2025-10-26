@@ -49,7 +49,7 @@ const AboutPage: React.FC = () => {
         <section className="about-card about-summary">
           <h2>{t("about.aboutHeading")}</h2>
           {Array.isArray(t("about.paragraphs")) ? (
-            t("about.paragraphs").map((p: string, i: number) => (
+            (t("about.paragraphs") as any[]).map((p: string, i: number) => (
               <p key={i}>{p}</p>
             ))
           ) : (
