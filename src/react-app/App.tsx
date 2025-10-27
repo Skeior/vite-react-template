@@ -104,14 +104,6 @@ const AppLayout: React.FC = () => {
         const three = (THREE as any).default || THREE;
 
         try {
-          if (three && (three as any).Material && (three as any).Material.prototype) {
-            (three as any).Material.prototype.vertexColors = false;
-          }
-        } catch (e) {
-          // ignore
-        }
-
-        try {
           const accent = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || "#e3342f").trim();
           const bg = (getComputedStyle(document.documentElement).getPropertyValue("--bg") || "#071125").trim();
 
@@ -166,12 +158,8 @@ const AppLayout: React.FC = () => {
     { id: "cv", label: t("nav.cv") }
   ];
 
-  const year = new Date().getFullYear();
-  const isHome = location.pathname === "/";
-  const isContact = location.pathname === "/contact";
-
   return (
-  <div className="app-wrapper">
+    <div className="app-wrapper">
       <div className="bg-decor" aria-hidden="true">
         <div ref={vantaRef} className="vanta-container" />
       </div>

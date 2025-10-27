@@ -412,7 +412,9 @@ const AboutPage: React.FC = () => {
             {/* Skills pulled into the hero area */}
             <div className="skills-card" role="list">
               {content.skills.map((s, i) => {
-                const starLabel = typeof s.stars === "number" ? (lang === "tr" ? `5 üzerinden ${s.stars}` : `${s.stars} out of 5`) : undefined;
+                const hasStars = typeof s.stars === "number";
+                const starCount = hasStars ? s.stars : undefined;
+                const starLabel = hasStars ? (lang === "tr" ? `5 üzerinden ${starCount}` : `${starCount} out of 5`) : undefined;
 
                 return (
                   <div
@@ -425,16 +427,16 @@ const AboutPage: React.FC = () => {
                       •
                     </span>
                     <span className="skill-label">{s.label}</span>
-                    {typeof s.stars === "number" && (
+                    {hasStars && starCount !== undefined && (
                       <>
                         <span className="visually-hidden">
-                          {lang === "tr" ? `${s.label} becerisi 5 üzerinden ${s.stars}` : `${s.label} skill level ${s.stars} out of 5`}
+                          {lang === "tr" ? `${s.label} becerisi 5 üzerinden ${starCount}` : `${s.label} skill level ${starCount} out of 5`}
                         </span>
                         <div className="skill-stars" aria-hidden>
                           {Array.from({ length: 5 }, (_, starIndex) => (
                             <span
                               key={starIndex}
-                              className={starIndex < s.stars ? "skill-star skill-star--filled" : "skill-star"}
+                              className={starIndex < starCount ? "skill-star skill-star--filled" : "skill-star"}
                             >
                               ★
                             </span>
