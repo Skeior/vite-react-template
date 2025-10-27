@@ -58,6 +58,7 @@ interface PageContent {
   hero: HeroContent;
   stats: StatEntry[];
   about: string[];
+  skills: { label: string; stars?: number }[];
   projects: ProjectEntry[];
   updates: UpdateEntry[];
 }
@@ -140,18 +141,13 @@ const AboutPage: React.FC = () => {
             label: "Yıl gömülü sistem deneyimi",
             description: "STM32 tabanlı motor sürücülerden telemetri sistemlerine."
           },
-          {
-            id: "competitions",
-            value: "3",
-            label: "Teknofest/Efficiency Challenge katılımı",
-            description: "VoltaFCEV ekibiyle güç elektroniği ve telemetri sorumlulukları."
-          },
-          {
-            id: "awards",
-            value: "5",
-            label: "Ödül ve derece",
-            description: "Yerel yarışmalar ve TUBİTAK destekli projelerde kazanılan ödüller."
-          }
+        ],
+        skills: [
+          { label: "Gömülü sistem geliştirme (STM32, C/C++)", stars: 4 },
+          { label: "PCB tasarımı & elektronik entegrasyon (Altium Designer)", stars: 4 },
+          { label: "BLDC motor kontrolü & sürücü tasarımı (PWM, FOC, SixStep)", stars: 4 },
+          { label: "Batarya Yönetim Sistemleri & enerji optimizasyonu", stars: 3 },
+          { label: "Ar-Ge projelerinde liderlik (elektrikli & hidrojen araçlar)", stars: 4 }
         ],
         about: [
           "Gömülü Yazılım ve Donanım Geliştiricisi | Bilgisayar Mühendisi | talhakarasu.com",
@@ -247,28 +243,7 @@ const AboutPage: React.FC = () => {
             title: "ESP tabanlı Wi-Fi röle modülü",
             summary: "ESP kartı ile 220V AC hattını güvenli şekilde anahtarlayan uzaktan erişimli röle prototipini tamamladım."
           }
-        ] as UpdateEntry[],
-        info: {
-          eyebrow: "İletişim",
-          title: "Güvenilir elektronik sistemler üretelim",
-          description: "Kayseri, Türkiye merkezliyim. Gömülü mühendislik projeleri ve iş birliklerine açığım.",
-          contact: [
-            { label: "Konum", value: "Kayseri, Türkiye" },
-            { label: "E-posta", value: "talhakarasu2@gmail.com", href: "mailto:talhakarasu2@gmail.com" },
-            { label: "Web", value: "talhakarasu.com", href: "https://talhakarasu.com" }
-          ] as InfoContactItem[],
-          quickLinks: [
-            { label: "Projeler", target: "projects" },
-            { label: "Zaman çizelgesi", target: "timeline" },
-            { label: "Güncellemeler", target: "updates" },
-            { label: "Kaynaklar", target: "cv" }
-          ] as InfoQuickLink[],
-          externalLinks: [
-            { label: "GitHub", href: "https://github.com/skeior" },
-            { label: "LinkedIn", href: "https://linkedin.com/in/talha-karasu" }
-          ] as InfoExternalLink[],
-          footerNote: "Tüm hakları saklıdır."
-        }
+        ] as UpdateEntry[]
       };
     }
 
@@ -289,23 +264,18 @@ const AboutPage: React.FC = () => {
           label: "Years in embedded systems",
           description: "From STM32 motor drivers to telemetry gateways."
         },
-        {
-          id: "competitions",
-          value: "3",
-          label: "Teknofest & Efficiency Challenge entries",
-          description: "Led power electronics and telemetry deliverables."
-        },
-        {
-          id: "awards",
-          value: "5",
-          label: "Awards and recognitions",
-          description: "Local competitions and TÜBİTAK backed projects."
-        }
       ],
+      skills: [
+          { label: "Embedded systems development (STM32, C/C++)", stars: 4 },
+          { label: "PCB design & electronics integration (Altium Designer)", stars: 4 },
+          { label: "BLDC motor control & driver design (PWM, FOC, SixStep)", stars: 4 },
+          { label: "Battery Management Systems & energy optimization", stars: 3 },
+          { label: "Leadership in R&D projects (electric & hydrogen vehicles)", stars: 4 }
+        ],
       about: [
         "Embedded firmware & hardware developer | Computer Engineer | talhakarasu.com",
         "Final-year Computer Engineering student with hands-on experience across STM32, motor control, and telemetry stacks.",
-  "Lead and delivered BLDC drivers and telemetry systems for VoltaTEAM, pairing C/C++ firmware with PCB design to ship local, efficient, and scalable hardware-software solutions."
+        "Led BLDC driver and telemetry deployments for VoltaTEAM, pairing C/C++ firmware with PCB design to ship local, efficient, and scalable hardware-software solutions."
       ],
       projects: [
         {
@@ -438,6 +408,45 @@ const AboutPage: React.FC = () => {
 
           <aside className="hero-stats" aria-label="Quick stats">
             <h2>{lang === "tr" ? "Hızlı istatistikler" : "Quick stats"}</h2>
+
+            {/* Skills pulled into the hero area */}
+            <div className="skills-card" role="list">
+              {content.skills.map((s, i) => {
+                const starLabel = typeof s.stars === "number" ? (lang === "tr" ? `5 üzerinden ${s.stars}` : `${s.stars} out of 5`) : undefined;
+
+                return (
+                  <div
+                    key={i}
+                    className="skill-row"
+                    role="listitem"
+                    title={starLabel ? `${s.label} · ${starLabel}` : s.label}
+                  >
+                    <span className="skill-dot" aria-hidden>
+                      •
+                    </span>
+                    <span className="skill-label">{s.label}</span>
+                    {typeof s.stars === "number" && (
+                      <>
+                        <span className="visually-hidden">
+                          {lang === "tr" ? `${s.label} becerisi 5 üzerinden ${s.stars}` : `${s.label} skill level ${s.stars} out of 5`}
+                        </span>
+                        <div className="skill-stars" aria-hidden>
+                          {Array.from({ length: 5 }, (_, starIndex) => (
+                            <span
+                              key={starIndex}
+                              className={starIndex < s.stars ? "skill-star skill-star--filled" : "skill-star"}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
             <div className="stats-grid">
               {content.stats.map((stat) => (
                 <div key={stat.id} className="stat-card">
