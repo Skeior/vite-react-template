@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import "./Portfolio.css";
 import { useLanguage } from "../../Components/LanguageProvider";
-import LanguageToggle from "../../Components/LanguageToggle";
 import SEO from "../../Components/SEO";
 import FooterInfo from "../../Components/FooterInfo";
 
@@ -155,12 +154,11 @@ const PortfolioPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, width: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
           <div>
             <h1 className="portfolio-title">{t("portfolio.title")}</h1>
             <p className="portfolio-subtitle">{t("portfolio.subtitle")}</p>
           </div>
-          <LanguageToggle />
         </div>
       </motion.header>
 

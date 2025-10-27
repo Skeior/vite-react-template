@@ -96,11 +96,22 @@ main.home {
   background: rgba(227, 52, 47, 0.14);
 }
 
-.skill-dot {
+.skill-row:hover .skill-icon {
+  background: rgba(227, 52, 47, 0.28);
+  color: #fff;
+}
+
+.skill-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(227, 52, 47, 0.14);
   color: var(--accent);
-  font-weight: 700;
-  width: 18px;
-  display: inline-block;
+  flex-shrink: 0;
+  font-size: 1.05rem;
 }
 
 .skill-label {

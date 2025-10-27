@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Timeline from "../Timeline/Timeline";
 import "./About.css";
 import { useLanguage } from "../../Components/LanguageProvider";
 import SEO from "../../Components/SEO";
 import FooterInfo from "../../Components/FooterInfo";
+import { FaMicrochip, FaDraftingCompass, FaCogs, FaBatteryThreeQuarters, FaUsersCog } from "react-icons/fa";
 
 interface ProjectMetric {
   label: string;
@@ -47,6 +48,12 @@ interface StatEntry {
   description: string;
 }
 
+interface SkillEntry {
+  label: string;
+  stars?: number;
+  icon?: ReactNode;
+}
+
 interface UpdateEntry {
   id: string;
   date: string;
@@ -58,7 +65,7 @@ interface PageContent {
   hero: HeroContent;
   stats: StatEntry[];
   about: string[];
-  skills: { label: string; stars?: number }[];
+  skills: SkillEntry[];
   projects: ProjectEntry[];
   updates: UpdateEntry[];
 }
@@ -143,11 +150,11 @@ const AboutPage: React.FC = () => {
           },
         ],
         skills: [
-          { label: "Gömülü sistem geliştirme (STM32, C/C++)", stars: 4 },
-          { label: "PCB tasarımı & elektronik entegrasyon (Altium Designer)", stars: 4 },
-          { label: "BLDC motor kontrolü & sürücü tasarımı (PWM, FOC, SixStep)", stars: 4 },
-          { label: "Batarya Yönetim Sistemleri & enerji optimizasyonu", stars: 3 },
-          { label: "Ar-Ge projelerinde liderlik (elektrikli & hidrojen araçlar)", stars: 4 }
+          { label: "Gömülü sistem geliştirme (STM32, C/C++)", stars: 4, icon: <FaMicrochip /> },
+          { label: "PCB tasarımı & elektronik entegrasyon (Altium Designer)", stars: 4, icon: <FaDraftingCompass /> },
+          { label: "BLDC motor kontrolü & sürücü tasarımı (PWM, FOC, SixStep)", stars: 4, icon: <FaCogs /> },
+          { label: "Batarya Yönetim Sistemleri & enerji optimizasyonu", stars: 3, icon: <FaBatteryThreeQuarters /> },
+          { label: "Ar-Ge projelerinde liderlik (elektrikli & hidrojen araçlar)", stars: 4, icon: <FaUsersCog /> }
         ],
         about: [
           "Gömülü Yazılım ve Donanım Geliştiricisi | Bilgisayar Mühendisi | talhakarasu.com",
@@ -266,11 +273,11 @@ const AboutPage: React.FC = () => {
         },
       ],
       skills: [
-          { label: "Embedded systems development (STM32, C/C++)", stars: 4 },
-          { label: "PCB design & electronics integration (Altium Designer)", stars: 4 },
-          { label: "BLDC motor control & driver design (PWM, FOC, SixStep)", stars: 4 },
-          { label: "Battery Management Systems & energy optimization", stars: 3 },
-          { label: "Leadership in R&D projects (electric & hydrogen vehicles)", stars: 4 }
+        { label: "Embedded systems development (STM32, C/C++)", stars: 4, icon: <FaMicrochip /> },
+        { label: "PCB design & electronics integration (Altium Designer)", stars: 4, icon: <FaDraftingCompass /> },
+        { label: "BLDC motor control & driver design (PWM, FOC, SixStep)", stars: 4, icon: <FaCogs /> },
+        { label: "Battery Management Systems & energy optimization", stars: 3, icon: <FaBatteryThreeQuarters /> },
+        { label: "Leadership in R&D projects (electric & hydrogen vehicles)", stars: 4, icon: <FaUsersCog /> }
         ],
       about: [
         "Embedded firmware & hardware developer | Computer Engineer | talhakarasu.com",
@@ -423,8 +430,8 @@ const AboutPage: React.FC = () => {
                     role="listitem"
                     title={starLabel ? `${s.label} · ${starLabel}` : s.label}
                   >
-                    <span className="skill-dot" aria-hidden>
-                      •
+                    <span className="skill-icon" aria-hidden>
+                      {s.icon ?? "•"}
                     </span>
                     <span className="skill-label">{s.label}</span>
                     {hasStars && starCount !== undefined && (

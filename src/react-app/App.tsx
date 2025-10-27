@@ -4,12 +4,12 @@ import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
 import "./App.css";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "./Components/LanguageProvider";
 import LanguageToggle from "./Components/LanguageToggle";
 
 const AppLayout: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const vantaRef = useRef<HTMLDivElement | null>(null);
   const vantaEffect = useRef<any>(null);
   const [activeSection, setActiveSection] = useState<string>("hero");
@@ -61,28 +61,41 @@ const AppLayout: React.FC = () => {
       return;
     }
 
-    const sections = document.querySelectorAll<HTMLElement>("[data-nav-section]");
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-section]"));
     if (!sections.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible.length > 0) {
-          const id = visible[0].target.id;
-          setActiveSection(id);
-        }
-      },
-      {
-        rootMargin: "-45% 0px -45% 0px",
-        threshold: [0.2, 0.6, 0.9]
-      }
-    );
+    let ticking = false;
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [location.pathname]);
+    const updateActive = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        const viewportOffset = window.innerHeight * 0.35;
+        const scrollPosition = window.scrollY + viewportOffset;
+        let currentId = sections[0]?.id ?? "hero";
+
+        for (const section of sections) {
+          if (section.offsetTop <= scrollPosition) {
+            currentId = section.id;
+          } else {
+            break;
+          }
+        }
+
+        setActiveSection(currentId);
+        ticking = false;
+      });
+    };
+
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+
+    return () => {
+      window.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
+  }, [location.pathname, lang]);
 
   useLayoutEffect(() => {
     let mounted = true;
@@ -149,14 +162,23 @@ const AppLayout: React.FC = () => {
     };
   }, []);
 
-  const anchorItems = [
-    { id: "hero", label: t("nav.hero") },
-    { id: "about", label: t("nav.about") },
-    { id: "projects", label: t("nav.projects") },
-    { id: "timeline", label: t("nav.timeline") },
-    { id: "updates", label: t("nav.updates") },
-    { id: "cv", label: t("nav.cv") }
-  ];
+  interface AnchorItem {
+    id: string;
+    label: string;
+    mobileVisible?: boolean;
+  }
+
+  const anchorItems: AnchorItem[] = useMemo(
+    () => [
+      { id: "hero", label: t("nav.hero"), mobileVisible: true },
+      { id: "about", label: t("nav.about") },
+      { id: "projects", label: t("nav.projects") },
+      { id: "timeline", label: t("nav.timeline") },
+      { id: "updates", label: t("nav.updates") },
+      { id: "cv", label: t("nav.cv") }
+    ],
+    [t]
+  );
 
   return (
     <div className="app-wrapper">
@@ -171,6 +193,7 @@ const AppLayout: React.FC = () => {
               key={item.id}
               type="button"
               className={`nav-link ${location.pathname === "/" && activeSection === item.id ? "active" : ""}`.trim()}
+              data-mobile-hide={item.mobileVisible ? undefined : "true"}
               onClick={() => handleAnchorNav(item.id)}
               aria-current={location.pathname === "/" && activeSection === item.id ? "true" : undefined}
             >

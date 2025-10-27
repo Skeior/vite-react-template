@@ -327,15 +327,39 @@ a {
 
   .navbar {
     padding: var(--space-3);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+    align-items: center;
   }
 
-  .nav-links,
+  .nav-links {
+    display: contents;
+  }
+
   .nav-actions {
+    display: contents;
+  }
+
+  .nav-link[data-mobile-hide="true"] {
+    display: none;
+  }
+
+  .navbar .nav-link {
     width: 100%;
+    justify-content: center;
   }
 
-  .nav-actions {
-    justify-content: space-between;
+  .lang-toggle {
+    grid-column: 1 / -1;
+    justify-self: center;
+    display: inline-flex;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .lang-btn {
+    flex: 1;
   }
 
   .site-footer {
