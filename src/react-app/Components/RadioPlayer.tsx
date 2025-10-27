@@ -9,17 +9,23 @@ import "./RadioPlayer.css";
 const STATIONS = [
   { name: "NPO Radio 4", url: "https://icecast.omroep.nl/radio4-bb-mp3" },
   { name: "Classic FM (UK)", url: "http://media-ice.musicradio.com/ClassicFMMP3" },
-  { name: "Radio Paradise", url: "https://stream.radioparadise.com/mp3-192" },
-  { name: "KEXP", url: "https://kexp-hrd.appspot.com/stream" },
+  /* Radio Paradise removed per request */
   // Turkish stations (provided URLs)
-  { name: "Virgin Radio Türkiye", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO128AAC.aac?/;stream.mp3" },
-  { name: "Alem FM", url: "https://alemfm.radyotvonline.net/alemfmaac?/;stream.mp3" },
+  { name: "RetroTurk", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/RETROTURK128AAC.aac?/;stream.mp3" },
+  { name: "Piano Solo", url: "http://pianosolo.streamguys.net:80/live" },
   { name: "Radyo 7", url: "https://moondigitaledge2.radyotvonline.net/radyo7nostalji/playlist.m3u8?listeningSessionID=68fc6631ac97f73d_220598_NKhdolFo__00000003sAC&downloadSessionID=0" },
+  { name: "Super FM", url: "https://27913.live.streamtheworld.com:443/SUPER_FM128AAC.aac?ttag=G:f,m,AG:2,3,SES:1,2,OC:1,2,3,4,6,INT:1,3,7,CH:3?/;stream.mp3" },
+  { name: "Borusan Klasik", url: "https://28553.live.streamtheworld.com:443/BORUSAN_KLASIK128AAC.aac?/;stream.mp3" },
+  { name: "Radyodinle", url: "https://radyodinle1.turkhosted.com/yayin?uri=160.75.86.29:8097/&tkn=BikEenJtZVGuck1sPwoESg&tms=1761717042" },
   { name: "SlowTurk", url: "https://radyo.duhnet.tv/slowturk?/;stream.mp3" }
+  ,
+  { name: "RadyoTVOnline Klasik", url: "https://moondigitaledge.radyotvonline.net/klasikhome/playlist.m3u8?listeningSessionID=68fc672e5e1bb4df_229688_Nc9VxFeB__0000000822a&downloadSessionID=0" },
+  { name: "Number1 Classic", url: "https://eustr75.mediatriple.net/Number1Media/08_Number1_Classic.stream/media_w932637451_25662.aac" }
 ];
 
 export default function RadioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hlsRef = useRef<any | null>(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.7);
@@ -59,6 +65,13 @@ export default function RadioPlayer() {
     }
     // clear previous error on mount
     setStationError(null);
+    return () => {
+      // destroy any HLS instance on unmount
+      if (hlsRef.current && typeof hlsRef.current.destroy === 'function') {
+        try { hlsRef.current.destroy(); } catch (e) { /* ignore */ }
+        hlsRef.current = null;
+      }
+    };
   }, []);
 
   // Try playing starting from a station index and fall back to subsequent stations on failure.
@@ -70,21 +83,52 @@ export default function RadioPlayer() {
     for (let i = 0; i < n; i++) {
       const idx = (startIndex + i) % n;
       const station = STATIONS[idx];
-      audio.src = station.url;
-      // ensure the audio element reloads the new src before attempting playback
+      // destroy previous hls instance (if any) before switching
+      if (hlsRef.current && typeof hlsRef.current.destroy === 'function') {
+        try { hlsRef.current.destroy(); } catch (e) { /* ignore */ }
+        hlsRef.current = null;
+      }
+
+      const url = station.url;
+      const isHls = url.includes('.m3u8');
+
       try {
-        try {
-          audio.load();
-        } catch (e) {
-          // some browsers may not need or allow explicit load(); ignore failures
+        if (isHls) {
+          // dynamic import hls.js
+          const HlsModule = await import('hls.js');
+          const Hls = HlsModule.default ?? HlsModule;
+          if (Hls.isSupported()) {
+            const hls = new Hls();
+            hlsRef.current = hls;
+            hls.loadSource(url);
+            hls.attachMedia(audio);
+            // give the player a moment to attach before playing
+            await audio.play();
+            setStationIndex(idx);
+            setPlaying(true);
+            setStationError(null);
+            return true;
+          } else {
+            // Safari / native HLS fallback
+            audio.src = url;
+            try { audio.load(); } catch (e) { /* ignore */ }
+            await audio.play();
+            setStationIndex(idx);
+            setPlaying(true);
+            setStationError(null);
+            return true;
+          }
+        } else {
+          audio.src = url;
+          try { audio.load(); } catch (e) { /* ignore */ }
+          await audio.play();
+          setStationIndex(idx);
+          setPlaying(true);
+          setStationError(null);
+          return true;
         }
-        await audio.play();
-        setStationIndex(idx);
-        setPlaying(true);
-        setStationError(null);
-        return true;
       } catch (err) {
-        console.warn("Playback failed for station:", station.name, err);
+        console.warn('Playback failed for station:', station.name, err);
         // try next station
         continue;
       }
