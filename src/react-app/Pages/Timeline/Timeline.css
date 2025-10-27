@@ -10,17 +10,30 @@
   text-align: center;
   font-size: 2rem;
   margin-bottom: 40px;
-  color: var(--accent-2);
+  color: var(--text);
 }
 
 .timeline-line {
   position: absolute;
   left: 50%;
   width: 4px;
-  height: 95%;
-  background: var(--accent);
+  top: 0;
+  bottom: 0;
   transform: translateX(-50%);
-  border-radius: 2px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(227, 52, 47, 0.1) 0%, rgba(227, 52, 47, 0.65) 45%, rgba(227, 52, 47, 0.1) 100%);
+  overflow: hidden;
+}
+
+.timeline-line::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.35) 45%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0.75;
+  background-size: 100% 220%;
+  background-position: 50% 0%;
+  animation: timelinePulse 8s ease-in-out infinite;
 }
 
 .timeline-items {
@@ -52,16 +65,17 @@
   top: 20px;
   width: 40px;
   height: 40px;
-  background: var(--accent);
+  background: rgba(227, 52, 47, 0.9);
   border-radius: 50%;
-  border: 3px solid white;
+  border: 3px solid rgba(255, 255, 255, 0.18);
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 1.2rem;
-  transition: transform 0.3s, background 0.3s, color 0.3s;
+  transition: transform 0.3s, background 0.3s, color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 0 0 rgba(227, 52, 47, 0.55);
 }
 
 .timeline-item.left .timeline-dot {
@@ -73,10 +87,10 @@
 }
 
 .timeline-item:hover .timeline-dot {
-  transform: scale(1.5) rotate(15deg);
-  background: var(--accent-2);
+  transform: scale(1.3) rotate(10deg);
+  background: var(--accent);
   color: #fff;
-  text-shadow: 0 0 8px #f59e0b;
+  box-shadow: 0 0 18px rgba(227, 52, 47, 0.55);
 }
 
 .timeline-content {
@@ -100,6 +114,64 @@
   margin-bottom: 8px;
 }
 
+.timeline-dot::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+.timeline-dot::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(227, 52, 47, 0.35) 0%, rgba(227, 52, 47, 0) 70%);
+  opacity: 0.3;
+  animation: haloPulse 4s ease-in-out infinite;
+}
+
+.timeline-dot > svg {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes timelinePulse {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(0.85);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes haloPulse {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.45;
+  }
+}
+
 /* -------------------------
    Mobile Adjustments
 ---------------------------*/
@@ -118,6 +190,7 @@
 
   .timeline-line {
     left: 20px !important;    /* solda sabitle */
+    transform: translateX(0);
   }
 
   .timeline-title {

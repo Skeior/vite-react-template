@@ -16,14 +16,37 @@ main.home {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   padding: var(--space-6);
   border-radius: var(--radius-lg);
-  background: rgba(16, 27, 47, 0.8);
+  background: rgba(16, 27, 47, 0.85);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(
+    circle at 30% 40%,
+    rgba(227, 52, 47, 0.26),
+    rgba(227, 52, 47, 0.12) 32%,
+    transparent 65%
+  );
+  opacity: 0.6;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero:hover::before {
+  opacity: 0.75;
 }
 
 .hero-content {
   display: grid;
   gap: var(--space-4);
+  position: relative;
+  z-index: 1;
 }
 
 .hero-content h1 {
@@ -67,6 +90,8 @@ main.home {
 .hero-stats {
   display: grid;
   gap: var(--space-4);
+  position: relative;
+  z-index: 1;
 }
 
 

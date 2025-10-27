@@ -157,9 +157,9 @@ const AboutPage: React.FC = () => {
           { label: "Ar-Ge projelerinde liderlik (elektrikli & hidrojen araçlar)", stars: 4, icon: <FaUsersCog /> }
         ],
         about: [
-          "Gömülü Yazılım ve Donanım Geliştiricisi | Bilgisayar Mühendisi | talhakarasu.com",
-          "Gömülü sistemler üzerine uzmanlaşmaya odaklıyım; VoltaTEAM çatısı altında BLDC sürücü tasarımları ve telemetri sistemleri geliştirdim.",
-          "Takım kaptanlığı deneyimi sonrası, C/C++ ve C# bilgimi PCB tasarımı ve mikrodenetleyici tabanlı projelerle birleştirerek yerel, verimli ve ölçeklenebilir donanım-yazılım çözümleri üretmeye devam ediyorum."
+          "Motor kontrolü, telemetri ve dayanıklı elektronik üzerine çalışan gömülü yazılım & donanım geliştiricisi.",
+          "STM32 tabanlı prototipleri üretim seviyesine taşıyan son sınıf Bilgisayar Mühendisliği öğrencisiyim; BLDC sürücüler ve telemetri istasyonları geliştiriyorum.",
+          "VoltaTEAM için C/C++ kontrol yazılımlarını PCB tasarımıyla birleştirerek verimli, servis edilebilir sistemler teslim ediyorum."
         ],
         projects: [
           {
@@ -280,9 +280,9 @@ const AboutPage: React.FC = () => {
         { label: "Leadership in R&D projects (electric & hydrogen vehicles)", stars: 4, icon: <FaUsersCog /> }
         ],
       about: [
-        "Embedded firmware & hardware developer | Computer Engineer | talhakarasu.com",
-        "Final-year Computer Engineering student with hands-on experience across STM32, motor control, and telemetry stacks.",
-        "Led BLDC driver and telemetry deployments for VoltaTEAM, pairing C/C++ firmware with PCB design to ship local, efficient, and scalable hardware-software solutions."
+        "Embedded firmware & hardware developer focused on motor control, telemetry, and rugged electronics.",
+        "Final-year Computer Engineering student translating STM32 prototyping into production-ready BLDC drivers and telemetry stacks.",
+        "Deliver high-reliability boards and firmware for VoltaTEAM, blending C/C++ control loops with PCB design to ship efficient, serviceable systems."
       ],
       projects: [
         {
