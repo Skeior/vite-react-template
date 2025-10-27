@@ -180,6 +180,16 @@ const AppLayout: React.FC = () => {
     [t]
   );
 
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      return;
+    }
+
+    const baseTitle = lang === "tr" ? "Talha Karasu - Gömülü Sistemler" : "Talha Karasu - Embedded Systems";
+    const current = anchorItems.find((item) => item.id === activeSection);
+    document.title = current ? `${current.label} | ${baseTitle}` : baseTitle;
+  }, [activeSection, anchorItems, lang, location.pathname]);
+
   return (
     <div className="app-wrapper">
       <div className="bg-decor" aria-hidden="true">
