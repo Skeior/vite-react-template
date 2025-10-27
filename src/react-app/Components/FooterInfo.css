@@ -1,0 +1,127 @@
+.footer-info-section {
+  /* add top spacing so footer doesn't visually merge with the content above */
+  margin-top: var(--space-6);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: rgba(16, 27, 47, 0.75);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: var(--space-5);
+}
+
+.info-heading {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.info-heading h2 {
+  margin: 0;
+}
+
+.footer-info-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.info-card {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(11, 18, 32, 0.68);
+  display: grid;
+  gap: var(--space-2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.info-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.info-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.info-list li {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted-strong);
+}
+
+.info-list a,
+.info-list span {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.info-list a {
+  color: var(--accent);
+}
+
+.info-list a:hover {
+  color: #ff8fa4;
+}
+
+.info-links {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(6, 13, 24, 0.64);
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.link-button:hover,
+.link-button:focus-visible {
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(227, 52, 47, 0.22);
+}
+
+.info-meta {
+  margin: 0;
+  text-align: center;
+  color: var(--muted-strong);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
+  .footer-info-section {
+    padding: var(--space-5);
+  }
+}
+
+@media (max-width: 540px) {
+  .footer-info-section {
+    padding: var(--space-4);
+  }
+
+  .info-card {
+    padding: var(--space-3);
+  }
+}

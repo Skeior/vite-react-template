@@ -11,7 +11,13 @@
   "nav": {
     "home": "Ana Sayfa",
     "portfolio": "Portfolyo",
-    "contact": "İletişim"
+    "contact": "İletişim",
+    "hero": "Genel Bakış",
+    "about": "Hakkımda",
+    "projects": "Projeler",
+    "timeline": "Zaman Çizelgesi",
+  "updates": "Güncellemeler",
+  "cv": "Kaynaklar"
   },
   "about": {
     "name": "Talha Karasu",

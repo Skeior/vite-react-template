@@ -1,5 +1,15 @@
 {
-  "nav": { "home": "Home", "portfolio": "Portfolio", "contact": "Contact" },
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "contact": "Contact",
+    "hero": "Overview",
+    "about": "About",
+    "projects": "Projects",
+    "timeline": "Timeline",
+  "updates": "Updates",
+  "cv": "Resources"
+  },
   "portfolio": {
     "title": "Projects & Experience",
     "subtitle": "Electronics & Embedded Systems",
@@ -16,8 +26,9 @@
     "downloadCV": "Download CV",
     "skillsHeading": "Skills",
     "paragraphs": [
-      "Erciyes University, final-year Computer Engineering student with practical experience in embedded systems and power electronics.",
-      "Experienced in both theoretical knowledge and hands-on embedded software & hardware design."
+      "Embedded firmware & hardware developer | Computer Engineer",
+      "Final-year Computer Engineering student with hands-on experience across STM32, motor control, and telemetry stacks.",
+      "Led and delivered BLDC drivers and telemetry systems for VoltaTEAM, pairing C/C++ firmware with PCB design to ship local, efficient, and scalable hardware-software solutions."
     ],
     "skills": [
       {

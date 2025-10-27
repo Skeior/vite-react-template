@@ -1,169 +1,355 @@
-/* Dark theme stylesheet for the app. Keeps the decorative SVG background and animations.
-   Variables live here and are used across page-level styles. */
+/* Global design system tokens */
 
 :root {
-  --accent: #e3342f;     /* strong red */
-  --accent-2: #fb7185;   /* pinky red accent */
-  --bg: #071125;         /* deep navy/near-black */
-  --vanta-opacity: 0.345; /* opacity for Vanta canvas (0-1) — lower makes nets more transparent */
-  --layer-1: #0b1220;    /* dark layer */
-  --layer-2: #0f1724;
-  --layer-3: #06111b;
-  --text: #e6eef8;       /* pale icy text */
-  --muted: #cbd5dc;
+  --accent: #e3342f;
+  --accent-soft: rgba(227, 52, 47, 0.16);
+  --accent-strong: rgba(227, 52, 47, 0.35);
+  --bg: #071125;
+  --layer-1: #0c1526;
+  --layer-2: #101d33;
+  --layer-3: rgba(12, 21, 38, 0.78);
+  --text: #f1f5ff;
+  --muted: #c7d2e1;
+  --muted-strong: #92a5c5;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 10px 24px rgba(3, 7, 18, 0.32);
+  --shadow-md: 0 18px 40px rgba(3, 7, 18, 0.44);
+  --shadow-lg: 0 24px 60px rgba(3, 7, 18, 0.58);
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.75rem;
+  --space-8: 3.5rem;
+  --space-9: 4.5rem;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --transition: 0.2s ease;
+  --max-width: 1180px;
+  --vanta-opacity: 0.3;
 }
 
-/* -------------------------
-   Base / Layout
--------------------------*/
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 320px;
   min-height: 100vh;
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color: var(--text);
   background: var(--bg);
-  position: relative;
+  font-family: var(--font-sans);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
 }
 
 .app-wrapper {
   width: 100%;
   min-height: 100vh;
+  padding: var(--space-4) var(--space-4) var(--space-8);
+  position: relative;
 }
+
 
 .app-container {
-  max-width: 1200px;
+  max-width: var(--max-width);
   width: 100%;
-  padding: 20px;
   margin: 0 auto;
   position: relative;
+  z-index: 2;
+  display: grid;
+  gap: var(--space-6);
 }
 
-/* -------------------------
-   Navbar
--------------------------*/
+.bg-decor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--bg);
+}
+
+.bg-decor .vanta-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.bg-decor .vanta-container canvas {
+  opacity: var(--vanta-opacity);
+}
+
 .navbar {
+  position: sticky;
+  top: var(--space-4);
+  max-width: var(--max-width);
+  width: 100%;
+  margin: 0 auto var(--space-5);
+  padding: var(--space-3) var(--space-4);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.25rem;
-  background: var(--layer-3); /* solid background */
-  backdrop-filter: blur(8px);
-  box-shadow: 0 6px 20px rgba(2,6,12,0.6);
-  border-radius: 12px;
-  width: calc(100% - 40px);
-  max-width: 1200px;
-  margin: 16px auto;
+  gap: var(--space-3);
+  background: rgba(12, 21, 38, 0.92);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(14px);
+  z-index: 3;
 }
 
-.nav-links { display:flex; gap: 12px; align-items:center; }
-.navbar a {
-  color: var(--text);
-  text-decoration: none;
+.nav-links,
+.nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
   font-weight: 600;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: all 0.18s ease;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
 }
-.navbar a.active,
-.navbar a:hover {
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--text);
+  border-color: var(--accent-soft);
+  background: rgba(227, 52, 47, 0.16);
+}
+
+.nav-link.active {
+  color: var(--text);
+  border-color: var(--accent-strong);
+  background: rgba(227, 52, 47, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(227, 52, 47, 0.2);
+}
+
+.nav-actions .nav-link {
+  padding-inline: 1.1rem;
+}
+
+.lang-toggle {
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+.lang-btn {
+  padding: 0.32rem 0.7rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.lang-btn:hover,
+.lang-btn:focus-visible {
+  color: var(--text);
+  border-color: var(--accent-soft);
+}
+
+.lang-btn.active {
   background: var(--accent);
-  color: #071125;
-  transform: translateY(-1px) scale(1.02);
+  color: #06111b;
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgba(227, 52, 47, 0.45);
 }
 
-/* -------------------------
-   Cards / Sections
--------------------------*/
-.section-card {
+.button,
+.outline-button,
+.ghost-button,
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.7rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.button {
+  background: var(--accent);
+  color: #091120;
+  border: 1px solid transparent;
+  box-shadow: 0 18px 38px rgba(227, 52, 47, 0.4);
+}
+
+.button:hover {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+}
+
+.outline-button {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(227, 52, 47, 0.4);
+}
+
+.outline-button:hover {
+  background: rgba(227, 52, 47, 0.18);
+}
+
+.ghost-button {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+
+.ghost-button:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  padding: 0.3rem 0;
+}
+
+.text-button:hover {
+  color: #ff8fa4;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--muted-strong);
+  margin: 0;
+}
+
+.site-footer {
+  max-width: var(--max-width);
+  margin: var(--space-8) auto var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--layer-3);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: var(--space-4);
   position: relative;
-  z-index: 10;
-  background: var(--layer-2); /* solid card background */
-  border: 1px solid var(--layer-3);
-  padding: 24px;
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(2,6,12,0.6);
-  transition: all 0.28s ease;
+  z-index: 2;
 }
-.section-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,12,0.72); }
 
-.button { /* global button */
-  border-radius: 10px; padding: 10px 18px; font-weight:600;
-  background: var(--accent); color: #071125; border: none; cursor: pointer;
-  box-shadow: 0 8px 22px rgba(2,6,12,0.5);
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
 }
-.button:hover { filter: brightness(0.95); transform: translateY(-2px); }
 
-/* Typography */
-h1,h2,h3 { color: var(--text); margin:0 0 12px 0 }
-p,li { color: var(--muted); line-height:1.6 }
-a { color: var(--accent-2); }
-a:hover { color: #9be8ff }
+.footer-column {
+  display: grid;
+  gap: var(--space-2);
+}
 
-/* -------------------------
-   Language toggle
--------------------------*/
-.lang-toggle { display:flex; gap:8px; }
-.lang-btn { padding:6px 10px; border-radius:8px; border:1px solid var(--layer-3); background:transparent; color:var(--text); font-weight:700 }
-.lang-btn.active { background:var(--accent); color:#071125; box-shadow:0 8px 20px rgba(2,6,12,0.6); border-color: rgba(0,0,0,0.08) }
+.footer-column h4 {
+  margin: 0;
+  font-size: 1rem;
+}
 
-/* Background toggle in navbar */
-/* Background toggle removed — Vanta is always enabled by default now. */
+.footer-column a,
+.footer-column button {
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+}
 
-/* -------------------------
-   Decorative background (SVG)
--------------------------*/
-.bg-decor { position: fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; background: var(--bg) !important; }
-.bg-decor .geo-illustration { position:absolute; width:100%; height:100%; left:0; top:0; will-change:transform; filter: blur(6px) saturate(1.02); opacity:0.95 }
-.bg-decor .vanta-container { position:absolute; inset:0; width:100%; height:100%; background: var(--bg) !important; z-index:0; pointer-events:none; min-width:100vw; min-height:100vh }
+.footer-column a:hover,
+.footer-column button:hover {
+  color: var(--text);
+}
 
-/* Make the Vanta canvas semi-transparent so the net lines appear muted/transparent
-  while keeping the container background opaque via CSS. Adjust --vanta-opacity to taste. */
-.bg-decor .vanta-container canvas { opacity: var(--vanta-opacity); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--muted-strong);
+  font-size: 0.85rem;
+}
 
-/* When background is toggled off, hide the entire decorative layer to stop
-  both the Vanta canvas and any SVG/CSS animations. Use !important to ensure
-  this overrides existing animation rules. */
+@media (max-width: 960px) {
+  .app-wrapper {
+    padding-inline: var(--space-3);
+  }
 
-.bg-decor .geo-illustration polygon { will-change: transform, opacity }
-
-@keyframes float-slower { 0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)} }
-@keyframes float-slow { 0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)} }
-@keyframes subtle-tilt { 0%{transform:rotate(0)}50%{transform:rotate(.2deg)}100%{transform:rotate(0)} }
-
-.bg-decor .geo-illustration polygon:nth-child(1){animation:float-slower 18s ease-in-out infinite;opacity:0.98}
-.bg-decor .geo-illustration polygon:nth-child(2){animation:float-slow 22s ease-in-out infinite;opacity:0.96}
-.bg-decor .geo-illustration polygon:nth-child(3){animation:subtle-tilt 26s ease-in-out infinite;opacity:0.94}
-
-@keyframes hueShift { 0%{filter:saturate(1.02) hue-rotate(0deg) blur(6px)}50%{filter:saturate(1.06) hue-rotate(6deg) blur(6px)}100%{filter:saturate(1.02) hue-rotate(0deg) blur(6px)} }
-.bg-decor .geo-illustration{animation:hueShift 28s ease-in-out infinite}
-
-/* Color-shift animations removed per user request; keep static fills and only motion
-  animations (float / tilt) for subtle depth without hue changes. */
-.geo-illustration .layer-1 { fill: var(--layer-1); }
-.geo-illustration .layer-2 { fill: var(--layer-2); }
-.geo-illustration .layer-3 { fill: var(--layer-3); }
-
-/* Slight pulsating scale to add motion depth (no color changes) */
-.geo-illustration .layer { transform-origin: center; }
-.geo-illustration .layer-1 { animation-name: float-slower; animation-duration: 18s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
-.geo-illustration .layer-2 { animation-name: float-slow; animation-duration: 22s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
-.geo-illustration .layer-3 { animation-name: subtle-tilt; animation-duration: 26s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
-
-@media (prefers-reduced-motion: reduce) {
-  .geo-illustration .layer-1,
-  .geo-illustration .layer-2,
-  .geo-illustration .layer-3 {
-    animation: none !important;
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
-@media (prefers-reduced-motion: reduce){ .bg-decor .geo-illustration, .bg-decor .geo-illustration polygon { animation:none !important; transition:none !important } }
+@media (max-width: 640px) {
+  .app-wrapper {
+    padding-inline: var(--space-2);
+  }
 
-/* Ensure UI sits above the background */
-.app-wrapper > *:not(.bg-decor) { position:relative; z-index:2 }
+  .navbar {
+    padding: var(--space-3);
+  }
+
+  .nav-links,
+  .nav-actions {
+    width: 100%;
+  }
+
+  .nav-actions {
+    justify-content: space-between;
+  }
+
+  .site-footer {
+    padding: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 

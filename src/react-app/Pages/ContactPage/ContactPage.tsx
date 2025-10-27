@@ -5,6 +5,7 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 import "./Contact.css";
 import { useLanguage } from "../../Components/LanguageProvider";
 import SEO from "../../Components/SEO";
+import FooterInfo from "../../Components/FooterInfo";
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -121,6 +122,8 @@ const ContactPage: React.FC = () => {
           </button>
         </form>
       </motion.section>
+
+      <FooterInfo />
     </div>
   );
 };

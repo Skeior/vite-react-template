@@ -4,6 +4,7 @@ import "./Portfolio.css";
 import { useLanguage } from "../../Components/LanguageProvider";
 import LanguageToggle from "../../Components/LanguageToggle";
 import SEO from "../../Components/SEO";
+import FooterInfo from "../../Components/FooterInfo";
 
 const projects = [
   {
@@ -274,6 +275,8 @@ const PortfolioPage: React.FC = () => {
           );
         })}
       </div>
+
+      <FooterInfo />
     </div>
   );
 };

@@ -24,21 +24,22 @@
 .contact-card {
   /* Solid card background using theme variable */
   background-color: var(--layer-2);
-  padding: 36px;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(2,6,12,0.6);
+  padding: 48px; /* larger padding for a bigger feel */
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(2,6,12,0.6);
   border: 1px solid var(--layer-3);
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  transition: all 0.32s ease;
-  max-width: 900px;
+  gap: 24px;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  max-width: 720px; /* limit width to keep form readable */
+  width: 100%;
   margin: 0 auto;
 }
 
 .contact-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 42px rgba(2,6,12,0.65);
+  box-shadow: 0 26px 60px rgba(2,6,12,0.62);
 }
 .contact-link:hover {
   color: var(--accent-2);
@@ -69,30 +70,41 @@
 }
 
 .contact-input {
-  padding: 14px 18px;
-  border-radius: 12px;
+  padding: 16px 20px;
+  border-radius: 14px;
   border: 1px solid var(--layer-3);
   background: var(--layer-3);
   color: var(--text);
-  font-size: 1rem;
+  font-size: 1.05rem;
   outline: none;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .contact-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 10px rgba(124,58,237,0.12);
+  box-shadow: 0 6px 20px rgba(227,52,47,0.08);
 }
 
 /* Submit Button */
 .button {
   /* uses global .button styling from App.css */
-  border-radius: 10px;
-  padding: 12px 28px;
-  font-weight: 600;
+  border-radius: 12px;
+  padding: 14px 36px;
+  font-weight: 700;
+  font-size: 1.02rem;
 }
 
-.button:hover { transform: translateY(-2px); }
+.button:hover {
+  transform: translateY(-2px);
+}
+
+/* textarea specific sizing */
+.contact-textarea {
+  min-height: 200px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  resize: vertical;
+}
 
 /* -------------------------
    Animations
@@ -108,7 +120,7 @@
 ---------------------------*/
 @media (max-width: 1024px) {
   .contact-card {
-    padding: 30px;
+    padding: 40px;
   }
 
   .header-title {
@@ -120,7 +132,7 @@
   }
 
   .button {
-    padding: 12px 28px;
+    padding: 14px 34px;
   }
 
   .contact-input {
@@ -130,7 +142,8 @@
 
 @media (max-width: 768px) {
   .contact-card {
-    padding: 20px;
+    padding: 28px;
+    max-width: 560px;
   }
 
   .header-title {
