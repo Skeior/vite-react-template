@@ -1,0 +1,81 @@
+.radio-player{
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(8,10,20,0.85);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  z-index: 1200;
+  font-size: 14px;
+}
+
+.radio-player button{
+  background: transparent;
+  color: inherit;
+  border: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.radio-player button:hover{ background: rgba(255,255,255,0.04); }
+
+.radio-volume input[type=range]{
+  width: 90px;
+}
+
+.radio-station{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-right:6px;
+}
+
+.radio-station-name{
+  max-width:160px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:13px;
+  opacity:0.95;
+}
+
+.radio-change{
+  font-size:14px;
+  padding:6px;
+  border-radius:6px;
+}
+
+.radio-select{
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.radio-select option{
+  /* Ensure option text is readable in the dropdown (browser native white background) */
+  color: #111;
+  background: #fff;
+}
+
+.radio-error{
+  margin-left:8px;
+  padding:6px 8px;
+  background: rgba(200,30,30,0.12);
+  color: #ffb4b4;
+  border-radius:6px;
+  font-size:12px;
+}
+
+@media (max-width: 640px){
+  .radio-player{ left: 10px; bottom: 10px; padding: 6px; gap:6px; font-size:13px }
+  .radio-volume input[type=range]{ width: 70px }
+}

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, NavLink, useLocation, useNavigate } from "react-router-dom";
 import ScrollToTop from "./Components/ScrollToTop";
+import RadioPlayer from "./Components/RadioPlayer";
 import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
@@ -229,6 +230,8 @@ const AppLayout: React.FC = () => {
           <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </div>
+
+      <RadioPlayer />
 
       <ScrollToTop />
     </div>

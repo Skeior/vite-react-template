@@ -1,4 +1,5 @@
 import React, { ReactNode, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Timeline from "../Timeline/Timeline";
 import "./About.css";
@@ -127,6 +128,7 @@ const CaseStudyModal: React.FC<{ project: ProjectEntry; onClose: () => void }> =
 
 const AboutPage: React.FC = () => {
   const { lang, t } = useLanguage();
+  const navigate = useNavigate();
   const [activeCaseStudy, setActiveCaseStudy] = useState<ProjectEntry | null>(null);
 
   const content = useMemo<PageContent>(() => {
@@ -402,7 +404,7 @@ const AboutPage: React.FC = () => {
               >
                 {t ? t("about.downloadCV") : lang === "tr" ? "CV İndir" : "Download CV"}
               </a>
-              <button className="outline-button" onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>
+              <button className="outline-button" onClick={() => navigate("/portfolio")}>
                 View Projects
               </button>
             </div>
