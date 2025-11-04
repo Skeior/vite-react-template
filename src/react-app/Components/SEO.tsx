@@ -24,6 +24,7 @@ export const SEO: React.FC<SEOProps> = ({ title, description, keywords, image, u
   const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
   const pageDescription = description || defaultDescription;
   const pageKeywords = keywords || defaultKeywords;
+  const siteName = defaultTitle;
 
   // attempt to compute canonical if not provided (only in browser)
   let canonical: string | undefined = url;
@@ -71,12 +72,27 @@ export const SEO: React.FC<SEOProps> = ({ title, description, keywords, image, u
       <meta property="og:title" content={title || defaultTitle} />
       <meta property="og:description" content={pageDescription} />
       <meta property="og:type" content="website" />
-    {/* og:image: prefer explicit image prop, fallback to site default */}
-    <meta property="og:image" content={image || 'https://talhakarasu.com/images/og-image.svg'} />
+      <meta property="og:site_name" content={siteName} />
+      <meta property="og:locale" content={lang === 'tr' ? 'tr_TR' : 'en_US'} />
+      {/* og:image: prefer explicit image prop, fallback to site default */}
+      <meta property="og:image" content={image || 'https://talhakarasu.com/images/og-image.svg'} />
       <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+      <meta name="twitter:creator" content="@talhakarasu" />
       <meta name="twitter:title" content={title || defaultTitle} />
       <meta name="twitter:description" content={pageDescription} />
-    <meta name="twitter:image" content={image || 'https://talhakarasu.com/images/og-image.svg'} />
+      <meta name="twitter:image" content={image || 'https://talhakarasu.com/images/og-image.svg'} />
+
+      {/* structured data defaults: Organization and Person */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: siteName,
+          url: canonical || 'https://talhakarasu.com',
+          logo: 'https://talhakarasu.com/logo.png',
+          sameAs: ['https://github.com/skeior', 'https://www.linkedin.com/in/talhakarasu']
+        })}
+      </script>
 
       {/* canonical and hreflang */}
       {canonical && <link rel="canonical" href={canonical} />}

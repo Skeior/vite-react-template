@@ -142,11 +142,46 @@ const PortfolioPage: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const { t } = useLanguage();
 
+  // Build structured data (ItemList of CreativeWork) for SEO / AI consumption
+  const siteBase = 'https://talhakarasu.com';
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    'name': t("portfolio.title"),
+    'description': t("portfolio.subtitle"),
+    'url': `${siteBase}/portfolio`,
+    'mainEntity': {
+      '@type': 'ItemList',
+      'itemListElement': projects.map((p, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'url': p.link && p.link !== '#' ? p.link : `${siteBase}/portfolio#project-${i}`,
+        'item': {
+          '@type': 'CreativeWork',
+          'name': p.title,
+          'description': p.description,
+          'image': p.previewImage ? `${siteBase}${p.previewImage}` : undefined,
+          // add optional richer fields
+          'datePublished': (p as any).datePublished || (p as any).year || '2024',
+          'author': {
+            '@type': 'Person',
+            'name': 'Talha Karasu',
+            'url': 'https://talhakarasu.com'
+          },
+          'keywords': (p.technologies || []).slice(0,10).join(', ')
+        }
+      }))
+    }
+  };
+
   return (
     <div className="portfolio-container">
       <SEO 
         title={t("portfolio.title")}
         description={t("portfolio.subtitle")}
+        url={`${siteBase}/portfolio`}
+        image={`${siteBase}${projects[0]?.previewImage ?? '/images/og-image.svg'}`}
+        structuredData={structuredData}
       />
       <motion.header
         className="portfolio-header"
