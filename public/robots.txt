@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Point bots to the sitemap and recommended crawl delay
+Sitemap: https://talhakarasu.com/sitemap.xml
+
+# If you want to disallow specific paths, add them below. Example:
+# Disallow: /api/private
+
+# Keep assets and images crawlable so social cards and AI can fetch them
