@@ -1,10 +1,22 @@
 User-agent: *
+# Allow crawling of site content and assets
 Allow: /
 
-# Point bots to the sitemap and recommended crawl delay
+# Sitemap: points crawlers to the page index
 Sitemap: https://talhakarasu.com/sitemap.xml
 
-# If you want to disallow specific paths, add them below. Example:
-# Disallow: /api/private
+# Recommended: disallow common private or non-content endpoints
+# Adjust these to match your backend routes if needed
+Disallow: /api/
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /private/
 
-# Keep assets and images crawlable so social cards and AI can fetch them
+# Allow images, assets, and profiles to be crawled for rich previews
+Allow: /images/
+Allow: /assets/
+
+# Optional: set crawl-delay for polite crawling (supported by some bots)
+# Crawl-delay: 10
+
+# If you run multiple sitemaps, list them here. Keep robots.txt in project root so crawlers can find it.
