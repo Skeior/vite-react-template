@@ -114,10 +114,40 @@
   },
   "projects": [
     {
+      "title": "ESP-based Smart Plug (WiFi Controlled)",
+      "description": "Designed and developed multiple hardware variants of a WiFi-controlled smart plug using ESP microcontrollers. The device accepts 220V AC input and provides switched 220V outputs rated up to 16A per channel. Controlled via a mobile application (WiFi) with support for OTA firmware updates and optional energy monitoring. Contributed to hardware design and PCB layouts; 1/2/3-channel variants.",
+      "features": ["220V AC input", "Up to 16 A per channel switching capability", "ESP32 / ESP8266 based firmware", "Solid-state relay switching options", "thermal protection", "OTA firmware updates", "Mobile app control (WiFi) and MQTT/HTTP APIs", "Different 1/2/3 channel hardware variants"],
+      "technologies": ["ESP32 / ESP8266", "Embedded C / Arduino framework", "Altium Designer / Easy Eda", "MQTT / HTTP", "Mobile app integration"]
+    },
+    {
       "title": "BLDC Motor Driver for Electric Vehicle",
       "description": "FOC-Based 6 Layer PID Controller, Teknofest 2025 award.",
-      "features": ["12-85V Input voltage", "0-80V / 165A Output Spec", "Compatible with FOC"],
-      "technologies": ["Embedded C", "Altium Designer"]
+      "features": ["12-85V Input voltage", "0-80V / 165A Output Spec", "Compatible with FOC", "Phase-to-phase Voltage Measurements", "Phase Current Measurements", "Overcurrent Protection"],
+      "technologies": ["Embedded C", "Altium Designer", "Field Oriented Control"]
+    },
+    {
+      "title": "Ground Station for Electric Vehicle",
+      "description": "Remote monitoring and telemetry ground station for electric vehicles. Collects real-time data from on-vehicle control boards via serial links and displays telemetry on a user-friendly GUI.",
+      "features": ["LoRa communication (up to 8 km)", "Real-time telemetry from vehicle control boards", "User-friendly ground station GUI (C#)", "Serial communication with vehicle electronics", "Transmits speed, temperature, voltage, remaining energy"],
+      "technologies": ["STM32", "LoRa", "C#", "UART / SPI / I2C"]
+    },
+    {
+      "title": "Göktim Academy - Robotics & Embedded Systems Instructor",
+      "description": "Introduced students to engineering fundamentals and embedded systems through interactive lessons and weekly hands-on projects. Demonstrated sensor behavior and microcontroller interfaces.",
+      "features": ["Teaching binary logic basics", "Sensor and component demonstrations", "Microcontroller interfacing", "Weekly project-based exercises"],
+      "technologies": ["Arduino", "C/C++", "STEM Education"]
+    },
+    {
+      "title": "Efficiency Challenge Participation (2022-2024)",
+      "description": "Participated in Teknofest Efficiency Challenge with the VoltaFCEV team across telemetry, motor driver leadership, and team captain roles.",
+      "features": ["Telemetry System Member (2022)", "Motor Driver Unit Lead (2023)", "Vehicle Team Captain (2024)"],
+      "technologies": ["STM32", "BLDC Motor Control", "LoRa Telemetry"]
+    },
+    {
+      "title": "Supported / Awarded Academic Projects",
+      "description": "Projects supported by national research funds or recognized for academic merit.",
+      "features": ["Scientific Research Project (BAP) - Hydrogen Fuel Cell Vehicle", "Mini Ornithopter Design - TUSAŞ Lift-Up", "TÜBİTAK 2209-A BLDC Driver Design"],
+      "technologies": []
     }
   ]
 }

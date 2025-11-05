@@ -8,6 +8,43 @@ import FooterInfo from "../../Components/FooterInfo";
 
 const projects = [
   {
+    title: "ESP-based Smart Plug (WiFi Controlled)",
+    description: `Designed and developed multiple hardware variants of a WiFi-controlled smart plug using ESP microcontrollers. The device accepts 220V AC input and provides switched 220V outputs rated up to 16A per channel. Controlled via a mobile application (WiFi) with support for OTA firmware updates and optional energy monitoring. I contributed primarily to the hardware design and PCB layouts, producing 1-channel, 2-channel and 3-channel variants to suit different use cases.`,
+    features: [
+      "220V AC input",
+      "Up to 16 A per channel switching capability",
+      "ESP32 / ESP8266 based firmware",
+      "MOSFET / Solid-state relay switching options",
+      "Overcurrent & thermal protection",
+      "OTA firmware updates",
+      "Mobile app control (WiFi) and MQTT/HTTP APIs",
+      "Different 1/2/3 channel hardware variants"
+    ],
+    technologies: [
+      "ESP32 / ESP8266",
+      "Embedded C / Arduino framework",
+      "Altium Designer (PCB) / KiCad",
+      "MQTT / HTTP",
+      "Mobile app integration"
+    ],
+    highlights: [
+      "1 / 2 / 3 channel designs",
+      "220V · 16A per channel",
+      "WiFi control & OTA"
+    ],
+    previewImage: "/images/intern6.png",
+    images: [
+      "/images/intern1.png",
+      "/images/intern2.png",
+      "/images/intern3.png",
+      "/images/intern4.png",
+      "/images/intern5.png",
+      "/images/intern6.png",
+      "/images/intern7.png"
+    ],
+    link: "#"
+  },
+  {
     title: "BLDC Motor Driver for Electric Vehicle",
     description: `This project was developed under the TÜBİTAK 2209-A program 
     with the title "FOC-Based 6 Layer PID Controller for Electric Vehicles". 
@@ -84,73 +121,33 @@ const projects = [
     videos: [
       "/images/lorastation_demo.mp4"
     ],
-    link: "https://github.com/Skeior/elektromobil"
+    link: "https://github.com/skeior/lorastation"
   },
-{
-  title: "Göktim Academy - Robotics & Embedded Systems Instructor",
-  description: `Introduced students to the foundations of engineering and embedded systems through interactive lessons. Demonstrated how sensors work in real life, and showed how microcontrollers communicate with external devices. Designed weekly hands-on projects.`,
-  features: [
-    "Teaching the basics of binary logic",
-    "How sensors and components work.",
-    "How microcontrollers interact with the outside world",
-    "Weekly project-based learning to reinforce concepts",
-    "Encouraging curiosity, teamwork, and problem-solving skills"
-  ],
-  technologies: [
-    "Arduino",
-    "C/C++",
-    "STEM Education",
-    "Electronics Fundamentals",
-    "Mentoring & Teaching"
-  ],
-  highlights: ["Hands-on projects","Sensor demos","Weekly exercises"],
-  previewImage: "/images/goktim_preview.jpg",
-  images: [
-    "/images/goktim_1.jpg",
-    "/images/goktim_2.jpg"
-  ],
-  link: "#"
-},
-
   {
-    title: "ESP-based Smart Plug (WiFi Controlled)",
-    description: `Designed and developed multiple hardware variants of a WiFi-controlled smart plug using ESP microcontrollers. The device accepts 220V AC input and provides switched 220V outputs rated up to 16A per channel. Controlled via a mobile application (WiFi) with support for OTA firmware updates and optional energy monitoring. I contributed primarily to the hardware design and PCB layouts, producing 1-channel, 2-channel and 3-channel variants to suit different use cases.`,
+    title: "Göktim Academy - Robotics & Embedded Systems Instructor",
+    description: `Introduced students to the foundations of engineering and embedded systems through interactive lessons. Demonstrated how sensors work in real life, and showed how microcontrollers communicate with external devices. Designed weekly hands-on projects.`,
     features: [
-      "220V AC input",
-      "Up to 16 A per channel switching capability",
-      "ESP32 / ESP8266 based firmware",
-      "Solid-state relay switching options",
-      "thermal protection",
-      "OTA firmware updates",
-      "Mobile app control (WiFi) and MQTT/HTTP APIs",
-      "Different 1/2/3 channel hardware variants"
+      "Teaching the basics of binary logic",
+      "How sensors and components work.",
+      "How microcontrollers interact with the outside world",
+      "Weekly project-based learning to reinforce concepts",
+      "Encouraging curiosity, teamwork, and problem-solving skills"
     ],
     technologies: [
-      "ESP32 / ESP8266",
-      "Embedded C / Arduino framework",
-      "Altium Designer (PCB) / EasyEDA",
-      "MQTT / HTTP",
-      "Mobile app integration"
+      "Arduino",
+      "C/C++",
+      "STEM Education",
+      "Electronics Fundamentals",
+      "Mentoring & Teaching"
     ],
-    highlights: [
-      "1 / 2 / 3 channel designs",
-      "220V · 16A per channel",
-      "WiFi control & OTA"
-    ],
-    // use internal 'intern*' images from public/images as requested
-      previewImage: "/images/intern6.png",
+    highlights: ["Hands-on projects","Sensor demos","Weekly exercises"],
+    previewImage: "/images/goktim_preview.jpg",
     images: [
-      "/images/intern1.png",
-      "/images/intern2.png",
-      "/images/intern3.png",
-      "/images/intern4.png",
-      "/images/intern5.png",
-      "/images/intern6.png",
-      "/images/intern7.png"
+      "/images/goktim_1.jpg",
+      "/images/goktim_2.jpg"
     ],
-    link: "https://gokaynet.com/"
+    link: "#"
   },
-
   {
     title: "Efficiency Challenge Participation (2022-2024)",
     description: `Participated in Teknofest Efficiency Challenge with VoltaFCEV team. 
@@ -168,13 +165,13 @@ const projects = [
       "Embedded C / C++",
       "Team Leadership & Project Management"
     ],
-  highlights: ["Team captain","Motor driver lead","Telemetry member"],
+    highlights: ["Team captain","Motor driver lead","Telemetry member"],
     previewImage: "/images/efficiency_preview.jpg",
     images: [
       "/images/efficiency_2.jpeg",
       "/images/efficiency_3.jpg"
     ],
-    link: "https://www.instagram.com/voltacar/"
+    link: "#"
   },
   {
     title: "Supported / Awarded Academic Projects",
@@ -256,15 +253,16 @@ const PortfolioPage: React.FC = () => {
         <div className="portfolio-pairs">
         {(() => {
           const rows: any[] = [];
-          for (let i = 0; i < projects.length; i += 2) {
-            rows.push(projects.slice(i, i + 2));
+          // group projects in rows of 3 so we can display three cards per row
+          for (let i = 0; i < projects.length; i += 3) {
+            rows.push(projects.slice(i, i + 3));
           }
 
           return rows.map((row, rowIndex) => (
             <div className="project-pair" key={rowIndex}>
               <div className="pair-grid">
                 {row.map((project: any, colIndex: number) => {
-                  const index = rowIndex * 2 + colIndex;
+                  const index = rowIndex * 3 + colIndex;
                   const pTrans: any = t(`projects.${index}`) || {};
                   const title = pTrans?.title ?? project.title;
                   const description = pTrans?.description ?? project.description;

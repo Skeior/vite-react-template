@@ -114,6 +114,21 @@
   },
   "projects": [
     {
+      "title": "ESP Tabanlı Akıllı Priz (WiFi Kontrollü)",
+      "description": "ESP tabanlı mikrodenetleyiciler kullanarak tasarlanan WiFi kontrollü akıllı priz. 220V AC giriş alır ve her kanal için 16A'a kadar anahtarlanabilir çıkış sağlar. Mobil uygulama üzerinden kontrol, OTA güncellemeleri ve isteğe bağlı enerji ölçümü desteği bulunur. Donanım tasarımında 1, 2 ve 3 kanallı farklı varyantlar geliştirildi.",
+      "features": [
+        "220V AC giriş",
+        "Her kanal için 16A'e kadar anahtarlama",
+        "ESP32 / ESP8266 tabanlı gömülü yazılım",
+        "SSR ile anahtarlama seçenekleri",
+        "Termal koruma",
+        "OTA firmware güncellemeleri",
+        "Mobil uygulama kontrolü (WiFi) ve MQTT/HTTP API'leri",
+        "1/2/3 kanal donanım varyantları"
+      ],
+      "technologies": ["ESP32 / ESP8266", "Gömülü C / Arduino", "Altium Designer / KiCad", "MQTT / HTTP"]
+    },
+    {
       "title": "Elektrikli Araç için BLDC Motor Sürücüsü",
       "description": "Bu proje TÜBİTAK 2209-A programı kapsamında 'Elektrikli Araçlar için FOC Tabanlı 6 Katmanlı PID Kontrolörü' başlığıyla geliştirildi. Teknofest Verimlilik Yarışması 2025'te sunuldu ve ödül aldı.",
       "features": [
@@ -165,21 +180,6 @@
         "Merak ve takım çalışmasını teşvik etme"
       ],
       "technologies": ["Arduino", "C/C++", "STEM Eğitimi", "Elektronik Temelleri"]
-    },
-    {
-      "title": "ESP Tabanlı Akıllı Priz (WiFi Kontrollü)",
-      "description": "ESP tabanlı mikrodenetleyiciler kullanarak tasarlanan WiFi kontrollü akıllı priz. 220V AC giriş alır ve her kanal için 16A'a kadar anahtarlanabilir çıkış sağlar. Mobil uygulama üzerinden kontrol, OTA güncellemeleri ve isteğe bağlı enerji ölçümü desteği bulunur. Donanım tasarımında 1, 2 ve 3 kanallı farklı varyantlar geliştirildi.",
-      "features": [
-        "220V AC giriş",
-        "Her kanal için 16A'e kadar anahtarlama",
-        "ESP32 / ESP8266 tabanlı gömülü yazılım",
-        "MOSFET / SSR ile anahtarlama seçenekleri",
-        "Aşırı akım ve termal koruma",
-        "OTA firmware güncellemeleri",
-        "Mobil uygulama kontrolü (WiFi) ve MQTT/HTTP API'leri",
-        "1/2/3 kanal donanım varyantları"
-      ],
-      "technologies": ["ESP32 / ESP8266", "Gömülü C / Arduino", "Altium Designer / KiCad", "MQTT / HTTP"]
     },
     {
       "title": "Verimlilik Yarışması Katılımları (2022-2024)",
