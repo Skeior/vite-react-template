@@ -183,7 +183,8 @@ const projects = [
     previewImage: "/images/goktim_preview.jpg",
     images: [
       "/images/goktim_1.jpg",
-      "/images/goktim_2.jpg"
+      "/images/goktim_2.jpg",
+      "/images/goktim_3.jpg"
     ],
     link: "#"
   },
