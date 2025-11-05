@@ -228,23 +228,32 @@
 
 /* Show more butonu */
 .show-more-btn {
-  background: transparent;
-  color: var(--accent);
-  border: none;
-  padding: 0.25rem 0;
-  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-sm);
+  background: rgba(227, 52, 47, 0.08);
+  color: var(--text);
+  border: 1px solid rgba(227, 52, 47, 0.45);
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   margin: 0 0 0.75rem 0;
   margin-top: auto; /* push button to bottom of the card container */
-  font-weight: 700;
-  align-self: center; /* center the button inside the card */
+  align-self: center;
+  letter-spacing: 0.01em;
   text-decoration: none;
-  letter-spacing: 0.02em;
+  transition: var(--transition);
+  box-shadow: 0 14px 30px rgba(227, 52, 47, 0.22);
 }
 
-.show-more-btn:hover {
+.show-more-btn:hover,
+.show-more-btn:focus-visible {
+  background: rgba(227, 52, 47, 0.16);
+  border-color: rgba(227, 52, 47, 0.65);
   transform: translateY(-1px);
-  color: #ffcccc;
 }
 
 /* Detaylar açıldığında */
