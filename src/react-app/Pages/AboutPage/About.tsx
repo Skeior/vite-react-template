@@ -190,6 +190,7 @@ const AboutPage: React.FC = () => {
               ]
             }
           }
+        
         ],
         updates: [
           {
@@ -313,6 +314,7 @@ const AboutPage: React.FC = () => {
             ]
           }
         }
+        
       ],
       updates: [
         {

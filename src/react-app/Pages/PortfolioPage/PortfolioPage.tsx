@@ -20,17 +20,26 @@ const projects = [
       "Mobile app control (WiFi) and MQTT/HTTP APIs",
       "Different 1/2/3 channel hardware variants"
     ],
+    // These feature items should be hidden from the card preview and only
+    // shown in the details modal when the user clicks "Show Details".
+    detailsOnlyFeatures: [
+      "220V AC input",
+      "Up to 16 A per channel switching capability",
+      "ESP32 / ESP8266 based firmware",
+      "Solid-state relay switching options",
+      "thermal protection",
+      "OTA firmware updates"
+    ],
     technologies: [
       "ESP32 / ESP8266",
       "Embedded C / Arduino framework",
-      "Altium Designer (PCB) / KiCad",
-      "MQTT / HTTP",
+      "Altium Designer (PCB) / Easy Eda",
       "Mobile app integration"
     ],
     highlights: [
       "1 / 2 / 3 channel designs",
       "220V · 16A per channel",
-      "WiFi control & OTA"
+      "WiFi control"
     ],
     previewImage: "/images/intern6.png",
     images: [
@@ -41,6 +50,36 @@ const projects = [
       "/images/intern5.png",
       "/images/intern6.png",
       "/images/intern7.png"
+    ],
+    link: "#"
+  },
+  {
+    title: "Battery Management System (BMS)",
+    description: `In-house designed 10x10 cm, 6-layer BMS for a 14s pack. Features ADC-based cell voltage monitoring, NTC temperature sensing, multiplexer-controlled MOSFET passive balancing, UART integration with vehicle control systems and on-board charger, and fail-safe shutdown on communication loss.`,
+    features: [
+      "ADC-based monitoring for 14 cells",
+      "NTC temperature sensing and automatic cutoff",
+      "Multiplexer-controlled MOSFET passive balancing",
+      "UART communication with VCS & On-Board Charger",
+      "Fail-safe automatic shutdown on comms loss"
+    ],
+    technologies: [
+      "STM32 / Embedded C",
+      "Altium Designer (PCB)",
+      "ADC / NTC sensors",
+      "UART / Serial integration"
+    ],
+    highlights: [
+      "6-layer · 10x10 cm PCB",
+      "14s pack monitoring",
+      "Passive balancing"
+    ],
+    previewImage: "/images/bms1.jpeg",
+    images: [
+      "/images/bms1.jpeg",
+      "/images/bms2.jpeg",
+      "/images/bms3.jpeg",
+      "/images/bms4.jpeg"
     ],
     link: "#"
   },
@@ -306,19 +345,17 @@ const PortfolioPage: React.FC = () => {
                         </div>
                       )}
 
-                      <ul className="card-features">
-                        {(
-                          (features || []).filter((f: string) => {
-                            const sourceHighlights = project.highlights || [];
-                            return !sourceHighlights.some((h: string) => (h || '').trim() === (f || '').trim());
-                          })
-                        ).slice(0, 6).map((f: string, i: number) => (
-                          <li key={i}>{f}</li>
-                        ))}
-                      </ul>
+                      {/* Feature bullets intentionally hidden from card preview —
+                          details are shown in the modal when the user clicks "Show Details" */}
 
                       <button
-                        onClick={() => setActiveCaseStudy(project)}
+                        onClick={() => {
+                          // Debug: log which project is being opened to diagnose image mixing
+                          // Remove this after debugging is complete
+                          // eslint-disable-next-line no-console
+                          console.log('Open project:', index, project.title, project.images);
+                          setActiveCaseStudy(project);
+                        }}
                         className="show-more-btn"
                       >
                         {t("portfolio.showDetails")}

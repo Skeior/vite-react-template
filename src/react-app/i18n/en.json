@@ -115,37 +115,43 @@
   "projects": [
     {
       "title": "ESP-based Smart Plug (WiFi Controlled)",
-      "description": "Designed and developed multiple hardware variants of a WiFi-controlled smart plug using ESP microcontrollers. The device accepts 220V AC input and provides switched 220V outputs rated up to 16A per channel. Controlled via a mobile application (WiFi) with support for OTA firmware updates and optional energy monitoring. Contributed to hardware design and PCB layouts; 1/2/3-channel variants.",
+      "description": "Designed and shipped multiple hardware variants of a WiFi-controlled smart plug based on ESP microcontrollers. Each variant accepts 220V AC and provides switched outputs up to 16A per channel, supports OTA updates, and integrates with mobile apps and MQTT/HTTP APIs. I led PCB design and firmware integration for 1/2/3-channel SKUs.",
       "features": ["220V AC input", "Up to 16 A per channel switching capability", "ESP32 / ESP8266 based firmware", "Solid-state relay switching options", "thermal protection", "OTA firmware updates", "Mobile app control (WiFi) and MQTT/HTTP APIs", "Different 1/2/3 channel hardware variants"],
-      "technologies": ["ESP32 / ESP8266", "Embedded C / Arduino framework", "Altium Designer / Easy Eda", "MQTT / HTTP", "Mobile app integration"]
+      "technologies": ["ESP32 / ESP8266", "Arduino framework", "Altium Designer",  "Mobile app integration"]
+    },
+    {
+      "title": "Battery Management System (BMS)",
+      "description": "In-house designed 10x10 cm, 6-layer BMS for a 14s7p pack. Features ADC-based cell voltage monitoring, NTC temperature sensing, multiplexer-controlled MOSFET passive balancing, UART integration with vehicle control systems and on-board charger, and fail-safe shutdown on communication loss.",
+      "features": ["ADC-based monitoring for 14 cells", "NTC temperature sensing and automatic cutoff", "Multiplexer-controlled MOSFET passive balancing", "UART communication with VCS & On-Board Charger", "Fail-safe automatic shutdown on comms loss"],
+      "technologies": ["STM32 / Embedded C", "Altium Designer (PCB)", "ADC / NTC sensors", "UART / Serial integration"]
     },
     {
       "title": "BLDC Motor Driver for Electric Vehicle",
-      "description": "FOC-Based 6 Layer PID Controller, Teknofest 2025 award.",
+  "description": "Developed a compact, six-layer BLDC motor driver implementing field-oriented control with PID current and velocity loops. The hardware supports 12–85V input, high-current outputs, phase voltage/current sensing, and robust protections; presented at Teknofest 2025 and received an award.",
       "features": ["12-85V Input voltage", "0-80V / 165A Output Spec", "Compatible with FOC", "Phase-to-phase Voltage Measurements", "Phase Current Measurements", "Overcurrent Protection"],
       "technologies": ["Embedded C", "Altium Designer", "Field Oriented Control"]
     },
     {
       "title": "Ground Station for Electric Vehicle",
-      "description": "Remote monitoring and telemetry ground station for electric vehicles. Collects real-time data from on-vehicle control boards via serial links and displays telemetry on a user-friendly GUI.",
+  "description": "Built a ground station for EV telemetry that aggregates real-time data from vehicle control boards over serial links and LoRa, logs sessions reliably, and visualizes telemetry in a C# GUI for diagnostics and race operations.",
       "features": ["LoRa communication (up to 8 km)", "Real-time telemetry from vehicle control boards", "User-friendly ground station GUI (C#)", "Serial communication with vehicle electronics", "Transmits speed, temperature, voltage, remaining energy"],
       "technologies": ["STM32", "LoRa", "C#", "UART / SPI / I2C"]
     },
     {
       "title": "Göktim Academy - Robotics & Embedded Systems Instructor",
-      "description": "Introduced students to engineering fundamentals and embedded systems through interactive lessons and weekly hands-on projects. Demonstrated sensor behavior and microcontroller interfaces.",
+  "description": "Taught foundational embedded systems and robotics through hands-on labs and weekly projects. Covered sensor interfacing, microcontroller communication, and practical troubleshooting to help students build working prototypes.",
       "features": ["Teaching binary logic basics", "Sensor and component demonstrations", "Microcontroller interfacing", "Weekly project-based exercises"],
       "technologies": ["Arduino", "C/C++", "STEM Education"]
     },
     {
       "title": "Efficiency Challenge Participation (2022-2024)",
-      "description": "Participated in Teknofest Efficiency Challenge with the VoltaFCEV team across telemetry, motor driver leadership, and team captain roles.",
+  "description": "Contributed across telemetry, motor driver development, and team leadership for the Teknofest Efficiency Challenge. Roles included telemetry engineer, motor driver lead, and team captain for the hydrogen-supported vehicle.",
       "features": ["Telemetry System Member (2022)", "Motor Driver Unit Lead (2023)", "Vehicle Team Captain (2024)"],
       "technologies": ["STM32", "BLDC Motor Control", "LoRa Telemetry"]
     },
     {
       "title": "Supported / Awarded Academic Projects",
-      "description": "Projects supported by national research funds or recognized for academic merit.",
+  "description": "Academic and research projects supported by national funding programs, including hydrogen fuel cell vehicle R&D, ornithopter design, and TÜBİTAK-backed BLDC driver work.",
       "features": ["Scientific Research Project (BAP) - Hydrogen Fuel Cell Vehicle", "Mini Ornithopter Design - TUSAŞ Lift-Up", "TÜBİTAK 2209-A BLDC Driver Design"],
       "technologies": []
     }

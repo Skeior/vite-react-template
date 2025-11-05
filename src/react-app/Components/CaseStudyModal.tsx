@@ -47,12 +47,13 @@ const CaseStudyModal: React.FC<{ project: any; onClose: () => void }> = ({ proje
         )}
 
         {/* Features / bullet list */}
-        {(project.features || []).length > 0 && (
+        {( (project.features || []).length > 0 || (project.detailsOnlyFeatures || []).length > 0) && (
           <section>
             <h3>Features</h3>
             <ul>
+              {/* Combine visible features + details-only features for modal display */}
               {(
-                (project.features || []).filter((f: string) => {
+                ([...(project.features || []), ...(project.detailsOnlyFeatures || [])] as string[]).filter((f: string) => {
                   const sourceHighlights = project.highlights || [];
                   return !sourceHighlights.some((h: string) => (h || '').trim() === (f || '').trim());
                 })

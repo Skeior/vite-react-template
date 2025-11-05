@@ -115,22 +115,27 @@
   "projects": [
     {
       "title": "ESP Tabanlı Akıllı Priz (WiFi Kontrollü)",
-      "description": "ESP tabanlı mikrodenetleyiciler kullanarak tasarlanan WiFi kontrollü akıllı priz. 220V AC giriş alır ve her kanal için 16A'a kadar anahtarlanabilir çıkış sağlar. Mobil uygulama üzerinden kontrol, OTA güncellemeleri ve isteğe bağlı enerji ölçümü desteği bulunur. Donanım tasarımında 1, 2 ve 3 kanallı farklı varyantlar geliştirildi.",
+  "description": "ESP tabanlı kompakt 1/2/3 kanallı akıllı prizler tasarlayıp üretime aldım; her kanal 220V çıkış sağlar ve 16A'e kadar anahtarlanabilir. Firmware ESP32/ESP8266 uyumlu, mobil uygulama kontrolü sunar. Şematik, PCB yerleşimi ve firmware entegrasyonunu yönettim.",
       "features": [
         "220V AC giriş",
         "Her kanal için 16A'e kadar anahtarlama",
         "ESP32 / ESP8266 tabanlı gömülü yazılım",
         "SSR ile anahtarlama seçenekleri",
         "Termal koruma",
-        "OTA firmware güncellemeleri",
         "Mobil uygulama kontrolü (WiFi) ve MQTT/HTTP API'leri",
         "1/2/3 kanal donanım varyantları"
       ],
-      "technologies": ["ESP32 / ESP8266", "Gömülü C / Arduino", "Altium Designer / KiCad", "MQTT / HTTP"]
+      "technologies": ["ESP32 / ESP8266", "C / Arduino", "Altium Designer"]
+    },
+    {
+      "title": "Batarya Yönetim Sistemi (BYS)- Pasif Dengeleme",
+  "description": "14s batarya paketi için tasarlanmış 10x10 cm, 6 katmanlı BYS kartı. ADC tabanlı hücre gerilimi ölçümü, NTC sıcaklık izleme, çoklayıcı kontrollü MOSFET ile pasif dengeleme, VCS ve şarj ünitesiyle UART entegrasyonu ve iletişim kaybında güvenli kapatma içerir.",
+      "features": ["14 hücre için ADC tabanlı izleme", "NTC sıcaklık ölçümü ve otomatik kesme", "Çoklayıcı kontrollü MOSFET pasif dengeleme", "VCS ve yerleşik şarj ile UART entegrasyonu", "İletişim kaybında otomatik güvenlik kesmesi"],
+      "technologies": ["STM32 / Gömülü C", "Altium Designer", "ADC / NTC sensörleri", "UART / Seri entegrasyon"]
     },
     {
       "title": "Elektrikli Araç için BLDC Motor Sürücüsü",
-      "description": "Bu proje TÜBİTAK 2209-A programı kapsamında 'Elektrikli Araçlar için FOC Tabanlı 6 Katmanlı PID Kontrolörü' başlığıyla geliştirildi. Teknofest Verimlilik Yarışması 2025'te sunuldu ve ödül aldı.",
+  "description": "Alan yönelimli kontrol (FOC) ve PID akım/hız döngüleri uygulayan kompakt, altı katmanlı BLDC sürücü geliştirdim. Donanım 12–85V giriş, yüksek akımlı çıkışlar, faz gerilimi/akım ölçümü ve kapsamlı koruma devreleri destekler; tasarım Teknofest 2025'te sunuldu ve ödül aldı.",
       "features": [
         "12-85V Giriş gerilimi",
         "0-80V / 165A Çıkış Özelliği",
@@ -144,7 +149,7 @@
       ],
       "technologies": [
         "Gömülü C / HAL Kütüphaneleri",
-        "Altium Designer (PCB Tasarım)",
+        "Altium Designer",
         "UART & RS232 & I2C İletişimi",
         "Field Oriented Control (FOC)",
         "Six-Step Commutation"
@@ -152,7 +157,7 @@
     },
     {
       "title": "Elektrikli Araç Yer İstasyonu",
-      "description": "Araç kontrol kartlarından gerçek zamanlı veri toplayan ve yer istasyonunda gösteren uzaktan izleme/telemetri uygulaması.",
+  "description": "Araç kontrol kartlarından seri bağlantılar ve LoRa üzerinden gerçek zamanlı veri toplayan, oturumları güvenle kaydeden ve telemetriyi teşhis ve yarış operasyonları için C# tabanlı bir GUI'de görselleştiren bir yer istasyonu geliştirdim.",
       "features": [
         "LoRa iletişimi (8 km'ye kadar)",
         "Gerçek zamanlı telemetri",
@@ -171,7 +176,7 @@
     },
     {
       "title": "Göktim Akademi - Robotik & Gömülü Sistem Eğitmeni",
-      "description": "Öğrencilere mühendislik temellerini ve gömülü sistemleri etkileşimli derslerle anlattım ve haftalık pratik projeler tasarladım.",
+  "description": "Uygulamalı lablar ve haftalık projeler aracılığıyla temel gömülü sistemler ve robotik eğitimi verdim. Sensör arayüzleri, mikrodenetleyici iletişimi ve pratik hata ayıklama konularına odaklanarak öğrencilerin çalışan prototipler üretmesine yardımcı oldum.",
       "features": [
         "İkili mantık temellerini öğretme",
         "Sensörlerin ve bileşenlerin çalışma prensipleri",
@@ -183,13 +188,13 @@
     },
     {
       "title": "Verimlilik Yarışması Katılımları (2022-2024)",
-      "description": "VoltaFCEV takımı ile Teknofest Verimlilik Yarışması'na çeşitli rollerde katıldım.",
+  "description": "Teknofest Verimlilik Yarışması'nda telemetri, motor sürücü geliştirme ve takım liderliği alanlarında görev aldım. Rollerim arasında telemetri mühendisi, motor sürücü birimi lideri ve takım kaptanlığı yer aldı.",
       "features": ["Telemetri Sistemi Üyesi (2022)", "Motor Sürücü Birimi Lideri (2023)", "Takım Kaptanı (2024)"],
       "technologies": ["STM32 Mikrodenetleyiciler", "BLDC Motor Kontrolü", "LoRa Telemetri"]
     },
     {
       "title": "Desteklenen / Ödüllü Akademik Projeler",
-      "description": "Ulusal araştırma fonları tarafından desteklenen veya akademik başarı ile tanınan projeler.",
+  "description": "Hidrojen yakıt hücreli araç AR‑GE'si, ornitorenk tasarımı ve TÜBİTAK destekli BLDC sürücü çalışmaları gibi ulusal fonlarla desteklenen akademik ve araştırma projeleri.",
       "features": ["Bilimsel Araştırma Projesi (BAP) - Hidrojen Yakıt Hücreli Araç", "Mini Ornitorenk Tasarımı - TUSAŞ Lift-Up", "TÜBİTAK 2209-A BLDC Sürücü Tasarımı"]
     }
   ]
