@@ -86,7 +86,7 @@ const AboutPage: React.FC = () => {
           valueProp: "BLDC sürücülerden telemetri istasyonlarına kadar yüksek güvenilirlikte gömülü sistemler geliştiriyorum.",
           availability: {
             status: "Gömülü mühendis rollerine / stajlara açığım",
-            detail: "Ar-Ge ve ürün geliştirme projelerinde yer almak için müsaitim."
+            detail: "Ar-Ge ve ürün geliştirme projelerinde yer alabilirim."
           }
         },
         stats: [
@@ -105,9 +105,7 @@ const AboutPage: React.FC = () => {
           { label: "Ar-Ge projelerinde liderlik (elektrikli & hidrojen araçlar)", stars: 4, icon: <FaUsersCog /> }
         ],
         about: [
-          "Motor kontrolü, telemetri ve dayanıklı elektronik üzerine çalışan gömülü yazılım & donanım geliştiricisi.",
-          "STM32 tabanlı prototipleri üretim seviyesine taşıyan son sınıf Bilgisayar Mühendisliği öğrencisiyim; BLDC sürücüler ve telemetri istasyonları geliştiriyorum.",
-          "VoltaTEAM için C/C++ kontrol yazılımlarını PCB tasarımıyla birleştirerek verimli, servis edilebilir sistemler teslim ediyorum."
+          "Bilgisayar Mühendisliği son sınıf öğrencisiyim ve donanım ile gömülü yazılım alanlarını entegre ederek bütünleşik Ar‑Ge çözümleri geliştirmeye odaklanıyorum. Motor kontrolü ve güç elektroniği konularında yazılım geliştirme ve PCB tasarımı üzerine çalışıyor, projelerimi prototipten üretim aşamasına kadar titizlikle yönetiyorum. Analitik düşünme becerim, detaylara verdiğim önem ve mükemmeliyetçi yaklaşımım sayesinde karmaşık sistemlerde verimli ve güvenilir sonuçlar elde etmeye odaklanıyorum. VoltaTEAM ekibiyle birlikte elektrikli araç teknolojilerinin tasarım ve geliştirme süreçlerinde aktif rol alarak takım çalışması, liderlik ve proje yönetimi konularında güçlü deneyimler kazandım."
         ],
         projects: [
           {
@@ -229,9 +227,7 @@ const AboutPage: React.FC = () => {
         { label: "Leadership in R&D projects (electric & hydrogen vehicles)", stars: 4, icon: <FaUsersCog /> }
         ],
       about: [
-        "Embedded firmware & hardware developer focused on motor control, telemetry, and rugged electronics.",
-        "Final-year Computer Engineering student translating STM32 prototyping into production-ready BLDC drivers and telemetry stacks.",
-        "Deliver high-reliability boards and firmware for VoltaTEAM, blending C/C++ control loops with PCB design to ship efficient, serviceable systems."
+        "I'm a final-year Computer Engineering student focused on delivering integrated R&D solutions by combining hardware and embedded software. I work on firmware development and PCB design for motor control and power electronics, managing projects meticulously from prototype to production. With strong analytical thinking, attention to detail, and a perfectionist approach, I aim to deliver efficient and reliable results in complex systems. Working with VoltaTEAM, I played an active role in designing and developing electric vehicle technologies, gaining solid experience in teamwork, leadership, and project management."
       ],
       projects: [
         {
@@ -327,6 +323,10 @@ const AboutPage: React.FC = () => {
     };
   }, [lang]);
 
+  // Prefer i18n `about.paragraphs` when available to avoid duplicating text
+  // in both translation files and the component state.
+  const i18nAbout = (t && (t("about.paragraphs") as any)) || null;
+
   const handleLocalScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -336,7 +336,29 @@ const AboutPage: React.FC = () => {
 
   return (
     <>
-      <SEO title={content.hero.name} description={content.hero.title} />
+      {/* Provide About text to SEO for crawlers: use i18n paragraphs if present, otherwise fallback */}
+      {(() => {
+        const aboutArr = (i18nAbout ?? content.about) as string[];
+        const aboutText = Array.isArray(aboutArr) ? aboutArr.join(' ') : String(aboutArr);
+        const structuredData = {
+          '@type': 'AboutPage',
+          'mainEntity': {
+            '@type': 'Person',
+            'name': content.hero.name,
+            'description': aboutText,
+            'url': 'https://talhakarasu.com'
+          }
+        };
+
+        return (
+          <SEO
+            title={content.hero.name}
+            description={aboutText || content.hero.title}
+            image={'https://talhakarasu.com/images/og-image.svg'}
+            structuredData={structuredData}
+          />
+        );
+      })()}
       <main className="home" id="top">
         <section id="hero" className="hero" data-nav-section>
           <motion.div className="hero-content" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
@@ -421,11 +443,10 @@ const AboutPage: React.FC = () => {
         <section id="about" className="section about-section" data-nav-section>
           <div className="section-heading">
             <p className="eyebrow">{lang === "tr" ? "Hakkımda" : "About"}</p>
-            <h2>{lang === "tr" ? "Takım içinde üstlendiğim roller" : "Roles I take on"}</h2>
-            <p>{lang === "tr" ? "Ar-Ge çalışmalarında donanım ve yazılımı birlikte ele alarak sahada doğrulanmış çözümler geliştiriyorum." : "I approach R&D holistically, ensuring hardware and firmware are validated together."}</p>
+            <h2>{lang === "tr" ? "Uzmanlık Alanlarım" : "Areas of expertise"}</h2>
           </div>
           <div className="about-columns">
-            {content.about.map((paragraph, index) => (
+            {(i18nAbout ?? content.about).map((paragraph: any, index: number) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>

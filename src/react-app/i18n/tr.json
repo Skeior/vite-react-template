@@ -20,39 +20,22 @@
   "updates": "Güncellemeler",
   "cv": "Kaynaklar"
   },
-  "about": {
-    "name": "Talha Karasu",
-    "subtitle": "Gömülü Sistemler - Ar-Ge Mühendisi",
-    "aboutHeading": "Hakkımda",
-    "downloadCV": "CV İndir",
-    "skillsHeading": "Yetenekler",
-    "paragraphs": [
-      "Erciyes Üniversitesi, son sınıf Bilgisayar Mühendisliği öğrencisi; gömülü sistemler ve güç elektroniği alanında uygulamalı deneyim.",
-      "Hem teorik bilgiye hem de pratik gömülü yazılım ve donanım tasarımına hakim. Yerel ve verimli donanım-yazılım entegre sistemler geliştirmeye odaklı.",
-      "Hedefim, teknik becerilerimi ve deneyimlerimi kullanarak verimli, ölçeklenebilir ve yenilikçi çözümler üretmektir."
-    ],
-    "skills": [
-      {
-        "label": "Gömülü sistem geliştirme (STM32, C/C++)",
-        "stars": 4
-      },
-      {
-        "label": "PCB tasarımı ve elektronik entegrasyonu (Altium Designer)",
-        "stars": 4
-      },
-      {
-        "label": "BLDC motor kontrolü ve sürücü tasarımı (PWM, FOC, SixStep)",
-        "stars": 4
-      },
-      {
-        "label": "Batarya Yönetim Sistemleri ve enerji optimizasyonu",
-        "stars": 3
-      },
-      {
-        "label": "Ar-Ge projelerinde liderlik (elektrikli ve hidrojen araçlar)",
-        "stars": 4
-      }
-    ]
+      "about": {
+        "name": "Talha Karasu",
+        "subtitle": "Gömülü Sistemler - Ar-Ge Mühendisi",
+        "aboutHeading": "Hakkımda",
+        "downloadCV": "CV İndir",
+        "skillsHeading": "Yetenekler",
+        "paragraphs": [
+          "Bilgisayar Mühendisliği son sınıf öğrencisiyim ve donanım ile gömülü yazılım alanlarını entegre ederek bütünleşik Ar‑Ge çözümleri geliştirmeye odaklanıyorum. Motor kontrolü ve güç elektroniği konularında yazılım geliştirme ve PCB tasarımı üzerine çalışıyor, projelerimi prototipten üretim aşamasına kadar titizlikle yönetiyorum. Analitik düşünme becerim, detaylara verdiğim önem ve mükemmeliyetçi yaklaşımım sayesinde karmaşık sistemlerde verimli ve güvenilir sonuçlar elde etmeye odaklanıyorum. VoltaTEAM ekibiyle birlikte elektrikli araç teknolojilerinin tasarım ve geliştirme süreçlerinde aktif rol alarak takım çalışması, liderlik ve proje yönetimi konularında güçlü deneyimler kazandım."
+        ],
+        "skills": [
+          { "label": "Gömülü sistem geliştirme (STM32, C/C++)", "stars": 4 },
+          { "label": "PCB tasarımı ve elektronik entegrasyonu (Altium Designer)", "stars": 4 },
+          { "label": "BLDC motor kontrolü ve sürücü tasarımı (PWM, FOC, SixStep)", "stars": 4 },
+          { "label": "Batarya Yönetim Sistemleri ve enerji optimizasyonu", "stars": 3 },
+          { "label": "Ar-Ge projelerinde liderlik (elektrikli ve hidrojen araçlar)", "stars": 4 }
+        ]
   },
   "contact": {
     "title": "İletişim",
