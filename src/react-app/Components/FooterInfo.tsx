@@ -11,7 +11,8 @@ interface ContactItem {
 
 interface QuickLink {
   label: string;
-  target: string;
+  target?: string;
+  to?: string;
 }
 
 interface ExternalLink {
@@ -49,10 +50,8 @@ const FooterInfo: React.FC<FooterInfoProps> = ({ onQuickLink }) => {
           { label: "Web", value: "talhakarasu.com", href: "https://talhakarasu.com" }
         ],
         quickLinks: [
-          { label: "Projeler", target: "projects" },
-          { label: "Zaman çizelgesi", target: "timeline" },
-          { label: "Güncellemeler", target: "updates" },
-          { label: "Kaynaklar", target: "cv" }
+          { label: "Projeler", to: "/portfolio" },
+          { label: "Zaman çizelgesi", target: "timeline" }
         ],
         externalLinks: [
           { label: "GitHub", href: "https://github.com/skeior" },
@@ -72,10 +71,8 @@ const FooterInfo: React.FC<FooterInfoProps> = ({ onQuickLink }) => {
         { label: "Website", value: "talhakarasu.com", href: "https://talhakarasu.com" }
       ],
       quickLinks: [
-        { label: "Projects", target: "projects" },
-        { label: "Timeline", target: "timeline" },
-        { label: "Updates", target: "updates" },
-        { label: "Resources", target: "cv" }
+        { label: "Projects", to: "/portfolio" },
+        { label: "Timeline", target: "timeline" }
       ],
       externalLinks: [
         { label: "GitHub", href: "https://github.com/skeior" },
@@ -119,26 +116,43 @@ const FooterInfo: React.FC<FooterInfoProps> = ({ onQuickLink }) => {
         <article className="info-card">
           <h3>{lang === "tr" ? "Site içinde" : "On this site"}</h3>
           <div className="info-links">
-            {content.quickLinks.map((link) =>
-              onQuickLink ? (
-                <button
-                  key={link.target}
-                  type="button"
-                  className="link-button"
-                  onClick={() => onQuickLink(link.target)}
-                >
-                  {link.label}
-                </button>
-              ) : (
-                <Link
-                  key={link.target}
-                  className="link-button"
-                  to={{ pathname: "/", hash: `#${link.target}` }}
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
+            {content.quickLinks.map((link) => {
+              if (link.to) {
+                return (
+                  <Link key={link.label} className="link-button" to={link.to}>
+                    {link.label}
+                  </Link>
+                );
+              }
+
+              const target = link.target;
+              if (target) {
+                if (onQuickLink) {
+                  return (
+                    <button
+                      key={target}
+                      type="button"
+                      className="link-button"
+                      onClick={() => onQuickLink(target)}
+                    >
+                      {link.label}
+                    </button>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={target}
+                    className="link-button"
+                    to={{ pathname: "/", hash: `#${target}` }}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
+
+              return null;
+            })}
           </div>
         </article>
 

@@ -1,14 +1,11 @@
 {
-  "nav": {
+    "nav": {
     "home": "Home",
-    "portfolio": "Portfolio",
+    "portfolio": "Projects",
     "contact": "Contact",
     "hero": "Overview",
     "about": "About",
-    "projects": "Projects",
-    "timeline": "Timeline",
-  "updates": "Updates",
-  "cv": "Resources"
+    "timeline": "Timeline"
   },
   "portfolio": {
     "title": "Projects & Experience",

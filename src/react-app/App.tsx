@@ -57,6 +57,11 @@ const AppLayout: React.FC = () => {
   }, [location.pathname, location.hash, scrollToSection]);
 
   useEffect(() => {
+    // Ensure every route change starts at the top of the page
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (location.pathname !== "/") {
       setActiveSection("none");
       return;
@@ -170,13 +175,10 @@ const AppLayout: React.FC = () => {
   }
 
   const anchorItems: AnchorItem[] = useMemo(
-    () => [
+      () => [
       { id: "hero", label: t("nav.hero"), mobileVisible: true },
       { id: "about", label: t("nav.about") },
-      { id: "projects", label: t("nav.projects") },
-      { id: "timeline", label: t("nav.timeline") },
-      { id: "updates", label: t("nav.updates") },
-      { id: "cv", label: t("nav.cv") }
+      { id: "timeline", label: t("nav.timeline") }
     ],
     [t]
   );

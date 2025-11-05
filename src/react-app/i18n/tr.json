@@ -10,15 +10,11 @@
   },
   "nav": {
     "home": "Ana Sayfa",
-    "portfolio": "Portfolyo",
+    "portfolio": "Projeler",
     "contact": "İletişim",
     "hero": "Genel Bakış",
-      
     "about": "Hakkımda",
-    "projects": "Projeler",
-    "timeline": "Zaman Çizelgesi",
-  "updates": "Güncellemeler",
-  "cv": "Kaynaklar"
+    "timeline": "Zaman Çizelgesi"
   },
       "about": {
         "name": "Talha Karasu",
