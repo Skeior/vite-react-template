@@ -135,7 +135,7 @@
     },
     {
       "title": "Elektrikli Araç için BLDC Motor Sürücüsü",
-  "description": "Alan yönelimli kontrol (FOC) ve PID akım/hız döngüleri uygulayan kompakt, altı katmanlı BLDC sürücü geliştirdim. Donanım 12–85V giriş, yüksek akımlı çıkışlar, faz gerilimi/akım ölçümü ve kapsamlı koruma devreleri destekler; tasarım Teknofest 2025'te sunuldu ve ödül aldı.",
+  "description": "Alan yönelimli kontrol (FOC) ve PID akım/hız döngüleri uygulayan kompakt, altı katmanlı BLDC sürücü geliştirdim.12–85V giriş, yüksek akımlı çıkışlar, faz gerilimi/akım ölçümü ve kapsamlı koruma devreleri destekler; tasarım Teknofest 2025'te sunuldu ve ödül aldı.",
       "features": [
         "12-85V Giriş gerilimi",
         "0-80V / 165A Çıkış Özelliği",

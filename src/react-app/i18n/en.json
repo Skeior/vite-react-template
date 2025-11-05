@@ -115,7 +115,7 @@
   "projects": [
     {
       "title": "ESP-based Smart Plug (WiFi Controlled)",
-      "description": "Designed and shipped multiple hardware variants of a WiFi-controlled smart plug based on ESP microcontrollers. Each variant accepts 220V AC and provides switched outputs up to 16A per channel, supports OTA updates, and integrates with mobile apps and MQTT/HTTP APIs. I led PCB design and firmware integration for 1/2/3-channel SKUs.",
+      "description": "Designed and shipped multiple hardware variants of a WiFi-controlled smart plug based on ESP microcontrollers. Each variant accepts 220V AC and provides switched outputs up to 16A per channel, I led PCB design and firmware integration for 1/2/3-channel SKUs.",
       "features": ["220V AC input", "Up to 16 A per channel switching capability", "ESP32 / ESP8266 based firmware", "Solid-state relay switching options", "thermal protection", "OTA firmware updates", "Mobile app control (WiFi) and MQTT/HTTP APIs", "Different 1/2/3 channel hardware variants"],
       "technologies": ["ESP32 / ESP8266", "Arduino framework", "Altium Designer",  "Mobile app integration"]
     },
