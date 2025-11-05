@@ -103,6 +103,13 @@
         "place": "Göktim Akademi",
         "desc": "Mentored high school students in microcontrollers & embedded systems."
       }
+      ,
+      {
+        "year": "Sep 2022 - Nov 2027",
+        "title": "Hardware Design Engineer - Intern",
+        "place": "Gökay Bilişim",
+        "desc": "Actively participated in IoT product design. Designed WiFi-controlled AC input switching boards. Details: https://gokaynet.com/"
+      }
     ]
   },
   "projects": [

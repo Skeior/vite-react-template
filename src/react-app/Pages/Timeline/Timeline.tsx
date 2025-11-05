@@ -12,6 +12,8 @@ const staticData = [
   { year: "2023 - 2024", title: "Motor Driver Unit Leader", place: "VoltaCAR", desc: "Designed BLDC motor driver for Teknofest Efficiency Challenge.", icon: <FaCar /> },
   { year: "2024 - 2025", title: "Team Captain", place: "VoltaFCEV", desc: "Team Captain of Hydrogen-supported Teknofest Efficiency Challenge.", icon: <FaTrophy /> },
   { year: "2024 - 2025", title: "Embedded Mentor", place: "Göktim Akademi", desc: "Mentored high school students in microcontrollers & embedded systems.", icon: <FaLaptopCode /> },
+  // Gökay Bilişim internship (added so translations can overlay and it appears)
+  { year: "Sep 2022 - Nov 2027", title: "Hardware Design Engineer - Intern", place: "Gökay Bilişim", desc: "Actively participated in IoT product design. Designed WiFi-controlled AC input switching boards. https://gokaynet.com/", icon: <FaBriefcase /> },
 ];
 
 export default function Timeline() {

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import "./Portfolio.css";
 import { useLanguage } from "../../Components/LanguageProvider";
 import SEO from "../../Components/SEO";
+import CaseStudyModal from "../../Components/CaseStudyModal";
 import FooterInfo from "../../Components/FooterInfo";
 
 const projects = [
@@ -28,6 +29,11 @@ const projects = [
       "UART & RS232 & I2C Communication",
       "Field Oriented Control (FOC)",
       "Six-Step Commutation",
+    ],
+    highlights: [
+      "12-85 V input range",
+      "0-80 V / 165 A output",
+      "10x10 cm · six layers"
     ],
     previewImage: "/images/onarka.jpg",
     images: [
@@ -65,6 +71,11 @@ const projects = [
       "UART / SPI / I2C Communication",
       "C# GUI Development"
     ],
+    highlights: [
+      "Up to 8 km LoRa",
+      "Real-time telemetry",
+      "C# ground GUI"
+    ],
     previewImage: "/images/lorastation_preview.jpg",
     images: [
       "/images/lorastation_1.jpg",
@@ -73,7 +84,7 @@ const projects = [
     videos: [
       "/images/lorastation_demo.mp4"
     ],
-    link: "https://github.com/skeior/lorastation"
+    link: "https://github.com/Skeior/elektromobil"
   },
 {
   title: "Göktim Academy - Robotics & Embedded Systems Instructor",
@@ -92,6 +103,7 @@ const projects = [
     "Electronics Fundamentals",
     "Mentoring & Teaching"
   ],
+  highlights: ["Hands-on projects","Sensor demos","Weekly exercises"],
   previewImage: "/images/goktim_preview.jpg",
   images: [
     "/images/goktim_1.jpg",
@@ -99,6 +111,45 @@ const projects = [
   ],
   link: "#"
 },
+
+  {
+    title: "ESP-based Smart Plug (WiFi Controlled)",
+    description: `Designed and developed multiple hardware variants of a WiFi-controlled smart plug using ESP microcontrollers. The device accepts 220V AC input and provides switched 220V outputs rated up to 16A per channel. Controlled via a mobile application (WiFi) with support for OTA firmware updates and optional energy monitoring. I contributed primarily to the hardware design and PCB layouts, producing 1-channel, 2-channel and 3-channel variants to suit different use cases.`,
+    features: [
+      "220V AC input",
+      "Up to 16 A per channel switching capability",
+      "ESP32 / ESP8266 based firmware",
+      "Solid-state relay switching options",
+      "thermal protection",
+      "OTA firmware updates",
+      "Mobile app control (WiFi) and MQTT/HTTP APIs",
+      "Different 1/2/3 channel hardware variants"
+    ],
+    technologies: [
+      "ESP32 / ESP8266",
+      "Embedded C / Arduino framework",
+      "Altium Designer (PCB) / EasyEDA",
+      "MQTT / HTTP",
+      "Mobile app integration"
+    ],
+    highlights: [
+      "1 / 2 / 3 channel designs",
+      "220V · 16A per channel",
+      "WiFi control & OTA"
+    ],
+    // use internal 'intern*' images from public/images as requested
+      previewImage: "/images/intern6.png",
+    images: [
+      "/images/intern1.png",
+      "/images/intern2.png",
+      "/images/intern3.png",
+      "/images/intern4.png",
+      "/images/intern5.png",
+      "/images/intern6.png",
+      "/images/intern7.png"
+    ],
+    link: "https://gokaynet.com/"
+  },
 
   {
     title: "Efficiency Challenge Participation (2022-2024)",
@@ -117,12 +168,13 @@ const projects = [
       "Embedded C / C++",
       "Team Leadership & Project Management"
     ],
+  highlights: ["Team captain","Motor driver lead","Telemetry member"],
     previewImage: "/images/efficiency_preview.jpg",
     images: [
       "/images/efficiency_2.jpeg",
       "/images/efficiency_3.jpg"
     ],
-    link: "#"
+    link: "https://www.instagram.com/voltacar/"
   },
   {
     title: "Supported / Awarded Academic Projects",
@@ -134,12 +186,13 @@ const projects = [
       "TÜBİTAK 2209-A BLDC Driver Design - FOC-Based 6 layer PID Controller for Electric Vehicles"
     ],
     previewImage: "/images/academic_preview.jpg",
+    highlights: ["Research-funded","TÜBİTAK support","Academic awards"],
     link: "#"
   }
 ];
 
 const PortfolioPage: React.FC = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [activeCaseStudy, setActiveCaseStudy] = useState<any | null>(null);
   const { t } = useLanguage();
 
   // Build structured data (ItemList of CreativeWork) for SEO / AI consumption
@@ -197,117 +250,94 @@ const PortfolioPage: React.FC = () => {
         </div>
       </motion.header>
 
-      <div className="projects-grid">
-        {projects.map((project, index) => {
-          const pTrans: any = t(`projects.${index}`) || {};
-          const title = pTrans?.title ?? project.title;
-          const description = pTrans?.description ?? project.description;
-          const features = pTrans?.features ?? project.features;
-          const technologies = pTrans?.technologies ?? project.technologies;
+      <section id="projects" className="section projects-section">
+        {/* Optional in-section heading could be added here if desired */}
 
-          return (
-          <motion.div
-            key={index}
-            className="portfolio-card"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <img
-              src={project.previewImage}
-              alt={`${title} Preview`}
-              className="card-preview-image"
-              loading="lazy"
-            />
+        <div className="portfolio-pairs">
+        {(() => {
+          const rows: any[] = [];
+          for (let i = 0; i < projects.length; i += 2) {
+            rows.push(projects.slice(i, i + 2));
+          }
 
+          return rows.map((row, rowIndex) => (
+            <div className="project-pair" key={rowIndex}>
+              <div className="pair-grid">
+                {row.map((project: any, colIndex: number) => {
+                  const index = rowIndex * 2 + colIndex;
+                  const pTrans: any = t(`projects.${index}`) || {};
+                  const title = pTrans?.title ?? project.title;
+                  const description = pTrans?.description ?? project.description;
+                  const features = pTrans?.features ?? project.features;
+                  const technologies = pTrans?.technologies ?? project.technologies;
 
-            <h3 className="card-title">{title}</h3>
+                  return (
+                    <motion.div
+                      key={index}
+                      className="portfolio-card"
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <img
+                        src={project.previewImage}
+                        alt={`${title} Preview`}
+                        className="card-preview-image"
+                        loading="lazy"
+                      />
 
-            {/* Technology badges (first 3) */}
-            {technologies && technologies.length > 0 && (
-              <div className="tech-badges">
-                {technologies.slice(0, 3).map((tech: string, i: number) => (
-                  <span className="tech-badge" key={i}>{tech}</span>
-                ))}
+                      <h3 className="card-title">{title}</h3>
+
+                      {/* Technology badges (first 3) */}
+                      {technologies && technologies.length > 0 && (
+                        <div className="tech-badges">
+                          {technologies.slice(0, 3).map((tech: string, i: number) => (
+                            <span className="tech-badge" key={i}>{tech}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      <p className="card-description">{description}</p>
+
+                      {/* Highlight chips sourced from `highlights` field (fallback to first 3 features) */}
+                      {((project.highlights && project.highlights.length > 0) ? project.highlights : features.slice(0,3)).length > 0 && (
+                        <div className="project-highlights" aria-hidden={false}>
+                          {((project.highlights && project.highlights.length > 0) ? project.highlights : features.slice(0,3)).map((f: string, i: number) => (
+                            <span className="highlight-chip" key={i} role="note">{f}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      <ul className="card-features">
+                        {(
+                          (features || []).filter((f: string) => {
+                            const sourceHighlights = project.highlights || [];
+                            return !sourceHighlights.some((h: string) => (h || '').trim() === (f || '').trim());
+                          })
+                        ).slice(0, 6).map((f: string, i: number) => (
+                          <li key={i}>{f}</li>
+                        ))}
+                      </ul>
+
+                      <button
+                        onClick={() => setActiveCaseStudy(project)}
+                        className="show-more-btn"
+                      >
+                        {t("portfolio.showDetails")}
+                      </button>
+                    </motion.div>
+                  );
+                })}
               </div>
-            )}
+            </div>
+          ));
+        })()}
+  </div>
+  </section>
 
-            <p className="card-description">{description}</p>
-
-            <ul className="card-features">
-              {features.slice(0, 3).map((f: string, i: number) => (
-                <li key={i}>{f}</li>
-              ))}
-            </ul>
-
-            <button
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              className="show-more-btn"
-            >
-              {openIndex === index ? t("portfolio.showLess") : t("portfolio.showDetails")}
-            </button>
-
-            {openIndex === index && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.4 }}
-                className="card-details"
-              >
-                <ul>
-                  {features.slice(3).map((f: string, i: number) => (
-                    <li key={i}>{f}</li>
-                  ))}
-                </ul>
-
-                {technologies && (
-                  <div className="project-technologies">
-                    <h4>{t("portfolio.technologiesUsed")}</h4>
-                    <ul>
-                      {technologies.map((tech: string, i: number) => (
-                        <li key={i}>{tech}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {project.images && (
-                  <div className="project-images">
-                    {project.images.map((img, i) => (
-                      <img key={i} src={img} alt={`${title} ${i}`} loading="lazy" />
-                    ))}
-                  </div>
-                )}
-
-                {project.videos && (
-                  <div className="project-videos">
-                    <h4>{t("portfolio.videos")}</h4>
-                    {project.videos.map((vid, i) => (
-                      <video key={i} controls width="300" preload="none">
-                        <source src={vid} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    ))}
-                  </div>
-                )}
-
-                {project.link && project.link !== "#" && (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="project-link"
-                  >
-                    {t("portfolio.githubRepository")}
-                  </a>
-                )}
-              </motion.div>
-            )}
-          </motion.div>
-          );
-        })}
-      </div>
+    {activeCaseStudy && (
+        <CaseStudyModal project={activeCaseStudy} onClose={() => setActiveCaseStudy(null)} />
+      )}
 
       <FooterInfo />
     </div>

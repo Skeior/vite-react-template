@@ -33,44 +33,94 @@
 -------------------------*/
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* Force two columns on desktop for the layout you prefer */
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.75rem;
   align-items: stretch; /* stretch cards to equal height per row */
+}
+
+/* Section styling copied/adapted from About page to match visual appearance */
+.projects-section {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: rgba(16, 27, 47, 0.75);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.projects-section .section-heading {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.projects-section .section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 2.6vw, 2.2rem);
+}
+
+.projects-section .section-heading p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+/* Portfolio-specific wrapper that contains framed rows (pairs) */
+.portfolio-pairs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+}
+
+/* Outer framed box that contains two project cards side-by-side */
+.project-pair {
+  /* remove outer framed backdrop so cards match About page styling */
+  background: transparent;
+  border-radius: 0; /* no outer rounded frame */
+  padding: 0; /* let inner cards control spacing */
+  border: none;
+  box-shadow: none;
+}
+
+.pair-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 /* -------------------------
    Kart Stilleri
 -------------------------*/
 .portfolio-card {
-  background-color: var(--layer-2);
-  border-radius: 14px;
-  box-shadow: 0 14px 36px rgba(2,6,12,0.6);
-  padding: 1.35rem;
-  transition: transform 0.28s ease, box-shadow 0.28s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: auto;
-  /* allow the card to stretch to the grid row height so all cards match */
-  height: 100%;
-  position: relative;
-  border-left: 4px solid var(--layer-3);
+  /* align card style with About page .project-card */
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(11, 18, 32, 0.85);
+  border: 1px solid var(--border);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .portfolio-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(16,24,40,0.08);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
 /* Ön izleme görseli */
 .card-preview-image {
   width: 100%;
   height: 220px;
+  /* make the preview fill the card while keeping the focal point centered */
   object-fit: cover;
+  object-position: center center;
   border-radius: 10px;
-  margin-bottom: 1rem;
+  margin: 1.5rem 0 1rem 0; /* increased top space per request */
   background-color: var(--layer-3);
   box-shadow: 0 8px 22px rgba(2,6,12,0.5);
+  /* ensure the img is rendered as a block and won't overflow */
+  display: block;
 }
 
 /* Başlık ve özellikler */
@@ -78,13 +128,16 @@
   font-size: 1.25rem;
   margin-bottom: 0.25rem;
   letter-spacing: -0.2px;
+  text-align: center; /* center title */
 }
 
 .card-description {
-  margin-bottom: 1rem;
-  color: var(--muted);
+  margin-bottom: 0.5rem;
+  /* make descriptions more readable on a dark background */
+  color: #cbd5e1;
   line-height: 1.6;
   font-size: 0.98rem;
+  text-align: center; /* center the short description */
 }
 
 .tech-badges {
@@ -92,14 +145,15 @@
   gap: 8px;
   margin: 6px 0 10px 0;
   flex-wrap: wrap;
+  justify-content: center; /* center badges */
 }
 
 .tech-badge {
   font-size: 0.75rem;
   padding: 6px 8px;
   border-radius: 999px;
-  background: var(--layer-2);
-  color: var(--accent);
+  background: rgba(255,255,255,0.02);
+  color: #ff6b6b; /* subtle red accent to match project chips */
   font-weight: 600;
 }
 
@@ -107,28 +161,70 @@
   list-style-type: disc;
   padding-left: 1.5rem;
   margin-bottom: 1rem;
-  color: #374151;
+  color: #94a3b8; /* lighter grey for list items but readable */
+  width: 100%; /* make list span full card width so left-align remains readable */
 }
 
 .card-features li {
   margin-bottom: 0.4rem;
 }
 
-/* Show more butonu */
-.show-more-btn {
-  background-color: var(--accent);
-  color: #ffffff;
-  border: none;
-  padding: 0.5rem 0.9rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  align-self: flex-start;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+/* small red highlight chips to show special project metrics */
+.project-highlights {
+  display: flex;
+  gap: 0.6rem;
+  margin: 1rem 0 1.1rem 0; /* increase top spacing so chips are visually separated from image */
+  justify-content: flex-start; /* align chips to the left inside the card area */
+  width: 100%;
 }
 
-.show-more-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(16,24,40,0.06); background-color: #162a6b; }
+.highlight-chip {
+  background: transparent; /* transparent with subtle border like screenshot */
+  color: var(--accent);
+  border: 1px solid rgba(227,52,47,0.35);
+  padding: 7px 11px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* small pop-in animation for highlight chips */
+@keyframes chipPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  60% { transform: scale(1.03); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.highlight-chip {
+  animation: chipPop 320ms ease both;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.highlight-chip:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+/* Show more butonu */
+.show-more-btn {
+  background: transparent;
+  color: var(--accent);
+  border: none;
+  padding: 0.25rem 0;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 0 0.75rem 0;
+  margin-top: auto; /* push button to bottom of the card container */
+  font-weight: 700;
+  align-self: center; /* center the button inside the card */
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.show-more-btn:hover {
+  transform: translateY(-1px);
+  color: #ffcccc;
+}
 
 /* Detaylar açıldığında */
 .card-details {
@@ -166,6 +262,8 @@
 .project-images img {
   width: calc(50% - 0.5rem);
   border-radius: 8px;
+  object-fit: cover;
+  max-height: 220px; /* ensure thumbnails don't grow too tall */
 }
 
 .project-videos {
@@ -179,6 +277,71 @@
   width: 100%;
   border-radius: 8px;
   background-color: #000;
+}
+
+/* Modal styles for case study details */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2,6,12,0.65);
+  z-index: 1200;
+  padding: 1.25rem;
+}
+
+.modal-panel {
+  background: var(--layer-2);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(2,6,12,0.7);
+  width: min(1100px, 98%);
+  max-height: 86vh;
+  overflow: auto;
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.modal-kicker {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.modal-body {
+  color: var(--muted);
+}
+
+.modal-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.modal-images img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.modal-videos video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Small screens: reduce modal image heights */
+@media (max-width: 640px) {
+  .modal-images img { height: 160px; }
+  .modal-panel { padding: 1rem; }
 }
 
 /* Linkler */
@@ -204,7 +367,12 @@
 
 @media (max-width: 768px) {
   .projects-grid {
-    grid-template-columns: 1fr; /* Tek kolon mobilde */
+    grid-template-columns: 1fr; /* single column on mobile */
+  }
+
+  /* stack pair grid on small screens */
+  .pair-grid {
+    grid-template-columns: 1fr;
   }
 
   .project-images img {
@@ -221,15 +389,36 @@
 }
 
 @media (max-width: 480px) {
-  .portfolio-title {
-    font-size: 2rem;
+  .portfolio-card {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: rgba(11, 18, 32, 0.85);
+    border: 1px solid var(--border);
   }
 
-  .portfolio-subtitle {
-    font-size: 1rem;
+  .portfolio-card header {
+    display: grid;
+    gap: var(--space-1);
   }
 
-  .card-preview-image {
-    max-height: 200px;
+  .project-status {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted-strong);
   }
-}
+
+  .portfolio-card .card-description {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .portfolio-card .card-features {
+    margin: 0 0 var(--space-2) 1.1rem;
+    padding: 0;
+    color: var(--muted);
+    display: grid;
+    gap: var(--space-1);
+  }

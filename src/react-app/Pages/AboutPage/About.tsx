@@ -71,61 +71,7 @@ interface PageContent {
   updates: UpdateEntry[];
 }
 
-const CaseStudyModal: React.FC<{ project: ProjectEntry; onClose: () => void }> = ({ project, onClose }) => (
-  <motion.div className="modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
-    <motion.article
-      className="modal-panel"
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 32 }}
-      onClick={(event) => event.stopPropagation()}
-    >
-      <header className="modal-header">
-        <div>
-          <p className="modal-kicker">{project.status === "delivered" ? "Delivered" : "Ongoing"}</p>
-          <h2>{project.title}</h2>
-        </div>
-        <button className="icon-button" onClick={onClose} aria-label="Close case study">
-          ×
-        </button>
-      </header>
-
-      {project.caseStudy && (
-        <div className="modal-body">
-          <section>
-            <h3>Overview</h3>
-            <p>{project.caseStudy.overview}</p>
-          </section>
-          <section>
-            <h3>Architecture</h3>
-            <ul>
-              {project.caseStudy.architecture.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-          <section>
-            <h3>Lessons learned</h3>
-            <ul>
-              {project.caseStudy.lessons.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-          <section>
-            <h3>Next steps</h3>
-            <ul>
-              {project.caseStudy.future.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-        </div>
-      )}
-    </motion.article>
-  </motion.div>
-);
-
+import CaseStudyModal from "../../Components/CaseStudyModal";
 const AboutPage: React.FC = () => {
   const { lang, t } = useLanguage();
   const navigate = useNavigate();
@@ -484,11 +430,14 @@ const AboutPage: React.FC = () => {
         </section>
 
         <section id="projects" className="section projects-section" data-nav-section>
-          <div className="section-heading">
-            <p className="eyebrow">{lang === "tr" ? "Projeler" : "Projects"}</p>
-            <h2>{lang === "tr" ? "Problem, yaklaşım, sonuç" : "Problem, approach, result"}</h2>
-            <p>{lang === "tr" ? "Aşağıdaki projeler araç üstü elektroniğin kritik noktalarında kullanılan teslim edilmiş çözümler." : "These projects shipped into the vehicle stack and solved concrete track-side problems."}</p>
-          </div>
+            <div className="section-heading">
+              <p className="eyebrow">{lang === "tr" ? "Projeler" : "Projects"}</p>
+              <h2>{lang === "tr" ? "Şu anda üzerinde çalıştığım" : "Currently working on"}</h2>
+              <p>{lang === "tr" ? "Aşağıda şu anda üzerinde çalıştığım veya öncelikli projeler yer almaktadır. Tüm projeleri görmek için aşağıdaki bağlantıyı kullanın." : "Below are projects I'm currently working on or prioritizing. To see all projects, click the button."}</p>
+              <div style={{ marginTop: 12 }}>
+                <button className="outline-button" onClick={() => navigate('/portfolio')}>{lang === 'tr' ? 'Tüm projelere bak' : 'See all projects'}</button>
+              </div>
+            </div>
           <div className="projects-grid">
             {content.projects.map((project) => (
               <article key={project.slug} className="project-card">
