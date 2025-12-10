@@ -50,16 +50,6 @@ CREATE TABLE IF NOT EXISTS device_state (
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
--- Global state tablosu - tüm cihazlar için varsayılan komutlar
-CREATE TABLE IF NOT EXISTS global_state (
-    state_id TEXT PRIMARY KEY,
-    rental_active INTEGER DEFAULT 0,
-    park_mode INTEGER DEFAULT 0,
-    gps_send INTEGER DEFAULT 1,
-    stats_send INTEGER DEFAULT 1,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_trips_device_id ON trips(device_id);
 CREATE INDEX IF NOT EXISTS idx_trips_timestamp ON trips(timestamp DESC);

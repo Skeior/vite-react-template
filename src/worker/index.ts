@@ -92,51 +92,6 @@ async function upsertDevice(db: D1Database, device: any): Promise<void> {
 	).run();
 }
 
-// Global state'i al (tüm cihazlar için varsayılan komutlar)
-async function getGlobalState(db: D1Database): Promise<any> {
-	const result = await db.prepare(
-		"SELECT * FROM global_state WHERE state_id = 'default'"
-	).first();
-	
-	if (result) {
-		return {
-			rentalActive: result.rental_active === 1,
-			parkMode: result.park_mode === 1,
-			gpsSend: result.gps_send === 1,
-			statsSend: result.stats_send === 1,
-		};
-	}
-	
-	// Varsayılan değerler
-	return {
-		rentalActive: false,
-		parkMode: false,
-		gpsSend: true,
-		statsSend: true,
-	};
-}
-
-// Global state'i güncelle
-async function updateGlobalState(db: D1Database, state: any): Promise<void> {
-	const now = new Date().toISOString();
-	await db.prepare(`
-		INSERT INTO global_state (state_id, rental_active, park_mode, gps_send, stats_send, updated_at)
-		VALUES ('default', ?, ?, ?, ?, ?)
-		ON CONFLICT(state_id) DO UPDATE SET
-			rental_active = excluded.rental_active,
-			park_mode = excluded.park_mode,
-			gps_send = excluded.gps_send,
-			stats_send = excluded.stats_send,
-			updated_at = excluded.updated_at
-	`).bind(
-		state.rentalActive ? 1 : 0,
-		state.parkMode ? 1 : 0,
-		state.gpsSend !== false ? 1 : 0,
-		state.statsSend !== false ? 1 : 0,
-		now
-	).run();
-}
-
 // Trip kaydet
 async function saveTrip(db: D1Database, trip: any): Promise<void> {
 	const now = new Date().toISOString();
@@ -311,25 +266,38 @@ app.get("/admin/state", async (c: Context<{ Bindings: Env }>) => {
 		}
 	}
 
-	// Global state D1'den al
-	const globalState = await getGlobalState(c.env.DB);
-	return c.json(globalState);
+	// Varsayılan değerler (device yok ise)
+	return c.json({
+		rentalActive: false,
+		parkMode: false,
+		gpsSend: true,
+		statsSend: true,
+	});
 });
 
 // --- ADMIN PANEL: Set control states ---
 app.post("/admin/state", async (c: Context<{ Bindings: Env }>) => {
 	try {
 		const body = await c.req.json();
-		// Global state D1'de saklı
-		const stateToUpdate: any = {};
+		const deviceId = body.deviceId;
+		
+		if (!deviceId) {
+			return c.text("Missing deviceId", 400);
+		}
+		
+		// Device'ı güncelle
+		const device = await getOrCreateDevice(c.env.DB, deviceId);
+		if (!device) {
+			return c.json({ ok: false, error: "Device not found" }, { status: 404 });
+		}
+		
+		const stateToUpdate: any = { ...device };
 		if (body.rentalActive !== undefined) stateToUpdate.rentalActive = body.rentalActive;
 		if (body.parkMode !== undefined) stateToUpdate.parkMode = body.parkMode;
 		if (body.gpsSend !== undefined) stateToUpdate.gpsSend = body.gpsSend;
 		if (body.statsSend !== undefined) stateToUpdate.statsSend = body.statsSend;
 		
-		if (Object.keys(stateToUpdate).length > 0) {
-			await updateGlobalState(c.env.DB, stateToUpdate);
-		}
+		await upsertDevice(c.env.DB, stateToUpdate);
 		return c.json({ ok: true });
 	} catch (err) {
 		console.error(err);
@@ -725,47 +693,18 @@ app.post("/admin/clear-all", async (c: Context<{ Bindings: Env }>) => {
 	}
 });
 
-// --- Eski endpoint'ler (geriye uyumluluk - D1'ye taşındı) ---
+// --- Eski endpoint'ler (geriye uyumluluk - kaldırıldı, global state yok) ---
 app.get("/set", async (c: Context<{ Bindings: Env }>) => {
-	const url = new URL(c.req.url);
-	const key = url.searchParams.get("key");
-	const value = url.searchParams.get("value");
-	if (!key || !value) return c.text("Missing key or value", 400);
-	
-	// Global state'i D1'de güncelle
-	if (["rentalActive", "parkMode", "gpsSend", "statsSend"].includes(key)) {
-		const stateUpdate: any = {};
-		stateUpdate[key.charAt(0).toLowerCase() + key.slice(1)] = value === "true" ? 1 : 0;
-		await updateGlobalState(c.env.DB, stateUpdate);
-		return c.text(`OK: ${key}=${value}`);
-	}
-	
-	return c.text("Unknown key", 400);
+	return c.text("Deprecated: Use POST /admin/state with deviceId", 410);
 });
 
 app.get("/get", async (c: Context<{ Bindings: Env }>) => {
-	const url = new URL(c.req.url);
-	const key = url.searchParams.get("key");
-	if (!key) return c.text("Missing key", 400);
-	
-	// Global state'den D1'den al
-	if (["rentalActive", "parkMode", "gpsSend", "statsSend"].includes(key)) {
-		const state = await getGlobalState(c.env.DB);
-		const keyMap: any = {
-			"rentalActive": state.rentalActive,
-			"parkMode": state.parkMode,
-			"gpsSend": state.gpsSend,
-			"statsSend": state.statsSend
-		};
-		return c.text(keyMap[key] ? "true" : "false");
-	}
-	
-	return c.text("null");
+	return c.text("Deprecated: Use GET /admin/state?deviceId=...", 410);
 });
 
 app.get("/control", async (c: Context<{ Bindings: Env }>) => {
-	const state = await getGlobalState(c.env.DB);
-	return c.text(`rent=${state.rentalActive ? 1 : 0}&park=${state.parkMode ? 1 : 0}&gps=${state.gpsSend ? 1 : 0}&stats=${state.statsSend ? 1 : 0}`);
+	// Varsayılan değerler döndür
+	return c.text("rent=0&park=0&gps=1&stats=1");
 });
 
 export default app;
