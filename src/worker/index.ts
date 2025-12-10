@@ -38,6 +38,7 @@ async function getOrCreateDevice(db: D1Database, deviceId: string): Promise<any>
 			parkDuration: result.park_duration,
 			parkStartTime: result.park_start_time,
 			motionDetected: result.motion_detected === 1,
+			motionDetectedAt: result.last_motion_time, // AdminPanel bekliyor
 			lastMotionTime: result.last_motion_time,
 			updatedAt: result.updated_at,
 			createdAt: result.created_at,
@@ -195,8 +196,14 @@ app.post("/data", async (c: Context<{ Bindings: Env }>) => {
 		// D1'den mevcut device'ı al
 		const existing = await getOrCreateDevice(c.env.DB, body.deviceId);
 		
-		// Merge data
-		const merged = existing ? { ...existing, ...body } : { ...body, gpsSend: true, statsSend: true };
+		// Merge data - yeni cihaz için başlangıç değerleri pasif modda
+		const merged = existing ? { ...existing, ...body } : { 
+			...body, 
+			rentalActive: false, 
+			parkMode: false, 
+			gpsSend: true, 
+			statsSend: true 
+		};
 		
 		// D1'e kaydet
 		await upsertDevice(c.env.DB, merged);
