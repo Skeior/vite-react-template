@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import "./AdminPanel.css";
+import DeviceCard from "./DeviceCard";
+import MapCanvas from "./MapCanvas";
 
 interface ControlState {
 	rentalActive: boolean;
@@ -16,6 +18,7 @@ interface DeviceData {
 	totalDistance?: number;
 	avgSpeed?: number;
 	tripDuration?: number;
+	parkDuration?: number; // Park modunda geçen süre (saniye)
 	timestamp?: string;
 	motion?: boolean;
 	tripId?: string;
@@ -35,7 +38,11 @@ interface Trip {
 	totalDistance?: number;
 	avgSpeed?: number;
 	tripDuration?: number;
+	parkDuration?: number; // Park modunda geçen süre (saniye)
+	totalCost?: number; // Toplam ücret (TL)
 	timestamp?: string;
+	rentalEndTime?: string;
+	realtimeRoute?: Array<{ lat: number; lon: number; timestamp?: string }>;
 }
 
 export default function AdminPanel() {
@@ -62,34 +69,73 @@ export default function AdminPanel() {
 	const [rentalDeviceId, setRentalDeviceId] = useState("");
 	const [rentalLoading, setRentalLoading] = useState(false);
 
+	// Realtime route points (harita üzerinde çizilen kırmızı çizgi)
+	const [realtimePoints, setRealtimePoints] = useState<{ [deviceId: string]: Array<{ lat: number; lon: number; timestamp?: string }> }>({});
+
+	// MapCanvas refs - her deviceId için ayrı MapCanvas (her device'ın kendi haritası)
+	const mapCanvasRefsRef = useRef<Map<string, any>>(new Map());
+	
+	// Aktif kiralama cihazlarını track et - bu cihazlar DOM'da kalmalı ve haritaları korunmalı
+	// STATE olarak tutulmalı ki değişince re-render tetiklensin
+	const [activeRentals, setActiveRentals] = useState<Set<string>>(new Set());
+	
+	// Aktif rental'ın tripId'sini track et (endRental'da kullanmak için)
+	const activeTripIdRef = useRef<string | null>(null);
+	const activeDeviceIdRef = useRef<string | null>(null);
+
+	// Trip detail modal
+	const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+
 	// Selected device for per-device top controls
 	const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 	
-	// Track active GPS/Stats requests for auto-refresh (device-based)
-	const [activeGpsDevices, setActiveGpsDevices] = useState<Set<string>>(new Set());
-	const [activeStatsDevices, setActiveStatsDevices] = useState<Set<string>>(new Set());
+	// Track if devices have been loaded at least once
+	const hasInitializedDevices = useRef(false);
 
 	// Fetch initial state
+	// Motion alerts
+	const [motionAlerts, setMotionAlerts] = useState<Array<{ deviceId: string; timestamp: string }>>([]);
+	const [lastMotionTimestamp, setLastMotionTimestamp] = useState<string | null>(null);		// Fetch initial state
 	useEffect(() => {
 		fetchState();
 		fetchDevices();
 		fetchTrips("timestamp");
+		
+		// Request notification permission
+		if ('Notification' in window && Notification.permission === 'default') {
+			Notification.requestPermission();
+		}
 	}, []);
 
-	// Adaptive polling: faster when any device is actively requesting GPS/Stats, slower otherwise
+	// Auto-refresh for motion alerts - only fetch when there are active selections
 	useEffect(() => {
-		// Initial fetch
-		fetchDevices();
-
-		const isActive = activeGpsDevices.size > 0 || activeStatsDevices.size > 0;
-		const intervalMs = isActive ? 500 : 3000; // 500ms when active, 3s otherwise
+		// Only poll if we have a device selected
+		if (!selectedDeviceId) return;
 
 		const interval = setInterval(() => {
 			fetchDevices();
-		}, intervalMs);
-
+		}, 200); // 200ms - hızlı GPS güncellemesi için
 		return () => clearInterval(interval);
-	}, [activeGpsDevices, activeStatsDevices]);
+	}, [selectedDeviceId]);
+
+	// Seçili device değiştiğinde map'i invalidate et (Leaflet display:none sorunu için)
+	useEffect(() => {
+		if (selectedDeviceId) {
+			// Kısa bir delay ile invalidateSize çağır (DOM güncellemesi için bekle)
+			const timer = setTimeout(() => {
+				if (mapCanvasRefsRef.current.has(selectedDeviceId)) {
+					const mapCanvas = mapCanvasRefsRef.current.get(selectedDeviceId);
+					if (mapCanvas && mapCanvas.invalidateSize) {
+						mapCanvas.invalidateSize();
+						console.log(`[AdminPanel] Map invalidateSize called for deviceId: ${selectedDeviceId}`);
+					}
+				}
+			}, 150);
+			return () => clearTimeout(timer);
+		}
+	}, [selectedDeviceId, activeRentals]); // activeRentals değişince de çağır (kiralama bittiğinde)
+
+
 
 	const fetchState = async () => {
 		try {
@@ -98,7 +144,14 @@ export default function AdminPanel() {
 			const res = await fetch("/admin/state");
 			if (!res.ok) throw new Error("Failed to fetch state");
 			const data = await res.json();
-			setState(data);
+			// Convert string booleans to actual booleans
+			const normalizedData = {
+				rentalActive: data.rentalActive === true || data.rentalActive === "true",
+				parkMode: data.parkMode === true || data.parkMode === "true",
+				gpsSend: data.gpsSend === true || data.gpsSend === "true",
+				statsSend: data.statsSend === true || data.statsSend === "true",
+			};
+			setState(normalizedData);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Unknown error");
 		} finally {
@@ -129,11 +182,51 @@ export default function AdminPanel() {
 
 	const fetchDevices = async () => {
 		try {
-			setDevicesLoading(true);
+			// Only show loading on initial fetch, not on polling updates
+			if (!hasInitializedDevices.current) {
+				setDevicesLoading(true);
+			}
 			const res = await fetch("/admin/devices");
 			if (!res.ok) throw new Error("Failed to fetch devices");
 			const data = await res.json();
 			setDevices(data.devices || []);
+			hasInitializedDevices.current = true;
+
+			// Check for motion alerts (parkMode + motionDetected)
+			const alerts: Array<{ deviceId: string; timestamp: string }> = [];
+			data.devices.forEach((d: any) => {
+				if (d.value && d.value.parkMode && d.value.motionDetected && d.value.motionDetectedAt) {
+					alerts.push({
+						deviceId: d.deviceId,
+						timestamp: d.value.motionDetectedAt,
+					});
+				}
+			});
+			
+			// Show notification for new alerts based on timestamp change
+			if (alerts.length > 0) {
+				const latestAlert = alerts[alerts.length - 1];
+				if (latestAlert.timestamp !== lastMotionTimestamp) {
+					setLastMotionTimestamp(latestAlert.timestamp);
+					
+					// Browser notification
+					if (Notification.permission === 'granted') {
+						new Notification('⚠️ HAREKET ALGILANDI!', {
+							body: `${latestAlert.deviceId} - Park modunda hareket algılandı!`,
+							icon: '/logo.png',
+						});
+					}
+					
+					// Audio alert
+					try {
+						const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUQ0PVqzn77BdGAg+ltryxnMpBSl+zPLaizsIGGS56+ihUAwKTKXh8bllHAU2jtXvxXwsBS2Ay/HSjjwIGGK36+mjUg0LULF==');
+						audio.play();
+					} catch (e) {
+						console.log('Audio alert failed:', e);
+					}
+				}
+			}
+			setMotionAlerts(alerts);
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -141,18 +234,7 @@ export default function AdminPanel() {
 		}
 	};
 
-	const initDemo = async () => {
-		try {
-			setMessage("Demo verileri yükleniyor...");
-			const res = await fetch("/demo/init");
-			if (!res.ok) throw new Error("Failed to init demo");
-			await fetchDevices();
-			setMessage("✅ Demo verileri yüklendi!");
-			setTimeout(() => setMessage(null), 3000);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Unknown error");
-		}
-	};
+
 
 	const deleteDevice = async (deviceId: string) => {
 		if (!window.confirm(`${deviceId} silinsin mi?`)) return;
@@ -173,25 +255,7 @@ export default function AdminPanel() {
 		}
 	};
 
-	const deleteAllDevices = async () => {
-		if (!window.confirm("TÜM CİHAZLAR SİLİNECEK! Emin misiniz?")) return;
-		
-		try {
-			setError(null);
-			const res = await fetch("/admin/devices", {
-				method: "DELETE",
-			});
-			if (!res.ok) throw new Error("Failed to delete all devices");
-			
-			setMessage("✅ Tüm cihazlar silindi");
-			await fetchDevices();
-			setTrips([]); // Trips'i temizle
-			setGroupedTrips({});
-			setTimeout(() => setMessage(null), 2000);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Unknown error");
-		}
-	};
+
 
 	const fetchTrips = async (sort: "timestamp" | "speed" | "distance" | "duration" = "timestamp") => {
 		try {
@@ -199,6 +263,7 @@ export default function AdminPanel() {
 			const res = await fetch(`/admin/trips?sortBy=${sort}`);
 			if (!res.ok) throw new Error("Failed to fetch trips");
 			const data = await res.json();
+			console.log("Trips data:", data.trips); // DEBUG
 			setTrips(data.trips || []);
 			setGroupedTrips(data.grouped || {});
 			setSortBy(sort);
@@ -230,13 +295,28 @@ export default function AdminPanel() {
 				throw new Error(err.error || "Rental başlatılamadı");
 			}
 			
-			const data = await res.json();
-			setMessage(`✅ ${rentalDeviceId} kiralama başladı (Trip: ${data.tripId})`);
-			setShowRentalModal(false);
-			setRentalDeviceId("");
-			await fetchDevices();
-			await fetchTrips("timestamp");
-			setTimeout(() => setMessage(null), 3000);
+		const data = await res.json();
+		setMessage(`✅ ${rentalDeviceId} kiralama başladı (Trip: ${data.tripId})`);
+		setShowRentalModal(false);
+		const newDeviceId = rentalDeviceId;
+		setRentalDeviceId("");
+		// Yeni kiralama için realtime noktaları sıfırla
+		setRealtimePoints(prev => ({ ...prev, [newDeviceId]: [] }));
+		// Aktif tripId ve deviceId'yi kaydet
+		activeTripIdRef.current = data.tripId;
+		activeDeviceIdRef.current = newDeviceId;
+		// Bu cihazı aktif kiralama seti'ne ekle
+		setActiveRentals(prev => {
+			const newSet = new Set(prev);
+			newSet.add(newDeviceId);
+			return newSet;
+		});
+		console.log(`[startRental] Active tripId set to: ${data.tripId}, deviceId: ${newDeviceId}`);
+		await fetchDevices();
+		await fetchTrips("timestamp");
+		// Yeni kiralanan cihazı otomatik seç
+		setSelectedDeviceId(newDeviceId);
+		setTimeout(() => setMessage(null), 3000);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Unknown error");
 		} finally {
@@ -249,19 +329,105 @@ export default function AdminPanel() {
 		
 		try {
 			setError(null);
+			// Realtime noktalarını topla (multiple sources dan)
+			let rtPoints: any[] = [];
+			
+			// 1. MapCanvas'tan al (en güncel) - deviceId'ye bağlı ref kullan
+			if (mapCanvasRefsRef.current.has(deviceId)) {
+				const mapCanvas = mapCanvasRefsRef.current.get(deviceId);
+				if (mapCanvas && mapCanvas.getRealtimePoints) {
+					rtPoints = mapCanvas.getRealtimePoints();
+					console.log(`[endRental] Got ${rtPoints.length} points from MapCanvas (deviceId: ${deviceId})`);
+				}
+			}
+			
+			// 2. State'ten al (fallback)
+			if (rtPoints.length === 0) {
+				rtPoints = realtimePoints[deviceId] || [];
+				console.log(`[endRental] Fallback to state: ${rtPoints.length} points`);
+			}
+			
+			console.log(`[endRental] Final rtPoints: ${rtPoints.length}`, rtPoints);
 			const res = await fetch("/rental/end", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ deviceId }),
+				body: JSON.stringify({ 
+					deviceId,
+					realtimeRoute: rtPoints  // Harita üzerinde çizilen gerçek rota
+				}),
 			});
 			
 			if (!res.ok) {
-				const err = await res.json();
-				throw new Error(err.error || "Kiralama sonlandırılamadı");
+				let errorData: any = {};
+				try {
+					errorData = await res.json();
+				} catch {
+					errorData = { error: await res.text() };
+				}
+				console.error(`[endRental] Error response:`, errorData);
+				throw new Error(errorData.error || errorData.details || "Kiralama sonlandırılamadı");
 			}
 			
-			await res.json();
-			setMessage(`✅ ${deviceId} kiralama sonlandırıldı`);
+			const responseData = await res.json();
+			console.log(`[endRental] Response:`, responseData);
+			console.log(`[endRental] Trip data:`, responseData.trip);
+			setMessage(`✅ ${deviceId} kiralama sonlandırıldı (${rtPoints.length} konuma kayıt edildi)`);
+			// Realtime noktaları temizle
+			setRealtimePoints(prev => ({ ...prev, [deviceId]: [] }));
+			
+			// Trips'i güncelle ve varsa yeni trip'i otomatik seç
+			await fetchDevices();
+			await fetchTrips("timestamp");
+			
+			// Cihaz seçimini temizle (map gösterimini durdurmak için)
+			setSelectedDeviceId(null);
+			// MapCanvas'ı tamamen sıfırla - fullReset ile
+			if (mapCanvasRefsRef.current.has(deviceId)) {
+				const mapCanvas = mapCanvasRefsRef.current.get(deviceId);
+				if (mapCanvas && mapCanvas.fullReset) {
+					mapCanvas.fullReset();
+					console.log(`[endRental] MapCanvas full reset for deviceId: ${deviceId}`);
+				}
+				// Ref'i map'ten kaldır ki yeni kiralama için temiz başlasın
+				mapCanvasRefsRef.current.delete(deviceId);
+			}
+			// Aktif tripId ve deviceId'yi sıfırla
+			activeTripIdRef.current = null;
+			activeDeviceIdRef.current = null;
+			// Bu cihazı aktif kiralama seti'nden çıkar
+			setActiveRentals(prev => {
+				const newSet = new Set(prev);
+				newSet.delete(deviceId);
+				return newSet;
+			});
+			console.log(`[endRental] Device ${deviceId} removed from activeRentals`);
+			
+			// Yeni oluşturulan trip'i seç ve modal'ı aç
+			if (responseData.trip) {
+				console.log(`[endRental] Trip found, opening modal:`, responseData.trip);
+				setSelectedTrip(responseData.trip);
+			}
+			
+			setTimeout(() => setMessage(null), 3000);
+		} catch (err) {
+			const errorMsg = err instanceof Error ? err.message : "Unknown error";
+			console.error(`[endRental] Error:`, errorMsg);
+			setError(errorMsg);
+		}
+	};
+
+	const resetTrip = async (deviceId: string) => {
+		if (!window.confirm(`${deviceId} cihazının trip verilerini sıfırla?`)) return;
+		
+		try {
+			setError(null);
+			const res = await fetch(`/trip/reset/${deviceId}`, {
+				method: "POST",
+			});
+			
+			if (!res.ok) throw new Error("Trip sıfırlanamadı");
+			
+			setMessage(`✅ ${deviceId} trip verileri sıfırlandı`);
 			await fetchDevices();
 			await fetchTrips("timestamp");
 			setTimeout(() => setMessage(null), 3000);
@@ -270,88 +436,41 @@ export default function AdminPanel() {
 		}
 	};
 
-	const sendGpsForDevice = async (deviceId: string) => {
+	const clearAllData = async () => {
+		if (!window.confirm("⚠️ TÜM VERİLER SİLİNECEK! Devam etmek istediğinizden emin misiniz?")) return;
+		if (!window.confirm("📊 Tüm cihaz ve sürüş geçmişi silinecek. ONAYLANIYOR?")) return;
+		
 		try {
 			setError(null);
-			// Add to active GPS devices
-			setActiveGpsDevices(prev => new Set([...prev, deviceId]));
-			
-			// Send GPS command
-			await controlDevice(deviceId, undefined, true, undefined);
-			
-			// Auto-disable after 2 seconds
-			setTimeout(() => {
-				setActiveGpsDevices(prev => {
-					const newSet = new Set(prev);
-					newSet.delete(deviceId);
-					return newSet;
-				});
-				controlDevice(deviceId, undefined, false, undefined);
-			}, 2000);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "GPS gönderilemedi");
-			setActiveGpsDevices(prev => {
-				const newSet = new Set(prev);
-				newSet.delete(deviceId);
-				return newSet;
+			const res = await fetch("/admin/clear-all", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
 			});
-		}
-	};
-
-	const sendStatsForDevice = async (deviceId: string) => {
-		try {
-			setError(null);
-			// Add to active Stats devices
-			setActiveStatsDevices(prev => new Set([...prev, deviceId]));
 			
-			// Send Stats command
-			await controlDevice(deviceId, undefined, undefined, true);
+			if (!res.ok) throw new Error("Veriler temizlenemedi");
 			
-			// Auto-disable after 2 seconds
-			setTimeout(() => {
-				setActiveStatsDevices(prev => {
-					const newSet = new Set(prev);
-					newSet.delete(deviceId);
-					return newSet;
-				});
-				controlDevice(deviceId, undefined, undefined, false);
-			}, 2000);
+			const data = await res.json();
+			setMessage(`✅ Tüm veriler temizlendi (${data.deletedKeys} kayıt silindi)`);
+			
+			// State'i sıfırla
+			setDevices([]);
+			setTrips([]);
+			setGroupedTrips({});
+			setSelectedDeviceId(null);
+			setSelectedTrip(null);
+			setRealtimePoints({});
+			
+			await fetchDevices();
+			await fetchTrips("timestamp");
+			setTimeout(() => setMessage(null), 3000);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "İstatistik gönderilemedi");
-			setActiveStatsDevices(prev => {
-				const newSet = new Set(prev);
-				newSet.delete(deviceId);
-				return newSet;
-			});
+			setError(err instanceof Error ? err.message : "Unknown error");
 		}
 	};
 
-	// Send GPS once for all devices (calls per-device helper)
-	const sendGpsForAll = async () => {
-		try {
-			setError(null);
-			const ids = devices.map(d => d.deviceId);
-			// Fire-and-forget per-device sends to preserve existing per-device timing/state
-			ids.forEach(id => void sendGpsForDevice(id));
-			setMessage(`✅ Tüm cihazlara GPS isteği gönderildi (${ids.length})`);
-			setTimeout(() => setMessage(null), 2000);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "GPS tüm cihazlara gönderilemedi");
-		}
-	};
+	// sendGpsForDevice ve sendStatsForDevice kaldırıldı (artık kullanılmıyor)
 
-	// Send Stats once for all devices
-	const sendStatsForAll = async () => {
-		try {
-			setError(null);
-			const ids = devices.map(d => d.deviceId);
-			ids.forEach(id => void sendStatsForDevice(id));
-			setMessage(`✅ Tüm cihazlara istatistik isteği gönderildi (${ids.length})`);
-			setTimeout(() => setMessage(null), 2000);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "İstatistik tüm cihazlara gönderilemedi");
-		}
-	};
+	// sendGpsForAll ve sendStatsForAll kaldırıldı (artık kullanılmıyor)
 
 	const controlDevice = async (deviceId: string, parkMode?: boolean, gpsSend?: boolean, statsSend?: boolean) => {
 		try {
@@ -369,8 +488,7 @@ export default function AdminPanel() {
 			
 			if (!res.ok) throw new Error("Kontrol güncellenemedi");
 			
-			setMessage("✅ Cihaz kontrolü güncellendi");
-			setTimeout(() => setMessage(null), 2000);
+			// Silently update without showing success message
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Unknown error");
 		}
@@ -388,26 +506,61 @@ export default function AdminPanel() {
 		}
 	};
 
-	const toggleGPS = async () => {
-		if (selectedDeviceId) {
-			const dev = devices.find(d => d.deviceId === selectedDeviceId);
-			const cur = (dev?.value?.gpsSend === true || dev?.value?.gpsSend === "true");
-			await controlDevice(selectedDeviceId, undefined, !cur, undefined);
-			await fetchDevices();
+	const requestNotificationPermission = async () => {
+		if ('Notification' in window) {
+			const permission = await Notification.requestPermission();
+			if (permission === 'granted') {
+				setMessage('✅ Bildirim izni verildi!');
+				setTimeout(() => setMessage(null), 2000);
+			} else {
+				setError('❌ Bildirim izni reddedildi');
+				setTimeout(() => setError(null), 3000);
+			}
 		} else {
-			await updateState("gpsSend", !state.gpsSend);
+			setError('Tarayıcınız bildirimleri desteklemiyor');
 		}
 	};
 
-	const toggleStats = async () => {
-		if (selectedDeviceId) {
-			const dev = devices.find(d => d.deviceId === selectedDeviceId);
-			const cur = (dev?.value?.statsSend === true || dev?.value?.statsSend === "true");
-			await controlDevice(selectedDeviceId, undefined, undefined, !cur);
-			await fetchDevices();
-		} else {
-			await updateState("statsSend", !state.statsSend);
-		}
+	// Memoized handlers for device card
+	const handleEndRental = useCallback((deviceId: string) => {
+		endRental(deviceId);
+	}, []);
+
+	const handleResetTrip = useCallback((deviceId: string) => {
+		resetTrip(deviceId);
+	}, []);
+
+	const handleToggleGps = useCallback(async (deviceId: string) => {
+		const device = devices.find(d => d.deviceId === deviceId);
+		if (!device) return;
+		const v = device.value as DeviceData;
+		const newGps = !(v.gpsSend === true || v.gpsSend === "true");
+		await controlDevice(deviceId, undefined, newGps, undefined);
+		setDevices(prev => prev.map(d => 
+			d.deviceId === deviceId 
+				? { ...d, value: { ...d.value, gpsSend: newGps } }
+				: d
+		));
+	}, [devices]);
+
+	const handleToggleStats = useCallback(async (deviceId: string) => {
+		const device = devices.find(d => d.deviceId === deviceId);
+		if (!device) return;
+		const v = device.value as DeviceData;
+		const newStats = !(v.statsSend === true || v.statsSend === "true");
+		await controlDevice(deviceId, undefined, undefined, newStats);
+		setDevices(prev => prev.map(d => 
+			d.deviceId === deviceId 
+				? { ...d, value: { ...d.value, statsSend: newStats } }
+				: d
+		));
+	}, [devices]);
+
+	const formatDuration = (seconds: number) => {
+		const h = Math.floor(seconds / 3600);
+		const m = Math.floor((seconds % 3600) / 60);
+		const s = seconds % 60;
+		return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 	};
 
 	if (loading) return <div className="admin-panel"><p>Yükleniyor...</p></div>;
@@ -417,17 +570,53 @@ export default function AdminPanel() {
 			<div className="admin-container">
 				<h1>🔧 ESP32 Control Panel</h1>
 
-				{/* Device selector for per-device top controls */}
-				<div style={{ marginBottom: 12 }}>
-					<label style={{ marginRight: 8 }}>Cihaz seç: </label>
-					<select value={selectedDeviceId || ""} onChange={(e) => setSelectedDeviceId(e.target.value || null)}>
-						<option value="">-- Tümünü kullan (global) --</option>
-						{devices.map(d => (
-							<option key={d.deviceId} value={d.deviceId}>{d.deviceId}</option>
-						))}
-					</select>
+		{/* Device selector for per-device top controls */}
+		<div style={{ marginBottom: 12 }}>
+			<label style={{ marginRight: 8 }}>Cihaz seç: </label>
+			<select value={selectedDeviceId || ""} onChange={(e) => setSelectedDeviceId(e.target.value || null)}>
+				<option value="">-- Tümünü kullan (global) --</option>
+				{devices
+					.filter(d => {
+						const v = d.value as DeviceData;
+						return v && (v.rentalActive === true || v.rentalActive === "true" || v.deviceId); // Tüm cihazları göster
+					})
+					.map(d => {
+						const v = d.value as DeviceData;
+						const isActive = v && (v.rentalActive === true || v.rentalActive === "true");
+						const status = isActive ? "🟢 Kirada" : "⚫ Pasif";
+						return (
+							<option key={d.deviceId} value={d.deviceId}>
+								{d.deviceId} ({status})
+							</option>
+						);
+					})}
+			</select>
+		</div>
+		
+		{/* Notification Permission Button - Always visible with status */}
+		<div style={{ marginBottom: 16, padding: '12px', backgroundColor: Notification.permission === 'granted' ? '#e8f5e9' : '#fff3e0', borderRadius: 8, border: '1px solid ' + (Notification.permission === 'granted' ? '#4caf50' : '#ff9800') }}>
+			{Notification.permission === 'granted' ? (
+				<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+					<span style={{ fontSize: '1.2em' }}>✅</span>
+					<span style={{ color: '#2e7d32', fontWeight: 'bold' }}>Bildirimler etkin</span>
+					<span style={{ marginLeft: 'auto', fontSize: '0.9em', color: '#666' }}>Hareket uyarıları gelecek</span>
 				</div>
-
+			) : (
+				<div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+					<button 
+						onClick={requestNotificationPermission}
+						className="toggle-btn"
+						style={{ backgroundColor: '#ff9800', border: 'none', fontSize: '1em' }}
+					>
+						🔔 Bildirimleri Etkinleştir
+					</button>
+					<span style={{ fontSize: '0.9em', color: '#666' }}>
+						(Hareket uyarıları için gerekli)
+					</span>
+				</div>
+			)}
+		</div>
+		
 				{/* Rental Modal */}
 				{showRentalModal && (
 					<div className="modal-overlay" onClick={() => setShowRentalModal(false)}>
@@ -437,7 +626,7 @@ export default function AdminPanel() {
 								type="text"
 								placeholder="Device ID girin (ör: esp32_001)"
 								value={rentalDeviceId}
-								onChange={(e) => setRentalDeviceId(e.target.value.toUpperCase())}
+								onChange={(e) => setRentalDeviceId(e.target.value)}
 								className="modal-input"
 								disabled={rentalLoading}
 								onKeyPress={(e) => e.key === "Enter" && startRental()}
@@ -465,6 +654,20 @@ export default function AdminPanel() {
 				{error && <div className="error-message">❌ {error}</div>}
 				{message && <div className="success-message">{message}</div>}
 
+				{/* Motion Alerts */}
+				{motionAlerts.length > 0 && (
+					<div className="motion-alerts-box">
+						<h3>⚠️ HAREKET ALGILANDI!</h3>
+						{motionAlerts.map((alert, idx) => (
+							<div key={idx} className="motion-alert-item">
+								<strong>🚗 {alert.deviceId}</strong>
+								<span className="alert-time">{new Date(alert.timestamp).toLocaleTimeString('tr-TR')}</span>
+								<p>Park modunda hareket algılandı! GPS otomatik etkinleştirildi.</p>
+							</div>
+						))}
+					</div>
+				)}
+
 				<div className="control-grid">
 					{/* Kiralama */}
 					<div className="control-card">
@@ -477,99 +680,61 @@ export default function AdminPanel() {
 						</button>
 					</div>
 
-					{/* Park Modu */}
-					<div className={`control-card ${state.parkMode ? "active" : ""}`}>
-						<h2>Park Modu</h2>
-						<p className="status">
-							{state.parkMode ? "✅ AKTİF" : "❌ KAPAL"}
+					{/* Tüm Verileri Temizle */}
+					<div className="control-card" style={{ borderColor: '#ff4444', backgroundColor: '#fff0f0' }}>
+						<h2>🗑️ Temizle</h2>
+						<p style={{ fontSize: '0.9em', color: '#666', marginBottom: '12px' }}>
+							Tüm cihaz ve sürüş verileri
 						</p>
 						<button
-							onClick={togglePark}
-							className={`toggle-btn ${state.parkMode ? "active" : ""}`}
+							onClick={clearAllData}
+							className="toggle-btn"
+							style={{
+								backgroundColor: '#ff4444',
+								border: 'none',
+								color: 'white',
+								fontWeight: 'bold',
+								cursor: 'pointer'
+							}}
 						>
-							{state.parkMode ? "Kapat" : "Aç"}
+							⚠️ Tümünü Temizle
 						</button>
 					</div>
 
-					{/* GPS Gönderme */}
-					<div className={`control-card ${state.gpsSend ? "active" : ""}`}>
-						<h2>GPS Gönder</h2>
-						<p className="status">
-							{state.gpsSend ? "✅ AKTİF" : "❌ KAPAL"}
-						</p>
-						<button
-							onClick={toggleGPS}
-							className={`toggle-btn ${state.gpsSend ? "active" : ""}`}
-						>
-							{state.gpsSend ? "Kapat" : "Aç"}
-						</button>
-					</div>
-
-					{/* İstatistik Gönderme */}
-					<div className={`control-card ${state.statsSend ? "active" : ""}`}>
-						<h2>İstatistik Gönder</h2>
-						<p className="status">
-							{state.statsSend ? "✅ AKTİF" : "❌ KAPAL"}
-						</p>
-						<button
-							onClick={toggleStats}
-							className={`toggle-btn ${state.statsSend ? "active" : ""}`}
-						>
-							{state.statsSend ? "Kapat" : "Aç"}
-						</button>
-					</div>
-				</div>
-
-				{/* Quick Links */}
-				<div className="quick-links">
-					<h3>Hızlı Komutlar</h3>
-					<button
-						onClick={async () => {
-							await updateState("rentalActive", true);
-							await updateState("parkMode", false);
-						}}
-						className="quick-btn"
-					>
-						Kirala (rental=1, park=0)
-					</button>
-					<button
-						onClick={async () => {
-							await updateState("rentalActive", false);
-							await updateState("parkMode", true);
-						}}
-						className="quick-btn"
-					>
-						Park + Kiralama Kapat
-					</button>
-					<button
-						onClick={() => sendGpsForAll()}
-						className="quick-btn"
-					>
-						GPS Gönder (1x)
-					</button>
-					<button
-						onClick={() => sendStatsForAll()}
-						className="quick-btn"
-					>
-						İstatistik Gönder (1x)
-					</button>
-					<button
-						onClick={initDemo}
-						className="quick-btn"
-						style={{ backgroundColor: "#4CAF50" }}
-					>
-						🔄 Demo Verilerini Yükle
-					</button>
-					<button
-						onClick={deleteAllDevices}
-						className="quick-btn"
-						style={{ backgroundColor: "#f44336" }}
-					>
-						🗑️ Tüm Cihazları Sil
-					</button>
-				</div>
-
-					{/* Info */}
+				{/* Park Modu */}
+				{(() => {
+					// If device is selected, show its parkMode; otherwise show global state
+					const currentParkMode = selectedDeviceId 
+						? (() => {
+								const dev = devices.find(d => d.deviceId === selectedDeviceId);
+								return dev?.value?.parkMode === true || dev?.value?.parkMode === "true";
+						  })()
+						: state.parkMode;
+					
+					return (
+						<div className={`control-card ${currentParkMode ? "active" : ""}`}>
+							<h2>🅿️ Park Modu</h2>
+							<p className="status" style={{ fontSize: '1.2em', fontWeight: 'bold' }}>
+								{currentParkMode ? "✅ AKTİF" : "⭕ KAPALI"}
+							</p>
+							<button
+								onClick={togglePark}
+								className={`toggle-btn ${currentParkMode ? "active" : ""}`}
+								style={{ 
+									fontSize: '1.1em', 
+									padding: '12px 24px',
+									backgroundColor: currentParkMode ? '#f44336' : '#4CAF50',
+									border: 'none',
+									color: 'white',
+									fontWeight: 'bold'
+								}}
+							>
+								{currentParkMode ? "🛑 Kapat" : "🅿️ Aç"}
+							</button>
+						</div>
+					);
+				})()}
+			</div>					{/* Info */}
 					<div className="info-box">
 						<h3>📡 Durum Bilgileri</h3>
 						{/* If a device is selected, show its individual control flags; otherwise show global state */}
@@ -591,146 +756,159 @@ export default function AdminPanel() {
 					</div>
 
 					{/* Devices */}
-					<div className="devices-section">
-						<h3>📱 Cihazlar</h3>
-						<button className="quick-btn" style={{ marginBottom: 12 }} onClick={fetchDevices}>
-							Yenile
-						</button>
-						{devicesLoading ? (
-							<p>Yükleniyor...</p>
-						) : (
-							<div className="control-grid">
-								{devices.length === 0 && <p>Hiç cihaz yok.</p>}
-								{devices.map((d) => {
-									// Guard against KV returning null for deleted or empty entries
-									const v = (d.value as DeviceData) || ({} as DeviceData);
-									const lat = typeof v.lat === 'string' ? parseFloat(v.lat) : v.lat;
-									const lon = typeof v.lon === 'string' ? parseFloat(v.lon) : v.lon;
-									const speed = typeof v.speed === 'string' ? parseFloat(v.speed) : v.speed;
-									const distance = typeof v.totalDistance === 'string' ? parseFloat(v.totalDistance) : v.totalDistance;
-									const avgSpeed = typeof v.avgSpeed === 'string' ? parseFloat(v.avgSpeed) : v.avgSpeed;
-									const tripDuration = typeof v.tripDuration === 'string' ? parseInt(v.tripDuration) : v.tripDuration;
-									const timestamp = v.timestamp;
-
-									// Format trip duration (seconds to HH:MM:SS)
-									const formatDuration = (seconds: number) => {
-										const h = Math.floor(seconds / 3600);
-										const m = Math.floor((seconds % 3600) / 60);
-										const s = seconds % 60;
-										return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-									};
-
-									return (
-										<div key={d.deviceId} className="device-card">
-											<h2>📱 {d.deviceId}</h2>
-											
-											{/* Kontrol Durumu */}
-											<div className="device-status">
-												<span className={state.gpsSend ? "status-badge active" : "status-badge"}>
-													{state.gpsSend ? "✅ GPS AKTİF" : "❌ GPS KAPAL"}
-												</span>
-												<span className={state.statsSend ? "status-badge active" : "status-badge"}>
-													{state.statsSend ? "✅ STATS AKTİF" : "❌ STATS KAPAL"}
-												</span>
-											</div>
-
-											{/* ===== GPS VERİLERİ BÖLÜMÜ ===== */}
-											<div className="data-section">
-												<h3>🛰️ GPS VERİLERİ</h3>
-												
-												{/* GPS Konumu */}
-												{lat !== undefined && lat !== null && lon !== undefined && lon !== null ? (
-													<div className="device-info">
-														<p className="info-text">📍 <strong>Konum:</strong> {Number(lat).toFixed(6)}, {Number(lon).toFixed(6)}</p>
-														<div className="map-container">
-															<iframe
-																title={`Map for ${d.deviceId}`}
-																src={`https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`}
-																style={{ width: "100%", height: 250, border: 0, borderRadius: 6 }}
-																loading="lazy"
-															></iframe>
-														</div>
-													</div>
-												) : (
-													<p className="info-text" style={{ color: "#999" }}>Konum verisi bekleniyor...</p>
-												)}
-
-												{/* Hız */}
-												{speed !== undefined && speed !== null ? (
-													<div className="device-info">
-														<p className="info-text">🚗 <strong>Anlık Hız:</strong></p>
-														<p className="speed-text">{Number(speed).toFixed(2)} km/h</p>
-													</div>
-												) : (
-													<p className="info-text" style={{ color: "#999" }}>Hız verisi bekleniyor...</p>
-												)}
-											</div>
-
-											{/* ===== İSTATİSTİK VERİLERİ BÖLÜMÜ ===== */}
-											{(distance !== undefined || avgSpeed !== undefined || tripDuration !== undefined) && (
-												<div className="data-section">
-													<h3>📊 İSTATİSTİK VERİLERİ</h3>
-													<div className="stats-highlight">
-														{distance !== undefined && distance !== null && (
-															<p className="info-text">📏 <strong>Sürüş Mesafesi:</strong> {Number(distance).toFixed(3)} km</p>
-														)}
-														{avgSpeed !== undefined && avgSpeed !== null && (
-															<p className="info-text">⚡ <strong>Ortalama Hız:</strong> {Number(avgSpeed).toFixed(2)} km/h</p>
-														)}
-														{tripDuration !== undefined && tripDuration !== null && (
-															<p className="info-text">⏱️ <strong>Toplam Sürüş Süresi:</strong> {formatDuration(Number(tripDuration))}</p>
-														)}
-													</div>
-												</div>
-											)}
-
-											{/* Timestamp */}
-											{timestamp && (
-												<p className="timestamp">Güncelleme: {new Date(timestamp).toLocaleString('tr-TR')}</p>
-											)}
-
-											{/* Device Control Buttons */}
-											{(v.rentalActive === true || v.rentalActive === "true") && (
-												<div className="device-controls">
-													<button
-														onClick={() => sendGpsForDevice(d.deviceId)}
-														className={`device-control-btn gps ${activeGpsDevices.has(d.deviceId) ? 'active' : ''}`}
-														disabled={activeGpsDevices.has(d.deviceId)}
-														title="GPS konumunu gönder"
-													>
-														📍 GPS Gönder {activeGpsDevices.has(d.deviceId) && '...'}
-													</button>
-													<button
-														onClick={() => sendStatsForDevice(d.deviceId)}
-														className={`device-control-btn stats ${activeStatsDevices.has(d.deviceId) ? 'active' : ''}`}
-														disabled={activeStatsDevices.has(d.deviceId)}
-														title="İstatistikleri gönder"
-													>
-														📊 İstatistik {activeStatsDevices.has(d.deviceId) && '...'}
-													</button>
-													<button
-														onClick={() => endRental(d.deviceId)}
-														className="device-control-btn end"
-														title="Kiralama sonlandır"
-													>
-														🏁 Kiralama Bitir
-													</button>
-												</div>
-											)}
-
-											{/* Delete Button */}
-											<button
-												onClick={() => deleteDevice(d.deviceId)}
-												className="delete-device-btn"
-											>
-												🗑️ Cihazı Sil
-											</button>
-										</div>
-									);
-								})}
+				<div className="devices-section">
+					<h3>📱 Cihazlar</h3>
+					<button className="quick-btn" style={{ marginBottom: 12 }} onClick={fetchDevices}>
+						Yenile
+					</button>
+					{devicesLoading && !hasInitializedDevices.current ? (
+						<p>Yükleniyor...</p>
+					) : (
+						<>
+							{/* Her aktif kiralık device için ayrı DeviceCard - sadece seçili olan görünür */}
+							{devices
+								.filter(d => activeRentals.has(d.deviceId))
+								.map((device) => (
+									<div 
+										key={`device-${device.deviceId}`}
+										style={{ display: device.deviceId === selectedDeviceId ? 'block' : 'none' }}
+									>
+										<DeviceCard
+											deviceId={device.deviceId}
+											data={device.value}
+											onToggleGps={handleToggleGps}
+											onToggleStats={handleToggleStats}
+											onEndRental={handleEndRental}
+											onResetTrip={handleResetTrip}
+											onDeleteDevice={deleteDevice}
+											formatDuration={formatDuration}
+											routeHistory={[]} // Aktif kiralama için boş - sadece realtime çizim yapılacak
+											onRealtimePointsUpdate={(deviceId, points) => {
+												console.log(`[AdminPanel] onRealtimePointsUpdate: deviceId=${deviceId}, points=${points.length}`);
+												setRealtimePoints(prev => ({ ...prev, [deviceId]: points }));
+											}}
+											onGetMapCanvas={(mapCanvas) => {
+												if (mapCanvas) {
+													mapCanvasRefsRef.current.set(device.deviceId, mapCanvas);
+													console.log(`[AdminPanel] MapCanvas ref stored for deviceId: ${device.deviceId}`);
+												}
+											}}
+										/>
+									</div>
+								))}
+							
+							{/* Pasif (kiralık olmayan) cihazlar - sadece anlık konum gösterilir */}
+							{devices
+								.filter(d => !activeRentals.has(d.deviceId))
+								.map((device) => (
+									<div 
+										key={`device-passive-${device.deviceId}`}
+										style={{ display: device.deviceId === selectedDeviceId ? 'block' : 'none' }}
+									>
+										<DeviceCard
+											deviceId={device.deviceId}
+											data={device.value}
+											onToggleGps={handleToggleGps}
+											onToggleStats={handleToggleStats}
+											onEndRental={handleEndRental}
+											onResetTrip={handleResetTrip}
+											onDeleteDevice={deleteDevice}
+											formatDuration={formatDuration}
+											routeHistory={[]} // Pasif cihaz - yol çizilmez, sadece anlık konum
+											isPassive={true} // Pasif cihaz flag'i
+											onGetMapCanvas={(mapCanvas) => {
+												if (mapCanvas) {
+													mapCanvasRefsRef.current.set(device.deviceId, mapCanvas);
+													console.log(`[AdminPanel] MapCanvas ref stored for passive deviceId: ${device.deviceId}`);
+												}
+											}}
+										/>
+									</div>
+								))}
+							
+							{/* Hiçbir device seçili değilse mesaj göster */}
+							{!selectedDeviceId && (
+								<p>Bir cihaz seçin</p>
+							)}
+						</>
+					)}
+				</div>				{/* Trip Detail Modal */}
+				{selectedTrip && (
+					<div className="modal-overlay" onClick={() => setSelectedTrip(null)}>
+						<div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '800px' }}>
+							<h2>🗺️ Sürüş Detayları</h2>
+							<div style={{ marginBottom: '20px' }}>
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Trip ID:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.tripId}</span></p>
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Cihaz:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.deviceId}</span></p>
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#667eea', fontWeight: 700 }}>📏 Mesafe:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.totalDistance ? Number(selectedTrip.totalDistance).toFixed(3) : '—'} km</span></p>
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#667eea', fontWeight: 700 }}>⚡ Ort. Hız:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.avgSpeed ? Number(selectedTrip.avgSpeed).toFixed(2) : '—'} km/h</span></p>
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#667eea', fontWeight: 700 }}>⏱️ Toplam Süre:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.tripDuration ? formatDuration(selectedTrip.tripDuration) : '—'}</span></p>
+								{selectedTrip.parkDuration !== undefined && selectedTrip.parkDuration > 0 && (
+									<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#667eea', fontWeight: 700 }}>🅿️ Park Süresi:</span> <span style={{ color: '#333', fontWeight: 700 }}>{formatDuration(selectedTrip.parkDuration)}</span></p>
+								)}
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#667eea', fontWeight: 700 }}>🕐 Başlangıç:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.timestamp ? new Date(selectedTrip.timestamp).toLocaleString('tr-TR') : '—'}</span></p>
+								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Rota Noktaları:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.realtimeRoute?.length || 0}</span></p>
 							</div>
-						)}
-					</div>
+							
+							{/* Ücret Bilgisi - her zaman hesapla ve göster */}
+							{(() => {
+								const distance = selectedTrip.totalDistance || 0;
+								const totalDuration = selectedTrip.tripDuration || 0;
+								const parkDuration = selectedTrip.parkDuration || 0;
+								const driveDuration = totalDuration - parkDuration;
+								
+								const distanceCost = distance * 1; // 1₺/km
+								const driveCost = (driveDuration / 60) * 2; // 2₺/dk sürüş
+								const parkCost = (parkDuration / 60) * 1; // 1₺/dk park
+								const totalCost = selectedTrip.totalCost ?? (distanceCost + driveCost + parkCost);
+								
+								return (
+									<div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
+										<h3 style={{ color: '#fff', marginBottom: '12px', fontSize: '16px' }}>💰 ÜCRET BİLGİSİ</h3>
+										<div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px' }}>
+											<div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '8px', color: '#fff', fontSize: '13px' }}>
+												<p>📏 Mesafe ({distance.toFixed(2)} km × 1₺):</p>
+												<p style={{ textAlign: 'right', fontWeight: 600 }}>{distanceCost.toFixed(2)} ₺</p>
+												
+												<p>🚗 Sürüş ({(driveDuration / 60).toFixed(1)} dk × 2₺):</p>
+												<p style={{ textAlign: 'right', fontWeight: 600 }}>{driveCost.toFixed(2)} ₺</p>
+												
+												{parkDuration > 0 && (
+													<>
+														<p>🅿️ Park ({(parkDuration / 60).toFixed(1)} dk × 1₺):</p>
+														<p style={{ textAlign: 'right', fontWeight: 600 }}>{parkCost.toFixed(2)} ₺</p>
+													</>
+												)}
+											</div>
+											<hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.3)', margin: '12px 0' }} />
+											<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+												<span style={{ color: '#fff', fontSize: '16px', fontWeight: 600 }}>TOPLAM:</span>
+												<span style={{ color: '#fff', fontSize: '24px', fontWeight: 700 }}>{totalCost.toFixed(2)} ₺</span>
+											</div>
+										</div>
+									</div>
+								);
+							})()}
+							
+							{/* Trip Haritası - geçilen yolları göster */}
+							{selectedTrip.lat !== undefined && selectedTrip.lon !== undefined && (
+								<div style={{ height: '350px', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
+									<MapCanvas 
+										lat={selectedTrip.lat} 
+										lon={selectedTrip.lon}
+										routeHistory={selectedTrip.realtimeRoute || []}
+									/>
+								</div>
+							)}								<button
+									onClick={() => setSelectedTrip(null)}
+									className="modal-btn confirm"
+									style={{ width: '100%' }}
+								>
+									✓ Kapat
+								</button>
+							</div>
+						</div>
+					)}
 
 					{/* Trips Section */}
 					<div className="trips-section">
@@ -786,12 +964,18 @@ export default function AdminPanel() {
 												};
 
 												return (
-													<div key={trip.tripId} className="trip-card">
+													<div 
+														key={trip.tripId} 
+														className="trip-card"
+														onClick={() => setSelectedTrip(trip)}
+														style={{ cursor: 'pointer' }}
+													>
 														<p><strong>Trip ID:</strong> {trip.tripId}</p>
 														{trip.totalDistance !== undefined && <p><strong>📏 Mesafe:</strong> {Number(trip.totalDistance).toFixed(3)} km</p>}
 														{trip.avgSpeed !== undefined && <p><strong>⚡ Ort. Hız:</strong> {Number(trip.avgSpeed).toFixed(2)} km/h</p>}
 														{trip.tripDuration !== undefined && <p><strong>⏱️ Sürüş Süresi:</strong> {formatDuration(trip.tripDuration)}</p>}
 														{trip.speed !== undefined && <p><strong>🚗 Anlık Hız:</strong> {Number(trip.speed).toFixed(2)} km/h</p>}
+														{trip.totalCost !== undefined && <p><strong>💰 Ücret:</strong> {Number(trip.totalCost).toFixed(2)} ₺</p>}
 														{trip.timestamp && <p className="trip-timestamp">{new Date(trip.timestamp).toLocaleString('tr-TR')}</p>}
 														
 													</div>
