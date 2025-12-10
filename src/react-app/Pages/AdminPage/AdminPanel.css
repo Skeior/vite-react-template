@@ -1,0 +1,226 @@
+.admin-panel {
+	min-height: 100vh;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	padding: 2rem;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 16px;
+	padding: 2rem;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.admin-container h1 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 2rem;
+	font-size: 2.5rem;
+	letter-spacing: 1px;
+}
+
+/* Messages */
+.error-message {
+	background-color: #fee;
+	color: #c33;
+	padding: 1rem;
+	border-radius: 8px;
+	margin-bottom: 1.5rem;
+	border-left: 4px solid #c33;
+	font-weight: 500;
+}
+
+.success-message {
+	background-color: #efe;
+	color: #3a3;
+	padding: 1rem;
+	border-radius: 8px;
+	margin-bottom: 1.5rem;
+	border-left: 4px solid #3a3;
+	font-weight: 500;
+	animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Control Grid */
+.control-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.control-card {
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	border-radius: 12px;
+	padding: 1.5rem;
+	text-align: center;
+	transition: all 0.3s ease;
+	border: 2px solid transparent;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.control-card.active {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border-color: #555;
+	box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+	transform: translateY(-4px);
+}
+
+.control-card h2 {
+	margin: 0 0 1rem 0;
+	font-size: 1.3rem;
+	font-weight: 600;
+}
+
+.control-card .status {
+	margin: 0.5rem 0 1rem 0;
+	font-size: 1.1rem;
+	font-weight: 600;
+	min-height: 24px;
+}
+
+.control-card.active .status {
+	color: #fff;
+}
+
+/* Toggle Button */
+.toggle-btn {
+	background: white;
+	color: #667eea;
+	border: none;
+	padding: 0.75rem 1.5rem;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.toggle-btn:hover {
+	transform: scale(1.05);
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn.active {
+	background: #667eea;
+	color: white;
+}
+
+.control-card.active .toggle-btn {
+	background: rgba(255, 255, 255, 0.2);
+	color: white;
+}
+
+.control-card.active .toggle-btn:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+/* Quick Links */
+.quick-links {
+	background: #f9f9f9;
+	border-radius: 12px;
+	padding: 1.5rem;
+	margin-bottom: 2rem;
+	border: 1px solid #e0e0e0;
+}
+
+.quick-links h3 {
+	margin: 0 0 1rem 0;
+	color: #333;
+	font-size: 1.2rem;
+}
+
+.quick-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	align-items: center;
+}
+
+.quick-btn {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 0.75rem 1.25rem;
+	border-radius: 8px;
+	font-size: 0.95rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+.quick-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+}
+
+.quick-btn:active {
+	transform: translateY(0);
+}
+
+/* Info Box */
+.info-box {
+	background: #f5f5f5;
+	border-radius: 12px;
+	padding: 1.5rem;
+	border: 1px solid #ddd;
+}
+
+.info-box h3 {
+	margin: 0 0 1rem 0;
+	color: #333;
+	font-size: 1.2rem;
+}
+
+.info-box pre {
+	background: white;
+	padding: 1rem;
+	border-radius: 8px;
+	overflow-x: auto;
+	font-size: 0.9rem;
+	color: #333;
+	border: 1px solid #e0e0e0;
+	margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.admin-container {
+		padding: 1rem;
+	}
+
+	.admin-container h1 {
+		font-size: 2rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.control-grid {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	.quick-links {
+		flex-direction: column;
+	}
+
+	.quick-btn {
+		width: 100%;
+	}
+}

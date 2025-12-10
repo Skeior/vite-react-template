@@ -4,6 +4,7 @@ import RadioPlayer from "./Components/RadioPlayer";
 import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
+import AdminPanel from "./Pages/AdminPage/AdminPanel";
 import "./App.css";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "./Components/LanguageProvider";
@@ -221,6 +222,9 @@ const AppLayout: React.FC = () => {
           <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`.trim()}>
             {t("nav.contact")}
           </NavLink>
+          <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`.trim()}>
+            🔧 Admin
+          </NavLink>
           <LanguageToggle />
         </div>
       </nav>
@@ -230,6 +234,7 @@ const AppLayout: React.FC = () => {
           <Route path="/" element={<AboutPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
 
