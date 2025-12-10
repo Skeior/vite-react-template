@@ -20,9 +20,13 @@ export default function AdminPanel() {
 	const [error, setError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
 
+	const [devices, setDevices] = useState<Array<{ deviceId: string; value: any }>>([]);
+	const [devicesLoading, setDevicesLoading] = useState(false);
+
 	// Fetch initial state
 	useEffect(() => {
 		fetchState();
+		fetchDevices();
 	}, []);
 
 	const fetchState = async () => {
@@ -58,6 +62,20 @@ export default function AdminPanel() {
 			setTimeout(() => setMessage(null), 2000);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Unknown error");
+		}
+	};
+
+	const fetchDevices = async () => {
+		try {
+			setDevicesLoading(true);
+			const res = await fetch("/admin/devices");
+			if (!res.ok) throw new Error("Failed to fetch devices");
+			const data = await res.json();
+			setDevices(data.devices || []);
+		} catch (err) {
+			console.error(err);
+		} finally {
+			setDevicesLoading(false);
 		}
 	};
 
@@ -177,13 +195,55 @@ export default function AdminPanel() {
 					</button>
 				</div>
 
-				{/* Info */}
-				<div className="info-box">
-					<h3>📡 Durum Bilgileri</h3>
-					<pre>
-						{JSON.stringify(state, null, 2)}
-					</pre>
-				</div>
+					{/* Info */}
+					<div className="info-box">
+						<h3>📡 Durum Bilgileri</h3>
+						<pre>
+							{JSON.stringify(state, null, 2)}
+						</pre>
+					</div>
+
+					{/* Devices */}
+					<div className="devices-section">
+						<h3>📱 Cihazlar</h3>
+						<button className="quick-btn" style={{ marginBottom: 12 }} onClick={fetchDevices}>
+							Yenile
+						</button>
+						{devicesLoading ? (
+							<p>Yükleniyor...</p>
+						) : (
+							<div className="control-grid">
+								{devices.length === 0 && <p>Hiç cihaz yok.</p>}
+								{devices.map((d) => {
+									const v = d.value || {};
+									const lat = v.lat ?? v.latitude ?? null;
+									const lon = v.lon ?? v.longitude ?? null;
+									const speed = v.speed ?? v.speed_kph ?? v.speedKph ?? null;
+									const time = v.time ?? v.timestamp ?? null;
+
+									return (
+										<div key={d.deviceId} className="control-card">
+											<h2>{d.deviceId}</h2>
+											<div className="status">
+												<div>Hız: {speed ?? "—"}</div>
+												<div>Konum: {lat && lon ? `${lat}, ${lon}` : "—"}</div>
+												<div>Zaman: {time ?? "—"}</div>
+											</div>
+											{lat && lon && (
+												<div style={{ marginTop: 8 }}>
+													<iframe
+														src={`https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`}
+														style={{ width: "100%", height: 200, border: 0 }}
+														loading="lazy"
+													></iframe>
+												</div>
+											)}
+										</div>
+									);
+								})}
+							</div>
+						)}
+					</div>
 			</div>
 		</div>
 	);

@@ -105,4 +105,31 @@ app.get("/control", async (c: Context<{ Bindings: Env }>) => {
 	return c.text(resp);
 });
 
+// --- ADMIN: list devices and last data ---
+app.get("/admin/devices", async (c: Context<{ Bindings: Env }>) => {
+	try {
+		const url = new URL(c.req.url);
+		const limitParam = url.searchParams.get("limit");
+		const limit = limitParam ? Math.min(1000, Number(limitParam)) : 100;
+
+		const list = await c.env.espControl.list({ limit });
+		const keys = list.keys.map(k => k.name).filter(n => n && n !== "rentalActive" && n !== "parkMode" && n !== "gpsSend" && n !== "statsSend");
+
+		const results = await Promise.all(keys.map(async (name) => {
+			try {
+				const v = await c.env.espControl.get(name);
+				let parsed: any = null;
+				try { parsed = v ? JSON.parse(v) : null; } catch (e) { parsed = v; }
+				return { deviceId: name, value: parsed };
+			} catch (e) {
+				return { deviceId: name, value: null };
+			}
+		}));
+
+		return c.json({ devices: results });
+	} catch (err) {
+		return c.text("Error listing devices", 500);
+	}
+});
+
 export default app;

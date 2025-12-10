@@ -200,6 +200,27 @@
 	margin: 0;
 }
 
+/* Devices section */
+.devices-section {
+	margin-top: 1.5rem;
+}
+
+.devices-section h3 {
+	margin-bottom: 0.75rem;
+}
+
+.devices-section .control-card {
+	text-align: left;
+}
+
+.devices-section .control-card h2 {
+	text-align: left;
+}
+
+.devices-section iframe {
+	border-radius: 8px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
 	.admin-container {
