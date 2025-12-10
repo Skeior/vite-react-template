@@ -222,9 +222,6 @@ const AppLayout: React.FC = () => {
           <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`.trim()}>
             {t("nav.contact")}
           </NavLink>
-          <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`.trim()}>
-            🔧 Admin
-          </NavLink>
           <LanguageToggle />
         </div>
       </nav>
