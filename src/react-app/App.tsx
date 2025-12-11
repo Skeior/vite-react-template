@@ -1,11 +1,9 @@
 import { BrowserRouter, Routes, Route, NavLink, useLocation, useNavigate } from "react-router-dom";
 import ScrollToTop from "./Components/ScrollToTop";
 import RadioPlayer from "./Components/RadioPlayer";
-// import AboutPage from "./Pages/AboutPage/About";
+import AboutPage from "./Pages/AboutPage/About";
 import PortfolioPage from "./Pages/PortfolioPage/PortfolioPage";
 import ContactPage from "./Pages/ContactPage/ContactPage";
-import AdminPanel from "./Pages/AdminPage/AdminPanel";
-import ClientPage from "./Pages/ClientPage/ClientPage";
 import "./App.css";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "./Components/LanguageProvider";
@@ -230,13 +228,11 @@ const AppLayout: React.FC = () => {
       <div className="app-container">
         <Routes>
           {/* Main site pages */}
-          <Route path="/" element={<PortfolioPage />} />
+          <Route path="/" element={<AboutPage />} />
+          <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          {/* Admin and Client apps */}
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/client" element={<ClientPage />} />
           {/* Fallback */}
-          <Route path="*" element={<PortfolioPage />} />
+          <Route path="*" element={<AboutPage />} />
         </Routes>
       </div>
 
