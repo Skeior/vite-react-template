@@ -83,6 +83,11 @@ export default function ClientPage() {
   // Kiralama sayaçlarını tek bir obje içinde takip et
   const [rentalTimers, setRentalTimers] = useState<{ totalSeconds: number; driveSeconds: number; parkSeconds: number }>({ totalSeconds: 0, driveSeconds: 0, parkSeconds: 0 });
   const [parkStartTime, setParkStartTime] = useState<number | null>(null);
+  // Motion alerts (park modunda hareket algılanırsa bildirim)
+  const [motionAlerts, setMotionAlerts] = useState<Array<{ deviceId: string; timestamp: string }>>([]);
+  const [lastMotionTimestamp, setLastMotionTimestamp] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [endRentalConfirmOpen, setEndRentalConfirmOpen] = useState<boolean>(false);
 
   const fetchTripRoute = useCallback(async (tripId: string) => {
     // fetchTripRoute
@@ -160,11 +165,13 @@ export default function ClientPage() {
       const data = await res.json();
       setDevices(data.devices || []);
 
-      // Aktif kiralamaları tespit et
+      // Aktif kiralamaları tespit et (sadece seçili cihaz için)
       const activeTripsToFetch: string[] = [];
       // anyActiveRental kaldırıldı (kullanılmıyor)
       data.devices?.forEach((d: any) => {
-        if (d.value && d.value.rentalActive === "true" && d.value.tripId) {
+        if (!selectedDeviceId) return;
+        if (d.deviceId !== selectedDeviceId) return;
+        if (d.value && (d.value.rentalActive === true || d.value.rentalActive === "true") && d.value.tripId) {
           activeTripsToFetch.push(d.value.tripId);
         }
       });
@@ -194,13 +201,45 @@ export default function ClientPage() {
         setRentalTimers({ totalSeconds: 0, driveSeconds: 0, parkSeconds: 0 });
         setParkStartTime(null);
       } else {
-        // Aktif kiralama tespit edildi ama client tarafında başlangıç zamanı yoksa başlat
+        // Sadece seçili cihaz için kiralama sayaçlarını yönet
         if (rentalStartTime === null) {
-          // Active rental detected, start timer
           setRentalStartTime(Date.now());
           setRentalTimers({ totalSeconds: 0, driveSeconds: 0, parkSeconds: 0 });
         }
       }
+
+      // Motion alerts: parkMode + motionDetected
+      const alerts: Array<{ deviceId: string; timestamp: string }> = [];
+      data.devices?.forEach((d: any) => {
+        if (d.value && (d.value.parkMode === true || d.value.parkMode === "true") && d.value.motionDetected && d.value.motionDetectedAt) {
+          alerts.push({ deviceId: d.deviceId, timestamp: d.value.motionDetectedAt });
+        }
+      });
+      if (alerts.length > 0) {
+        const latestAlert = alerts[alerts.length - 1];
+        if (latestAlert.timestamp !== lastMotionTimestamp) {
+          setLastMotionTimestamp(latestAlert.timestamp);
+          try {
+            if (Notification && Notification.permission === 'granted') {
+              new Notification('Hareket algılandı', { body: `${latestAlert.deviceId}: Park modunda hareket!` });
+            } else if (Notification && Notification.permission !== 'denied') {
+              Notification.requestPermission().then((perm) => {
+                if (perm === 'granted') {
+                  new Notification('Hareket algılandı', { body: `${latestAlert.deviceId}: Park modunda hareket!` });
+                }
+              });
+            }
+          } catch {}
+          // Sesli uyarı ve toast (Admin’deki davranışla uyumlu)
+          try {
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUQ0PVqzn77BdGAg+ltryxnMpBSl+zPLaizsIGGS56+ihUAwKTKXh8bllHAU2jtXvxXwsBS2Ay/HSjjwIGGK36+mjUg0LULF==');
+            audio.play();
+          } catch {}
+          setToastMessage(`⚠️ ${latestAlert.deviceId}: Park modunda hareket algılandı!`);
+          setTimeout(() => setToastMessage(null), 4000);
+        }
+      }
+      setMotionAlerts(alerts);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cihaz hatası");
     }
@@ -297,25 +336,35 @@ export default function ClientPage() {
         body: JSON.stringify({ deviceId: selectedDeviceId }),
       });
       if (!res.ok) throw new Error("Kiralama sonlandırılamadı");
+      // Client: Anında sonlandırma ve yerel state reset (admin ile aynı davranış)
       setActiveRentalRoute([]);
       setRentalStartTime(null);
       setRentalTimers({ totalSeconds: 0, driveSeconds: 0, parkSeconds: 0 });
       setParkStartTime(null);
+      // Güvenlik: Cihaz state'ini kiralık değil olarak işaretle (stale state önleme)
+      try {
+        await fetch("/admin/state", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ deviceId: selectedDeviceId, rentalActive: false })
+        });
+      } catch {}
       // Fetch updated data from D1
       await new Promise(resolve => setTimeout(resolve, 100));
       await fetchDevices();
       await fetchTrips();
-      
-      // Fetch the latest trip and show modal
-      const tripsRes = await fetch("/admin/trips?sortBy=timestamp");
-      if (tripsRes.ok) {
-        const tripsData = await tripsRes.json();
-        const latestTrip = tripsData.trips?.find((t: any) => t.deviceId === selectedDeviceId);
-        if (latestTrip) {
-          setSelectedTrip(latestTrip);
-          fetchTripRoute(latestTrip.tripId);
+      // Opsiyonel: en son trip'i modalda göster
+      try {
+        const tripsRes = await fetch("/admin/trips?sortBy=timestamp");
+        if (tripsRes.ok) {
+          const tripsData = await tripsRes.json();
+          const latestTrip = tripsData.trips?.find((t: any) => t.deviceId === selectedDeviceId);
+          if (latestTrip) {
+            setSelectedTrip(latestTrip);
+            fetchTripRoute(latestTrip.tripId);
+          }
         }
-      }
+      } catch {}
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sonlandırma hatası");
     } finally {
@@ -433,7 +482,11 @@ export default function ClientPage() {
             {isRentalActive ? "Aktif Kiralama" : "Pasif"}
           </span>
           {isRentalActive && (
-            <button className="btn-end-rental" onClick={handleEndRental} disabled={rentalLoading}>
+            <button
+              className="btn-end-rental"
+              onClick={() => setEndRentalConfirmOpen(true)}
+              disabled={rentalLoading}
+            >
               {rentalLoading ? "Sonlandırılıyor..." : "Sürüşü Bitir"}
             </button>
           )}
@@ -492,6 +545,22 @@ export default function ClientPage() {
         )}
       </section>
 
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          background: 'rgba(20,25,36,0.95)',
+          color: '#ffe08a',
+          border: '1px solid rgba(255, 208, 122, 0.5)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+          boxShadow: '0 12px 30px rgba(0,0,0,0.45)',
+          zIndex: 3000
+        }}>
+          {toastMessage}
+        </div>
+      )}
       {/* Ücret bilgisini admin tasarımından client'e taşıyacağız: map altına koyacağız */}
 
       <section className="map-section">
@@ -587,6 +656,12 @@ export default function ClientPage() {
                 <span style={{ color: '#ff0000', fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 700 }}>{calculateTotal((totalDistance || 0), rentalTimers.driveSeconds, rentalTimers.parkSeconds).toFixed(2)} ₺</span>
               </div>
             </div>
+          </div>
+        )}
+        {motionAlerts.length > 0 && (
+          <div className="card" style={{ background: '#1b2a2f', borderLeft: '3px solid #ffcc00', borderRadius: '12px', padding: '1rem', border: '1px solid #334a52', marginTop: '1rem' }}>
+            <strong style={{ color: '#ffcc00' }}>⚠️ Park modunda hareket algılandı</strong>
+            <p style={{ color: '#cfe7ef', margin: '6px 0 0' }}>{motionAlerts[motionAlerts.length - 1].deviceId} için en son: {new Date(motionAlerts[motionAlerts.length - 1].timestamp).toLocaleString('tr-TR')}</p>
           </div>
         )}
       </section>
@@ -777,6 +852,31 @@ export default function ClientPage() {
               </button>
               <button className="btn-primary" onClick={handleStartRental} disabled={rentalLoading}>
                 {rentalLoading ? "Başlatılıyor..." : "Kirala"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {endRentalConfirmOpen && (
+        <div className="rental-modal-overlay" onClick={() => !rentalLoading && setEndRentalConfirmOpen(false)}>
+          <div className="rental-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Kiralama Sonlandırma</h3>
+            <p className="modal-device-id">{selectedDeviceId}</p>
+            <p className="modal-info">Sürüşü bitirmek istediğinizden emin misiniz?</p>
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setEndRentalConfirmOpen(false)} disabled={rentalLoading}>
+                İptal
+              </button>
+              <button
+                className="btn-primary"
+                onClick={async () => {
+                  await handleEndRental();
+                  setEndRentalConfirmOpen(false);
+                }}
+                disabled={rentalLoading}
+              >
+                {rentalLoading ? "Sonlandırılıyor..." : "Evet, Bitir"}
               </button>
             </div>
           </div>
