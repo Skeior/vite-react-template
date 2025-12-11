@@ -93,8 +93,8 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
     if (!mapRef.current) {
       mapRef.current = L.map(mapContainerRef.current).setView([lat, lon], 13);
 
-      // CartoDB Positron tiles (temiz, ölçeklenebilir harita)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      // CartoDB Dark tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '© OpenStreetMap © CARTO',
         maxZoom: 20,
         subdomains: 'abcd',
@@ -118,15 +118,21 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
         }
       }, 100);
     } else {
-      // Marker'ı yeni konuma taşı
+      // Marker'ı yeni konuma taşı (sadece pasif modda değilse - aktif kiralama sürüyorsa)
       if (markerRef.current) {
-        markerRef.current.setLatLng([lat, lon]);
+        if (!isPassive || (!routeHistory || routeHistory.length === 0)) {
+          markerRef.current.setLatLng([lat, lon]);
+          if (!mapRef.current.hasLayer(markerRef.current)) {
+            markerRef.current.addTo(mapRef.current);
+          }
+        }
       }
       // Map view'ı güncelle
       mapRef.current.setView([lat, lon], 18);
 
-      // Gerçek zamanlı çizgi: önceki konumdan yeni konuma çizgi çek (sadece aktif modda)
-      if (!isPassive && prevLocationRef.current) {
+      // Gerçek zamanlı çizgi: önceki konumdan yeni konuma çizgi çek 
+      // (sadece aktif modda VE route history yokken - route history varsa onunla çiz)
+      if (!isPassive && prevLocationRef.current && (!routeHistory || routeHistory.length === 0)) {
         // Yeni segment ekle
         realtimePointsRef.current.push([lat, lon]);
         
@@ -166,6 +172,18 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
     // Route history çiz
     if (routeHistory && routeHistory.length > 1 && mapRef.current) {
       console.log(`[MapCanvas] Drawing routeHistory: ${routeHistory.length} points`, routeHistory);
+      
+      // Realtime marker'ı gizle (route history varken sarı end marker yeterli)
+      if (markerRef.current && mapRef.current.hasLayer(markerRef.current)) {
+        mapRef.current.removeLayer(markerRef.current);
+      }
+      
+      // Realtime polyline'ı kaldır (route history ile çakışmasın)
+      if (realtimePolylineRef.current) {
+        mapRef.current.removeLayer(realtimePolylineRef.current);
+        realtimePolylineRef.current = null;
+      }
+      
       // Eski polyline'ı kaldır
       if (polylineRef.current) {
         mapRef.current.removeLayer(polylineRef.current);

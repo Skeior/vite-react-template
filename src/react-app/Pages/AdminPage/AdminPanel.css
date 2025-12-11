@@ -1,51 +1,67 @@
-/* Modern Active/Inactive Buttons */
+/* Modern Active/Inactive Buttons - Dark Theme */
 .active-btn {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
 	color: #fff;
 	font-weight: 600;
-	border-radius: 12px;
+	border-radius: 10px;
 	border: none;
-	padding: 10px 20px;
-	margin-right: 8px;
+	padding: clamp(0.6rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+	margin-right: 0.5rem;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+	transition: all 0.2s ease;
+	box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+	font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+	min-height: 44px; /* Touch-friendly */
 }
 .active-btn:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+	box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
 }
 .active-btn:active {
 	transform: translateY(0);
 }
 
 .inactive-btn {
-	background: rgba(255, 255, 255, 0.9);
-	color: #555;
+	background: #2a2a2a;
+	color: rgba(255, 255, 255, 0.7);
 	font-weight: 600;
-	border-radius: 12px;
-	border: 2px solid rgba(102, 126, 234, 0.2);
-	padding: 10px 20px;
-	margin-right: 8px;
+	border-radius: 10px;
+	border: 1px solid #3a3a3a;
+	padding: clamp(0.6rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+	margin-right: 0.5rem;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	backdrop-filter: blur(10px);
+	transition: all 0.2s ease;
+	font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+	min-height: 44px; /* Touch-friendly */
 }
 .inactive-btn:hover {
-	border-color: rgba(102, 126, 234, 0.5);
-	background: rgba(255, 255, 255, 1);
+	border-color: #ff0000;
+	background: #333;
+	color: #fff;
 	transform: translateY(-2px);
-	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+	box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
 }
 .inactive-btn:active {
 	transform: translateY(0);
 }
 
-/* Main Panel */
+@media (max-width: 480px) {
+	.active-btn, .inactive-btn {
+		margin-right: 0;
+		margin-bottom: 0.5rem;
+		flex: 1;
+		min-width: 120px;
+	}
+}
+
+/* Main Panel - Dark Theme */
 .admin-panel {
 	min-height: 100vh;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-	padding: 2rem;
+	background: #0a0a0a;
+	background-image: 
+		radial-gradient(at 20% 30%, rgba(255, 0, 0, 0.08) 0%, transparent 50%),
+		radial-gradient(at 80% 70%, rgba(0, 100, 255, 0.08) 0%, transparent 50%);
+	padding: 1rem;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 	position: relative;
 	overflow-x: hidden;
@@ -58,24 +74,18 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: 
-		radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-		radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+	background-image: 
+		repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 2px, rgba(255,255,255,0.03) 3px),
+		repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 2px, rgba(255,255,255,0.03) 3px);
 	pointer-events: none;
 	z-index: 0;
 }
 
 .admin-container {
-	max-width: 1400px;
+	max-width: 1600px;
 	margin: 0 auto;
-	background: rgba(255, 255, 255, 0.1);
-	backdrop-filter: blur(20px);
-	border-radius: 24px;
-	padding: 2.5rem;
-	box-shadow: 
-		0 8px 32px rgba(0, 0, 0, 0.1),
-		0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-	border: 1px solid rgba(255, 255, 255, 0.18);
+	background: transparent;
+	padding: 1rem;
 	position: relative;
 	z-index: 1;
 }
@@ -83,36 +93,52 @@
 .admin-container h1 {
 	text-align: center;
 	color: #ffffff;
-	margin-bottom: 2.5rem;
-	font-size: 3rem;
-	font-weight: 800;
-	letter-spacing: -1px;
-	text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-	background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 100%);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-clip: text;
+	margin-bottom: 1.5rem;
+	font-size: clamp(1.5rem, 5vw, 2.5rem);
+	font-weight: 700;
+	letter-spacing: -0.5px;
+	text-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+	.admin-panel {
+		padding: 0.5rem;
+	}
+	
+	.admin-container {
+		padding: 0.5rem;
+	}
+	
+	.admin-container h1 {
+		margin-bottom: 1rem;
+		font-size: 1.5rem;
+	}
 }
 
 /* Messages */
+/* Messages - Dark Modern */
 .error-message {
-	background-color: #fee;
-	color: #c33;
+	background-color: rgba(255, 0, 0, 0.15);
+	color: #ff6666;
 	padding: 1rem;
-	border-radius: 8px;
-	margin-bottom: 1.5rem;
-	border-left: 4px solid #c33;
+	border-radius: 10px;
+	margin-bottom: 1rem;
+	border-left: 3px solid #ff0000;
+	border: 1px solid rgba(255, 0, 0, 0.3);
 	font-weight: 500;
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
 }
 
 .success-message {
-	background-color: #efe;
-	color: #3a3;
+	background-color: rgba(0, 255, 0, 0.15);
+	color: #66ff66;
 	padding: 1rem;
-	border-radius: 8px;
-	margin-bottom: 1.5rem;
-	border-left: 4px solid #3a3;
+	border-radius: 10px;
+	margin-bottom: 1rem;
+	border-left: 3px solid #00ff00;
+	border: 1px solid rgba(0, 255, 0, 0.3);
 	font-weight: 500;
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
 	animation: slideIn 0.3s ease-out;
 }
 
@@ -136,16 +162,13 @@
 }
 
 .motion-alerts-box {
-	background: rgba(239, 68, 68, 0.2);
-	backdrop-filter: blur(20px);
+	background: rgba(255, 0, 0, 0.1);
 	color: white;
-	padding: 2rem;
-	border-radius: 20px;
+	padding: 1.5rem;
+	border-radius: 12px;
 	margin-bottom: 1.5rem;
-	border: 1px solid rgba(239, 68, 68, 0.4);
-	box-shadow: 
-		0 8px 32px rgba(239, 68, 68, 0.3),
-		0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+	border: 2px solid rgba(255, 0, 0, 0.3);
+	box-shadow: 0 4px 20px rgba(255, 0, 0, 0.2);
 	animation: alertPulse 2s ease-in-out infinite;
 	position: relative;
 	overflow: hidden;
@@ -158,18 +181,18 @@
 	left: -50%;
 	width: 200%;
 	height: 200%;
-	background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+	background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
 	animation: rotate 10s linear infinite;
 }
 
 @keyframes alertPulse {
 	0%, 100% {
-		box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-		transform: scale(1);
+		box-shadow: 0 4px 20px rgba(255, 0, 0, 0.2);
+		border-color: rgba(255, 0, 0, 0.3);
 	}
 	50% {
-		box-shadow: 0 12px 48px rgba(239, 68, 68, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-		transform: scale(1.01);
+		box-shadow: 0 8px 30px rgba(255, 0, 0, 0.4);
+		border-color: rgba(255, 0, 0, 0.5);
 	}
 }
 
@@ -189,169 +212,145 @@
 }
 
 .motion-alert-item {
-	background: rgba(255, 255, 255, 0.1);
-	backdrop-filter: blur(10px);
-	padding: 1.2rem;
-	border-radius: 12px;
-	margin-bottom: 1rem;
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	background: #1a1a1a;
+	padding: 1rem;
+	border-radius: 10px;
+	margin-bottom: 0.75rem;
+	border: 1px solid #2a2a2a;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 	position: relative;
 	z-index: 1;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: all 0.2s ease;
 }
 
 .motion-alert-item:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-	background: rgba(255, 255, 255, 0.15);
+	box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+	border-color: #ff0000;
 }
 
 .motion-alert-item strong {
 	display: block;
 	margin-bottom: 0.5rem;
-	font-size: 1.2rem;
-	font-weight: 700;
+	font-size: clamp(1rem, 3vw, 1.1rem);
+	font-weight: 600;
 }
 
 .motion-alert-item .alert-time {
 	display: block;
-	font-size: 0.9rem;
-	opacity: 0.95;
+	font-size: clamp(0.8rem, 2.5vw, 0.85rem);
+	opacity: 0.8;
 	margin-bottom: 0.5rem;
-	font-weight: 500;
+	font-weight: 400;
 }
 
 .motion-alert-item p {
 	margin: 0;
-	font-size: 1rem;
-	opacity: 0.95;
-	line-height: 1.6;
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+	opacity: 0.9;
+	line-height: 1.5;
 }
 
 .control-grid {
-	background: rgba(255, 255, 255, 0.1);
-	backdrop-filter: blur(20px);
-	border-radius: 20px;
-	padding: 2rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.control-card {
+	background: #1a1a1a;
+	border: 1px solid #2a2a2a;
+	border-radius: 12px;
+	padding: 1.5rem;
 	text-align: center;
-	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	box-shadow: 
-		0 8px 32px rgba(0, 0, 0, 0.1),
-		0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-	color: #ffffff;
-	position: relative;
-	overflow: hidden;
+	transition: all 0.2s ease;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-.control-grid::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
-	opacity: 0;
-	transition: opacity 0.4s ease;
-}
-
-.control-grid:hover::before {
-	opacity: 1;
-}
-
-.control-grid:hover {
-	transform: translateY(-4px);
-	box-shadow: 
-		0 12px 48px rgba(0, 0, 0, 0.15),
-		0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-	border-color: rgba(255, 255, 255, 0.3);
+.control-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 30px rgba(255, 0, 0, 0.2);
+	border-color: #ff0000;
 }
 
 .control-card.active {
-	background: rgba(102, 126, 234, 0.25);
-	backdrop-filter: blur(20px);
-	border: 1px solid rgba(102, 126, 234, 0.5);
-	box-shadow: 
-		0 12px 48px rgba(102, 126, 234, 0.3),
-		0 0 0 1px rgba(255, 255, 255, 0.2) inset,
-		0 0 40px rgba(102, 126, 234, 0.2) inset;
-	transform: translateY(-6px);
+	background: #1f1f1f;
+	border: 2px solid #ff0000;
+	box-shadow: 0 8px 30px rgba(255, 0, 0, 0.3);
 }
 
 .control-card h2 {
-	margin: 0 0 1.2rem 0;
-	font-size: 1.4rem;
-	font-weight: 700;
+	margin: 0 0 1rem 0;
+	font-size: clamp(1.1rem, 3vw, 1.3rem);
+	font-weight: 600;
 	color: #ffffff;
-	letter-spacing: -0.5px;
-	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	letter-spacing: -0.3px;
 }
 
 .control-card .status {
-	margin: 0.8rem 0 1.5rem 0;
-	font-size: 1.2rem;
+	margin: 0.75rem 0 1rem 0;
+	font-size: clamp(1rem, 3vw, 1.1rem);
 	font-weight: 600;
-	min-height: 28px;
-	color: rgba(255, 255, 255, 0.9);
+	min-height: 24px;
+	color: rgba(255, 255, 255, 0.8);
 }
 
 .control-card .status div {
-	color: rgba(255, 255, 255, 0.95);
+	color: rgba(255, 255, 255, 0.9);
 	font-weight: 600;
-	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .control-card.active .status {
 	color: #fff;
-	text-shadow: 0 2px 8px rgba(102, 126, 234, 0.5);
 }
 
-/* Toggle Button */
+/* Toggle Button - Dark Modern */
 .toggle-btn {
-	background: rgba(255, 255, 255, 0.9);
-	color: #667eea;
-	border: 2px solid rgba(255, 255, 255, 0.3);
-	padding: 0.85rem 1.8rem;
-	border-radius: 12px;
-	font-size: 1.05rem;
-	font-weight: 700;
+	background: #2a2a2a;
+	color: rgba(255, 255, 255, 0.8);
+	border: 1px solid #3a3a3a;
+	padding: clamp(0.7rem, 2vw, 0.85rem) clamp(1.2rem, 3vw, 1.5rem);
+	border-radius: 10px;
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+	font-weight: 600;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-	backdrop-filter: blur(10px);
-	letter-spacing: 0.3px;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	letter-spacing: 0.2px;
+	min-height: 44px;
+	width: 100%;
 }
 
 .toggle-btn:hover {
-	transform: translateY(-2px) scale(1.02);
-	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-	background: rgba(255, 255, 255, 1);
-	border-color: rgba(255, 255, 255, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+	background: #333;
+	color: #fff;
+	border-color: #ff0000;
 }
 
 .toggle-btn:active {
-	transform: translateY(0) scale(0.98);
+	transform: translateY(0);
 }
 
 .toggle-btn.active {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: #ff0000;
 	color: white;
-	border-color: rgba(102, 126, 234, 0.5);
-	box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+	border-color: #ff3333;
+	box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
 }
 
 .control-card.active .toggle-btn {
-	background: rgba(255, 255, 255, 0.15);
-	color: white;
-	border: 2px solid rgba(255, 255, 255, 0.3);
+	background: #2a2a2a;
+	color: rgba(255, 255, 255, 0.8);
+	border: 1px solid #3a3a3a;
 }
 
 .control-card.active .toggle-btn:hover {
-	background: rgba(255, 255, 255, 0.25);
-	border-color: rgba(255, 255, 255, 0.5);
-	box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+	background: #333;
+	border-color: #ff0000;
+	box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
 }
 
 /* Quick Links */
@@ -460,216 +459,237 @@
 	border-radius: 8px;
 }
 
-/* Device Cards */
+/* Device Cards - Modern Dark Style */
 .device-card {
-	background: rgba(255, 255, 255, 0.12);
-	backdrop-filter: blur(20px);
-	border-radius: 20px;
-	padding: 2rem;
-	margin-bottom: 2rem;
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 
-		0 8px 32px rgba(0, 0, 0, 0.1),
-		0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+	background: #1a1a1a;
+	border: 1px solid #2a2a2a;
+	border-radius: 16px;
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .device-card:hover {
-	box-shadow: 
-		0 12px 48px rgba(0, 0, 0, 0.15),
-		0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-	transform: translateY(-4px);
-	border-color: rgba(255, 255, 255, 0.3);
+	box-shadow: 0 8px 30px rgba(255, 0, 0, 0.2);
+	transform: translateY(-2px);
+	border-color: #ff0000;
 }
 
 .device-card h2 {
 	color: #ffffff;
-	font-size: 1.8rem;
-	font-weight: 800;
-	margin-bottom: 1.5rem;
-	padding-bottom: 1rem;
-	border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-	letter-spacing: -0.5px;
-	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.device-card h3 {
-	color: rgba(255, 255, 255, 0.95);
-	font-size: 1.2rem;
-	margin-top: 1.5rem;
-	margin-bottom: 0.8rem;
+	font-size: clamp(1.2rem, 4vw, 1.5rem);
 	font-weight: 700;
+	margin-bottom: 1rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 2px solid #2a2a2a;
 	letter-spacing: -0.3px;
 }
 
+.device-card h3 {
+	color: #ffffff;
+	font-size: clamp(0.9rem, 3vw, 1.1rem);
+	margin-top: 1.25rem;
+	margin-bottom: 0.75rem;
+	font-weight: 600;
+	opacity: 0.9;
+}
+
 .device-info {
-	margin-bottom: 1.5rem;
+	margin-bottom: 1rem;
 }
 
 .info-text {
-	color: rgba(255, 255, 255, 0.9);
-	font-size: 1rem;
-	margin: 0.6rem 0;
-	line-height: 1.7;
-	font-weight: 500;
+	color: rgba(255, 255, 255, 0.85);
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+	margin: 0.5rem 0;
+	line-height: 1.6;
+	font-weight: 400;
 }
 
 .speed-text {
-	color: #ffffff;
-	font-size: 2.2rem;
-	font-weight: 800;
-	margin: 0.8rem 0;
+	color: #ff0000;
+	font-size: clamp(2rem, 8vw, 3rem);
+	font-weight: 700;
+	margin: 0.75rem 0;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-	text-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 	letter-spacing: -1px;
+	text-align: center;
+	padding: 1rem;
+	background: rgba(255, 0, 0, 0.1);
+	border-radius: 12px;
+	border: 2px solid rgba(255, 0, 0, 0.3);
 }
 
 .map-container {
-	margin-top: 1.5rem;
-	border-radius: 16px;
+	margin-top: 1rem;
+	border-radius: 12px;
 	overflow: hidden;
-	box-shadow: 
-		0 8px 32px rgba(0, 0, 0, 0.2),
-		0 0 0 1px rgba(255, 255, 255, 0.1);
-	border: 1px solid rgba(255, 255, 255, 0.15);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+	border: 1px solid #2a2a2a;
+	background: #1a1a1a;
 }
 
 .timestamp {
-	color: rgba(255, 255, 255, 0.7);
-	font-size: 0.9rem;
-	margin-top: 1.5rem;
-	padding-top: 1.5rem;
-	border-top: 1px solid rgba(255, 255, 255, 0.15);
+	color: rgba(255, 255, 255, 0.5);
+	font-size: clamp(0.75rem, 2vw, 0.85rem);
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid #2a2a2a;
 	text-align: right;
 	font-style: italic;
-	font-weight: 500;
+	font-weight: 400;
 }
 
-/* Device Status Badges */
+/* Device Status Badges - Modern Dark */
 .device-status {
 	display: flex;
-	gap: 0.6rem;
-	margin-bottom: 1.5rem;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
 	flex-wrap: wrap;
 }
 
 .status-badge {
 	display: inline-block;
 	padding: 0.5rem 1rem;
-	border-radius: 10px;
-	font-size: 0.9rem;
-	font-weight: 700;
-	background: rgba(255, 255, 255, 0.1);
-	color: rgba(255, 255, 255, 0.7);
-	border: 1px solid rgba(255, 255, 255, 0.15);
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	backdrop-filter: blur(10px);
-	letter-spacing: 0.3px;
+	border-radius: 8px;
+	font-size: clamp(0.75rem, 2vw, 0.85rem);
+	font-weight: 600;
+	background: #2a2a2a;
+	color: rgba(255, 255, 255, 0.6);
+	border: 1px solid #3a3a3a;
+	transition: all 0.2s ease;
+	letter-spacing: 0.2px;
+	min-height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .status-badge:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .status-badge.active {
-	background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+	background: #ff0000;
 	color: white;
-	border: 1px solid rgba(102, 126, 234, 0.5);
-	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+	border: 1px solid #ff3333;
+	box-shadow: 0 2px 12px rgba(255, 0, 0, 0.3);
 }
 
-/* Data Section - GPS & Stats */
+/* Data Section - GPS & Stats - Dark Modern */
 .data-section {
-	margin: 1.5rem 0;
-	padding: 1.5rem;
-	background: rgba(79, 172, 254, 0.15);
-	backdrop-filter: blur(10px);
-	border-left: 4px solid rgba(79, 172, 254, 0.7);
+	margin: 1rem 0;
+	padding: 1.25rem;
+	background: #1f1f1f;
+	border-left: 3px solid #ff0000;
 	border-radius: 12px;
-	border: 1px solid rgba(79, 172, 254, 0.3);
-	box-shadow: 0 4px 15px rgba(79, 172, 254, 0.15);
+	border: 1px solid #2a2a2a;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .data-section h3 {
 	color: #ffffff;
-	font-size: 1.2rem;
-	margin: 0 0 1rem 0;
-	font-weight: 700;
+	font-size: clamp(0.95rem, 3vw, 1.1rem);
+	margin: 0 0 0.75rem 0;
+	font-weight: 600;
 	display: flex;
 	align-items: center;
-	gap: 0.6rem;
-	letter-spacing: -0.3px;
-	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	gap: 0.5rem;
 }
 
-/* Stats Highlight */
+/* Stats Highlight - Grid Cards */
 .stats-highlight {
-	background: rgba(67, 233, 123, 0.15);
-	backdrop-filter: blur(10px);
-	padding: 1rem;
-	border-radius: 10px;
-	border-left: 3px solid rgba(67, 233, 123, 0.7);
-	border: 1px solid rgba(67, 233, 123, 0.3);
-	box-shadow: 0 2px 10px rgba(67, 233, 123, 0.15);
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 0.75rem;
+	padding: 0;
+	background: transparent;
+	border: none;
+	box-shadow: none;
 }
 
 .stats-highlight .info-text {
-	margin: 0.6rem 0;
-	color: rgba(255, 255, 255, 0.95);
-	line-height: 1.7;
-	font-weight: 500;
+	margin: 0;
+	padding: 1rem;
+	background: #252525;
+	border-radius: 10px;
+	border: 1px solid #333;
+	color: rgba(255, 255, 255, 0.8);
+	line-height: 1.5;
+	font-weight: 400;
+	font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+	transition: all 0.2s ease;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.stats-highlight .info-text:hover {
+	background: #2a2a2a;
+	border-color: #ff0000;
+	transform: translateY(-2px);
 }
 
 .stats-highlight .info-text strong {
 	color: #ffffff;
-	font-weight: 700;
-	text-shadow: 0 1px 4px rgba(67, 233, 123, 0.4);
+	font-weight: 600;
+	font-size: clamp(1.2rem, 4vw, 1.5rem);
+	display: block;
+	margin-top: 0.25rem;
 }
 
-/* Delete Device Button */
+@media (max-width: 480px) {
+	.stats-highlight {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Delete Device Button - Dark Modern */
 .delete-device-btn {
 	width: 100%;
-	margin-top: 1.5rem;
-	padding: 0.9rem;
-	background: rgba(239, 68, 68, 0.2);
-	backdrop-filter: blur(10px);
-	color: white;
-	border: 1px solid rgba(239, 68, 68, 0.4);
-	border-radius: 12px;
-	font-size: 1rem;
-	font-weight: 700;
+	margin-top: 1rem;
+	padding: clamp(0.75rem, 2vw, 0.9rem);
+	background: #2a2a2a;
+	color: rgba(255, 255, 255, 0.7);
+	border: 1px solid #3a3a3a;
+	border-radius: 10px;
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+	font-weight: 600;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
-	letter-spacing: 0.3px;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	letter-spacing: 0.2px;
+	min-height: 44px;
 }
 
 .delete-device-btn:hover {
-	background: rgba(239, 68, 68, 0.3);
-	box-shadow: 0 6px 25px rgba(239, 68, 68, 0.4);
+	background: #ff0000;
+	color: #fff;
+	box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
 	transform: translateY(-2px);
-	border-color: rgba(239, 68, 68, 0.6);
+	border-color: #ff3333;
 }
 
 .delete-device-btn:active {
 	transform: translateY(0);
 }
 
-/* Responsive */
+/* Responsive - Mobile First */
 @media (max-width: 768px) {
 	.admin-container {
-		padding: 1rem;
+		padding: 0.5rem;
 	}
 
 	.admin-container h1 {
-		font-size: 2rem;
-		margin-bottom: 1.5rem;
+		font-size: 1.5rem;
+		margin-bottom: 1rem;
 	}
 
 	.control-grid {
 		grid-template-columns: 1fr;
-		gap: 1rem;
+		gap: 0.75rem;
 	}
 
 	.quick-links {
@@ -682,19 +702,42 @@
 
 	.device-card {
 		padding: 1rem;
+		border-radius: 12px;
+	}
+
+	.device-card h2 {
+		font-size: 1.2rem;
 	}
 
 	.device-card h3 {
-		font-size: 1rem;
+		font-size: 0.95rem;
 	}
 
-	.speed-text {
-		font-size: 1.4rem;
+	.device-status {
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
-	.delete-device-btn {
-		padding: 0.65rem;
-		font-size: 0.9rem;
+	.device-status button {
+		width: 100%;
+	}
+
+	.data-section {
+		padding: 1rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.admin-panel {
+		padding: 0.25rem;
+	}
+	
+	.device-card {
+		padding: 0.75rem;
+	}
+	
+	.map-container {
+		height: 200px !important;
 	}
 }
 
@@ -980,70 +1023,90 @@
 .device-controls {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: 0.75rem;
 	margin-top: 1rem;
 	padding-top: 1rem;
-	border-top: 1px solid #e0e0e0;
+	border-top: 1px solid #2a2a2a;
 }
 
 .device-control-btn {
-	padding: 0.7rem 1.4rem;
+	padding: clamp(0.7rem, 2vw, 0.85rem) clamp(1.2rem, 3vw, 1.5rem);
 	border: none;
-	border-radius: 12px;
-	font-size: 0.95rem;
+	border-radius: 10px;
+	font-size: clamp(0.85rem, 2.5vw, 0.95rem);
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	font-weight: 700;
+	transition: all 0.2s ease;
+	font-weight: 600;
 	flex: 1;
-	min-width: 130px;
-	letter-spacing: 0.3px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	min-width: 140px;
+	min-height: 44px;
+	letter-spacing: 0.2px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .device-control-btn.gps {
-	background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+	background: #1a73e8;
 	color: white;
-	border: 1px solid rgba(79, 172, 254, 0.3);
+	border: 1px solid #2a83f8;
 }
 
 .device-control-btn.gps:hover:not(:disabled) {
-	transform: translateY(-3px);
-	box-shadow: 0 6px 20px rgba(79, 172, 254, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(26, 115, 232, 0.5);
+	background: #2a83f8;
 }
 
 .device-control-btn.gps.active {
-	background: linear-gradient(135deg, #0066cc 0%, #0099ff 100%);
-	box-shadow: 0 6px 25px rgba(0, 153, 255, 0.6);
+	background: #0d5bb5;
+	box-shadow: 0 6px 25px rgba(13, 91, 181, 0.6);
 	animation: glow 1.5s ease-in-out infinite;
 }
 
 .device-control-btn.stats {
-	background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+	background: #34a853;
 	color: white;
-	border: 1px solid rgba(67, 233, 123, 0.3);
+	border: 1px solid #44b863;
 }
 
 .device-control-btn.stats:hover:not(:disabled) {
-	transform: translateY(-3px);
-	box-shadow: 0 6px 20px rgba(67, 233, 123, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(52, 168, 83, 0.5);
+	background: #44b863;
 }
 
 .device-control-btn.stats.active {
-	background: linear-gradient(135deg, #00b850 0%, #00d48a 100%);
-	box-shadow: 0 6px 25px rgba(0, 180, 136, 0.6);
+	background: #248a3d;
+	box-shadow: 0 6px 25px rgba(36, 138, 61, 0.6);
 	animation: glow 1.5s ease-in-out infinite;
 }
 
 .device-control-btn.end {
-	background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+	background: #ff0000;
 	color: white;
-	font-weight: 800;
-	border: 1px solid rgba(250, 112, 154, 0.3);
+	font-weight: 700;
+	border: 1px solid #ff3333;
 }
 
 .device-control-btn.end:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 6px 20px rgba(250, 112, 154, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
+	background: #cc0000;
+}
+
+.device-control-btn.reset {
+	background: #2a2a2a;
+	color: rgba(255, 255, 255, 0.8);
+	font-weight: 600;
+	border: 1px solid #3a3a3a;
+	width: 100%;
+	margin-top: 0.75rem;
+}
+
+.device-control-btn.reset:hover {
+	transform: translateY(-2px);
+	background: #333;
+	border-color: #ff0000;
+	color: #fff;
 }
 
 .device-control-btn:disabled {
@@ -1055,11 +1118,20 @@
 @keyframes glow {
 	0%, 100% {
 		opacity: 1;
-		box-shadow: 0 6px 25px rgba(0, 153, 255, 0.6);
 	}
 	50% {
 		opacity: 0.85;
-		box-shadow: 0 6px 35px rgba(0, 153, 255, 0.8);
+	}
+}
+
+@media (max-width: 480px) {
+	.device-controls {
+		flex-direction: column;
+	}
+	
+	.device-control-btn {
+		width: 100%;
+		min-width: unset;
 	}
 }
 

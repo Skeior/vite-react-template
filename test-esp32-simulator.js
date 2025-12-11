@@ -233,9 +233,8 @@ async function sendGpsData() {
 // ===== İSTATİSTİK GÖNDER =====
 async function sendStatsData() {
   try {
-    const tripSeconds = tripActive ? Math.floor((Date.now() - tripStartTime) / 1000) : 0;
-
-    const stats = `km=${totalDistanceKm.toFixed(3)},avg=${avgSpeed.toFixed(2)},time=${tripSeconds}`;
+    // Simülasyonda süre bilgisini gönderme: yalnızca km ve ortalama hız
+    const stats = `km=${totalDistanceKm.toFixed(3)},avg=${avgSpeed.toFixed(2)}`;
 
     const pkt = buildPacket(MOD_STATS, PROP_STATS, stats);
     const response = await httpRequest(API_DATA_URL, 'POST', pkt);

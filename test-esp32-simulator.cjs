@@ -209,6 +209,12 @@ async function pollServerCommands() {
     gpsSendRequest = src.gpsSend === true || src.gpsSend === 'true';
     statsSendRequest = src.statsSend === true || src.statsSend === 'true';
 
+    // İlk kiralamada park modunu kapat
+    if (oldRent === false && rentState === true) {
+      parkMode = false;
+      console.log('[POLL] 🚗 Kiralama başladı - Park modu kapatıldı');
+    }
+
     // Kiralama bitince trip reset
     if (oldRent === true && rentState === false) {
       resetTrip();
@@ -318,9 +324,8 @@ async function sendStatsData() {
       return;
     }
 
-    const tripSeconds = tripActive ? Math.floor((Date.now() - tripStartTime) / 1000) : 0;
-
-    const stats = `${DEVICE_ID}|km=${totalDistanceKm.toFixed(3)},avg=${avgSpeed.toFixed(2)},time=${tripSeconds}`;
+    // Simülasyonda süre bilgisini kaldır: sadece km ve ortalama hız gönder
+    const stats = `${DEVICE_ID}|km=${totalDistanceKm.toFixed(3)},avg=${avgSpeed.toFixed(2)}`;
 
     const pkt = buildPacket(MOD_STATS, PROP_STATS, stats);
     const response = await httpRequest(API_DATA_URL, 'POST', pkt);
@@ -340,7 +345,7 @@ async function detectMotion() {
         motionDetected = true; // Flag'i set et - bu döngüde GPS güncellenecek
         // /motion endpoint'ine hareket bildirimi gönder
         const motionData = JSON.stringify({ deviceId: DEVICE_ID });
-        const response = await httpRequest('http://localhost:8787/motion', 'POST', Buffer.from(motionData));
+        const response = await httpRequest(`${API_BASE}/motion`, 'POST', Buffer.from(motionData));
         console.log(`[MOTION] ⚠️ Hareket algılandı! motionDetected=${motionDetected}. Durum: ${response.status}`);
       } else {
         // Hareket yok - flag'i sıfırlama, GPS sabit kalsın

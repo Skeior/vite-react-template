@@ -1,4 +1,5 @@
 import { memo, useRef, useEffect } from 'react';
+import { PRICING_RATES, calculateLineItems, calculateTotal } from '../../utils/pricing';
 import MapCanvas, { MapCanvasHandle } from './MapCanvas';
 
 interface DeviceData {
@@ -66,16 +67,7 @@ const DeviceCard = memo(function DeviceCardComponent({
     }
   };
 
-  // Ücret hesaplama fonksiyonu
-  // Km başı: 1 TL, Dakika başı: 2 TL, Park modunda dakika başı: 1 TL
-  const calculateCost = (distanceKm: number, driveDurationSec: number, parkDurationSec: number): number => {
-    const kmCost = distanceKm * 1; // 1 TL/km
-    const driveMinutes = driveDurationSec / 60;
-    const driveCost = driveMinutes * 2; // 2 TL/dk sürüş
-    const parkMinutes = parkDurationSec / 60;
-    const parkCost = parkMinutes * 1; // 1 TL/dk park (yarı fiyat)
-    return kmCost + driveCost + parkCost;
-  };
+  // Ücret hesaplama ortak helper üzerinden
 
   const lat = typeof v.lat === 'string' ? parseFloat(v.lat) : v.lat;
   const lon = typeof v.lon === 'string' ? parseFloat(v.lon) : v.lon;
@@ -88,8 +80,8 @@ const DeviceCard = memo(function DeviceCardComponent({
 
   // Sürüş süresi = Toplam süre - Park süresi
   const driveDuration = (tripDuration || 0) - parkDuration;
-  // Toplam ücret hesapla
-  const totalCost = calculateCost(distance || 0, driveDuration, parkDuration);
+  const totalCost = calculateTotal(distance || 0, driveDuration, parkDuration);
+  const { kmCost, driveCost, parkCost } = calculateLineItems(distance || 0, driveDuration, parkDuration);
 
   const handleToggleGps = () => onToggleGps(deviceId);
   const handleToggleStats = () => onToggleStats(deviceId);
@@ -182,46 +174,61 @@ const DeviceCard = memo(function DeviceCardComponent({
           <h3>📊 İSTATİSTİK VERİLERİ</h3>
           <div className="stats-highlight">
             {distance !== undefined && distance !== null && (
-              <p className="info-text">📏 <strong>Sürüş Mesafesi:</strong> {Number(distance).toFixed(3)} km</p>
+              <div className="info-text">
+                <span>📏 Mesafe</span>
+                <strong>{Number(distance).toFixed(3)} km</strong>
+              </div>
             )}
             {avgSpeed !== undefined && avgSpeed !== null && (
-              <p className="info-text">⚡ <strong>Ortalama Hız:</strong> {Number(avgSpeed).toFixed(2)} km/h</p>
+              <div className="info-text">
+                <span>⚡ Ort. Hız</span>
+                <strong>{Number(avgSpeed).toFixed(2)} km/h</strong>
+              </div>
             )}
             {tripDuration !== undefined && tripDuration !== null && (
-              <p className="info-text">⏱️ <strong>Toplam Süre:</strong> {formatDuration(Number(tripDuration))}</p>
+              <div className="info-text">
+                <span>⏱️ Toplam</span>
+                <strong>{formatDuration(Number(tripDuration))}</strong>
+              </div>
             )}
             {parkDuration > 0 && (
-              <p className="info-text">🅿️ <strong>Park Süresi:</strong> {formatDuration(parkDuration)}</p>
+              <div className="info-text">
+                <span>🅿️ Park</span>
+                <strong>{formatDuration(parkDuration)}</strong>
+              </div>
             )}
             {driveDuration > 0 && (
-              <p className="info-text">🚗 <strong>Sürüş Süresi:</strong> {formatDuration(driveDuration)}</p>
+              <div className="info-text">
+                <span>🚗 Sürüş</span>
+                <strong>{formatDuration(driveDuration)}</strong>
+              </div>
             )}
           </div>
         </div>
       )}
       {/* ===== ÜCRET BÖLÜMÜ (Sadece aktif kiralama için) ===== */}
       {!isPassive && (v.rentalActive === true || v.rentalActive === "true") && (
-        <div className="data-section" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', padding: '16px', marginTop: '12px' }}>
-          <h3 style={{ color: '#fff', marginBottom: '12px' }}>💰 ÜCRET BİLGİSİ</h3>
-          <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', color: '#fff', fontSize: '13px' }}>
-              <p>📏 Mesafe ({(distance || 0).toFixed(2)} km × 1₺):</p>
-              <p style={{ textAlign: 'right', fontWeight: 600 }}>{((distance || 0) * 1).toFixed(2)} ₺</p>
+        <div className="data-section" style={{ background: '#1f1f1f', borderLeft: '3px solid #ff0000', borderRadius: '12px', padding: '1.25rem', marginTop: '1rem', border: '1px solid #2a2a2a' }}>
+          <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: 'clamp(0.95rem, 3vw, 1.1rem)' }}>💰 ÜCRET BİLGİSİ</h3>
+          <div style={{ background: '#252525', borderRadius: '10px', padding: '1rem', border: '1px solid #333' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.75rem', color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(0.8rem, 2.5vw, 0.9rem)' }}>
+              <p style={{ margin: 0 }}>📏 Mesafe ({(distance || 0).toFixed(2)} km × {PRICING_RATES.perKm}₺)</p>
+              <p style={{ margin: 0, textAlign: 'right', fontWeight: 600, color: '#fff' }}>{kmCost.toFixed(2)} ₺</p>
               
-              <p>🚗 Sürüş ({(driveDuration / 60).toFixed(1)} dk × 2₺):</p>
-              <p style={{ textAlign: 'right', fontWeight: 600 }}>{((driveDuration / 60) * 2).toFixed(2)} ₺</p>
+              <p style={{ margin: 0 }}>🚗 Sürüş ({(driveDuration / 60).toFixed(1)} dk × {PRICING_RATES.drivePerMinute}₺)</p>
+              <p style={{ margin: 0, textAlign: 'right', fontWeight: 600, color: '#fff' }}>{driveCost.toFixed(2)} ₺</p>
               
               {parkDuration > 0 && (
                 <>
-                  <p>🅿️ Park ({(parkDuration / 60).toFixed(1)} dk × 1₺):</p>
-                  <p style={{ textAlign: 'right', fontWeight: 600 }}>{((parkDuration / 60) * 1).toFixed(2)} ₺</p>
+                  <p style={{ margin: 0 }}>🅿️ Park ({(parkDuration / 60).toFixed(1)} dk × {PRICING_RATES.parkPerMinute}₺)</p>
+                  <p style={{ margin: 0, textAlign: 'right', fontWeight: 600, color: '#fff' }}>{parkCost.toFixed(2)} ₺</p>
                 </>
               )}
             </div>
-            <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.3)', margin: '12px 0' }} />
+            <hr style={{ border: 'none', borderTop: '1px solid #3a3a3a', margin: '1rem 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: '#fff', fontSize: '16px', fontWeight: 600 }}>TOPLAM:</span>
-              <span style={{ color: '#fff', fontSize: '24px', fontWeight: 700 }}>{totalCost.toFixed(2)} ₺</span>
+              <span style={{ color: '#fff', fontSize: 'clamp(1rem, 3vw, 1.1rem)', fontWeight: 600 }}>TOPLAM:</span>
+              <span style={{ color: '#ff0000', fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 700 }}>{totalCost.toFixed(2)} ₺</span>
             </div>
           </div>
         </div>

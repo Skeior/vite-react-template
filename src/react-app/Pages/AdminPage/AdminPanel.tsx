@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { calculateTotal, calculateLineItems, PRICING_RATES, setPricingRates, getPricingRates } from "../../utils/pricing";
 import "./AdminPanel.css";
 import DeviceCard from "./DeviceCard";
 import MapCanvas from "./MapCanvas";
@@ -56,6 +57,25 @@ export default function AdminPanel() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
+	// Pricing settings (persisted in localStorage)
+	const [pricing, setPricing] = useState(() => {
+		const saved = localStorage.getItem("pricing-rates");
+		if (saved) {
+			try {
+				const parsed = JSON.parse(saved);
+				setPricingRates(parsed);
+				return { ...getPricingRates() };
+			} catch {}
+		}
+		return { ...PRICING_RATES };
+	});
+
+	const applyPricing = useCallback(() => {
+		setPricingRates(pricing);
+		localStorage.setItem("pricing-rates", JSON.stringify(pricing));
+		setMessage("✅ Fiyat katsayıları güncellendi");
+		setTimeout(() => setMessage(null), 2000);
+	}, [pricing]);
 
 	const [devices, setDevices] = useState<Array<{ deviceId: string; value: DeviceData }>>([]);
 	const [devicesLoading, setDevicesLoading] = useState(false);
@@ -67,6 +87,7 @@ export default function AdminPanel() {
 	
 	const [showRentalModal, setShowRentalModal] = useState(false);
 	const [rentalDeviceId, setRentalDeviceId] = useState("");
+	const [manageDeviceId, setManageDeviceId] = useState("");
 	const [rentalLoading, setRentalLoading] = useState(false);
 
 	// Realtime route points (harita üzerinde çizilen kırmızı çizgi)
@@ -192,6 +213,42 @@ export default function AdminPanel() {
 			setDevices(data.devices || []);
 			hasInitializedDevices.current = true;
 
+			// Aktif kiralamaları tespit et ve activeRentals set'ine ekle
+			const activeDevices = new Set<string>();
+			const activeTripsToFetch: string[] = [];
+			data.devices.forEach((d: any) => {
+				if (d.value && d.value.rentalActive === "true") {
+					activeDevices.add(d.deviceId);
+					// Trip ID'yi de kaydet
+					if (d.value.tripId) {
+						activeTripIdRef.current = d.value.tripId;
+						activeDeviceIdRef.current = d.deviceId;
+						activeTripsToFetch.push(d.value.tripId);
+					}
+				}
+			});
+			if (activeDevices.size > 0) {
+				setActiveRentals(activeDevices);
+				console.log('[fetchDevices] Active rentals restored:', Array.from(activeDevices));
+				
+				// Aktif trip'lerin route'larını fetch et
+				for (const tripId of activeTripsToFetch) {
+					try {
+						const tripRes = await fetch(`/admin/trips/${tripId}`);
+						if (tripRes.ok) {
+							const tripData = await tripRes.json();
+							if (tripData.routePoints && tripData.routePoints.length > 0) {
+								const deviceId = tripData.trip.deviceId;
+								setRealtimePoints(prev => ({ ...prev, [deviceId]: tripData.routePoints }));
+								console.log(`[fetchDevices] Restored ${tripData.routePoints.length} route points for ${deviceId}`);
+							}
+						}
+					} catch (e) {
+						console.error(`[fetchDevices] Error fetching trip ${tripId}:`, e);
+					}
+				}
+			}
+
 			// Check for motion alerts (parkMode + motionDetected)
 			const alerts: Array<{ deviceId: string; timestamp: string }> = [];
 			data.devices.forEach((d: any) => {
@@ -241,10 +298,9 @@ export default function AdminPanel() {
 		
 		try {
 			setError(null);
-			const res = await fetch(`/admin/devices/${deviceId}`, {
-				method: "DELETE",
-			});
-			if (!res.ok) throw new Error("Failed to delete device");
+			const res = await fetch(`/admin/device/${encodeURIComponent(deviceId)}`, { method: "DELETE" });
+			const data = await res.json();
+			if (!res.ok || data.ok === false) throw new Error(data.error || "Failed to delete device");
 			
 			setMessage(`✅ ${deviceId} silindi`);
 			await fetchDevices();
@@ -291,8 +347,13 @@ export default function AdminPanel() {
 			});
 			
 			if (!res.ok) {
-				const err = await res.json();
-				throw new Error(err.error || "Rental başlatılamadı");
+				let errorData: any = {};
+				try {
+					errorData = await res.json();
+				} catch {
+					errorData = { error: await res.text() };
+				}
+				throw new Error(errorData.error || errorData.details || "Rental başlatılamadı");
 			}
 			
 		const data = await res.json();
@@ -468,6 +529,45 @@ export default function AdminPanel() {
 		}
 	};
 
+	// --- Device management ---
+	const createDevice = async () => {
+		if (!manageDeviceId.trim()) { setError("Device ID giriniz"); return; }
+		try {
+			setError(null);
+			const res = await fetch("/admin/device", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ deviceId: manageDeviceId.trim() }),
+			});
+			const data = await res.json();
+			if (!res.ok || data.ok === false) throw new Error(data.error || "Cihaz oluşturulamadı");
+			setMessage(`✅ Cihaz eklendi: ${manageDeviceId.trim()}`);
+			setManageDeviceId("");
+			await fetchDevices();
+			setTimeout(() => setMessage(null), 3000);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Unknown error");
+		}
+	};
+
+	const deleteDeviceLocal = async () => {
+		if (!manageDeviceId.trim()) { setError("Device ID giriniz"); return; }
+		if (!window.confirm(`${manageDeviceId.trim()} cihazı silinsin mi? Tüm sürüş geçmişi de silinir.`)) return;
+		try {
+			setError(null);
+			const res = await fetch(`/admin/device/${encodeURIComponent(manageDeviceId.trim())}`, { method: "DELETE" });
+			const data = await res.json();
+			if (!res.ok || data.ok === false) throw new Error(data.error || "Cihaz silinemedi");
+			setMessage(`🗑️ Cihaz silindi: ${manageDeviceId.trim()}`);
+			setManageDeviceId("");
+			await fetchDevices();
+			await fetchTrips("timestamp");
+			setTimeout(() => setMessage(null), 3000);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Unknown error");
+		}
+	};
+
 	// sendGpsForDevice ve sendStatsForDevice kaldırıldı (artık kullanılmıyor)
 
 	// sendGpsForAll ve sendStatsForAll kaldırıldı (artık kullanılmıyor)
@@ -563,12 +663,84 @@ export default function AdminPanel() {
 		return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 	};
 
+	const getRentalDurationSeconds = (trip: Trip): number => {
+		const total = trip.tripDuration ?? 0;
+		if (total && total > 0) return total; // toplam kiralama süresi zaten varsa
+		// Fallback: timestamp ve end_time'dan hesapla
+		if (trip.timestamp && trip.rentalEndTime) {
+			const startMs = new Date(trip.timestamp).getTime();
+			const endMs = new Date(trip.rentalEndTime).getTime();
+			const diff = Math.max(0, Math.floor((endMs - startMs) / 1000));
+			return diff;
+		}
+		// Son çare: sürüş + park
+		return Math.max(0, (trip.tripDuration || 0) + (trip.parkDuration || 0));
+	};
+
+	const getDriveDurationSeconds = (trip: Trip): number => {
+		const rentalSecs = getRentalDurationSeconds(trip);
+		return Math.max(0, rentalSecs - (trip.parkDuration ?? 0));
+	};
+
 	if (loading) return <div className="admin-panel"><p>Yükleniyor...</p></div>;
 
 	return (
 		<div className="admin-panel">
 			<div className="admin-container">
 				<h1>🔧 ESP32 Control Panel</h1>
+
+				{/* Pricing Settings */}
+				<div className="control-card" style={{ marginTop: 12 }}>
+					<h2>💰 Ücret Ayarları</h2>
+					<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+						<label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+							<span>📏 Km başı (₺)</span>
+							<input
+								type="number"
+								step="0.1"
+								min="0"
+								value={pricing.perKm}
+								onChange={(e) => setPricing(p => ({ ...p, perKm: Number(e.target.value) }))}
+							/>
+						</label>
+						<label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+							<span>🚗 Sürüş / dk (₺)</span>
+							<input
+								type="number"
+								step="0.1"
+								min="0"
+								value={pricing.drivePerMinute}
+								onChange={(e) => setPricing(p => ({ ...p, drivePerMinute: Number(e.target.value) }))}
+							/>
+						</label>
+						<label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+							<span>🅿️ Park / dk (₺)</span>
+							<input
+								type="number"
+								step="0.1"
+								min="0"
+								value={pricing.parkPerMinute}
+								onChange={(e) => setPricing(p => ({ ...p, parkPerMinute: Number(e.target.value) }))}
+							/>
+						</label>
+					</div>
+					<div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+						<button className="toggle-btn" onClick={applyPricing}>
+							✓ Uygula
+						</button>
+						<button className="toggle-btn" onClick={() => {
+							const defaults = { ...PRICING_RATES };
+							setPricing(defaults);
+							setPricingRates(defaults);
+							localStorage.setItem("pricing-rates", JSON.stringify(defaults));
+							setMessage("↩️ Varsayılanlara dönüldü");
+							setTimeout(() => setMessage(null), 2000);
+						}}>
+							↩️ Varsayılan
+						</button>
+					</div>
+					<p className="card-meta" style={{ marginTop: 8 }}>Değerler localStorage'a kaydedilir ve helper üzerinden uygulanır.</p>
+				</div>
 
 		{/* Device selector for per-device top controls */}
 		<div style={{ marginBottom: 12 }}>
@@ -669,6 +841,23 @@ export default function AdminPanel() {
 				)}
 
 				<div className="control-grid">
+					{/* Cihaz Ekle/Sil */}
+					<div className="control-card">
+						<h2>🛠️ Cihaz Yönetimi</h2>
+						<div style={{ display: 'grid', gap: 8 }}>
+							<label>Device ID</label>
+							<input
+								type="text"
+								value={manageDeviceId}
+								onChange={(e) => setManageDeviceId(e.target.value)}
+								placeholder="ör: bold1"
+							/>
+							<div style={{ display: 'flex', gap: 8 }}>
+								  <button className="toggle-btn active" onClick={createDevice}>Cihaz Ekle</button>
+								  <button className="toggle-btn" onClick={deleteDeviceLocal}>Cihaz Sil</button>
+							</div>
+						</div>
+					</div>
 					{/* Kiralama */}
 					<div className="control-card">
 						<h2>🚗 Kiralama</h2>
@@ -680,28 +869,25 @@ export default function AdminPanel() {
 						</button>
 					</div>
 
-					{/* Tüm Verileri Temizle */}
-					<div className="control-card" style={{ borderColor: '#ff4444', backgroundColor: '#fff0f0' }}>
-						<h2>🗑️ Temizle</h2>
-						<p style={{ fontSize: '0.9em', color: '#666', marginBottom: '12px' }}>
-							Tüm cihaz ve sürüş verileri
-						</p>
-						<button
-							onClick={clearAllData}
-							className="toggle-btn"
-							style={{
-								backgroundColor: '#ff4444',
-								border: 'none',
-								color: 'white',
-								fontWeight: 'bold',
-								cursor: 'pointer'
-							}}
-						>
-							⚠️ Tümünü Temizle
-						</button>
-					</div>
-
-				{/* Park Modu */}
+				{/* Tüm Verileri Temizle */}
+				<div className="control-card">
+					<h2>🗑️ Temizle</h2>
+					<p style={{ fontSize: '0.85em', color: 'rgba(255,255,255,0.6)', marginBottom: '12px' }}>
+						Tüm cihaz ve sürüş verileri
+					</p>
+					<button
+						onClick={clearAllData}
+						className="toggle-btn"
+						style={{
+							backgroundColor: '#ff0000',
+							border: 'none',
+							color: 'white',
+							fontWeight: '600'
+						}}
+					>
+						⚠️ Tümünü Temizle
+					</button>
+				</div>				{/* Park Modu */}
 				{(() => {
 					// If device is selected, show its parkMode; otherwise show global state
 					const currentParkMode = selectedDeviceId 
@@ -782,7 +968,7 @@ export default function AdminPanel() {
 											onResetTrip={handleResetTrip}
 											onDeleteDevice={deleteDevice}
 											formatDuration={formatDuration}
-											routeHistory={[]} // Aktif kiralama için boş - sadece realtime çizim yapılacak
+											routeHistory={realtimePoints[device.deviceId] || []} // Backend'den yüklenen route
 											onRealtimePointsUpdate={(deviceId, points) => {
 												console.log(`[AdminPanel] onRealtimePointsUpdate: deviceId=${deviceId}, points=${points.length}`);
 												setRealtimePoints(prev => ({ ...prev, [deviceId]: points }));
@@ -838,6 +1024,11 @@ export default function AdminPanel() {
 						<div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '800px' }}>
 							<h2>🗺️ Sürüş Detayları</h2>
 							<div style={{ marginBottom: '20px' }}>
+								{(() => {
+									console.log('[AdminPanel] Selected trip:', selectedTrip);
+									console.log('[AdminPanel] Route points:', selectedTrip.realtimeRoute);
+									return null;
+								})()}
 								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Trip ID:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.tripId}</span></p>
 								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Cihaz:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.deviceId}</span></p>
 								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#667eea', fontWeight: 700 }}>📏 Mesafe:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.totalDistance ? Number(selectedTrip.totalDistance).toFixed(3) : '—'} km</span></p>
@@ -850,32 +1041,26 @@ export default function AdminPanel() {
 								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Rota Noktaları:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.realtimeRoute?.length || 0}</span></p>
 							</div>
 							
-							{/* Ücret Bilgisi - her zaman hesapla ve göster */}
+							{/* Ücret Bilgisi ve Kiralama Süresi */}
 							{(() => {
 								const distance = selectedTrip.totalDistance || 0;
-								const totalDuration = selectedTrip.tripDuration || 0;
+								// Kiralama süresi bilgi amacıyla hesaplanıyor (kartta ayrı gösterildiği için değişkene atamaya gerek yok)
 								const parkDuration = selectedTrip.parkDuration || 0;
-								const driveDuration = totalDuration - parkDuration;
-								
-								const distanceCost = distance * 1; // 1₺/km
-								const driveCost = (driveDuration / 60) * 2; // 2₺/dk sürüş
-								const parkCost = (parkDuration / 60) * 1; // 1₺/dk park
-								const totalCost = selectedTrip.totalCost ?? (distanceCost + driveCost + parkCost);
-								
+								const driveDuration = getDriveDurationSeconds(selectedTrip);
+								const { kmCost, driveCost, parkCost } = calculateLineItems(distance, driveDuration, parkDuration);
+								const totalCost = selectedTrip.totalCost ?? calculateTotal(distance, driveDuration, parkDuration);
 								return (
 									<div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
 										<h3 style={{ color: '#fff', marginBottom: '12px', fontSize: '16px' }}>💰 ÜCRET BİLGİSİ</h3>
 										<div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px' }}>
 											<div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '8px', color: '#fff', fontSize: '13px' }}>
-												<p>📏 Mesafe ({distance.toFixed(2)} km × 1₺):</p>
-												<p style={{ textAlign: 'right', fontWeight: 600 }}>{distanceCost.toFixed(2)} ₺</p>
-												
-												<p>🚗 Sürüş ({(driveDuration / 60).toFixed(1)} dk × 2₺):</p>
+												<p>📏 Mesafe ({distance.toFixed(2)} km × {PRICING_RATES.perKm}₺):</p>
+												<p style={{ textAlign: 'right', fontWeight: 600 }}>{kmCost.toFixed(2)} ₺</p>
+												<p>🚗 Sürüş süresi ({(driveDuration / 60).toFixed(1)} dk × {PRICING_RATES.drivePerMinute}₺):</p>
 												<p style={{ textAlign: 'right', fontWeight: 600 }}>{driveCost.toFixed(2)} ₺</p>
-												
 												{parkDuration > 0 && (
 													<>
-														<p>🅿️ Park ({(parkDuration / 60).toFixed(1)} dk × 1₺):</p>
+														<p>🅿️ Park ({(parkDuration / 60).toFixed(1)} dk × {PRICING_RATES.parkPerMinute}₺):</p>
 														<p style={{ textAlign: 'right', fontWeight: 600 }}>{parkCost.toFixed(2)} ₺</p>
 													</>
 												)}
@@ -890,16 +1075,36 @@ export default function AdminPanel() {
 								);
 							})()}
 							
-							{/* Trip Haritası - geçilen yolları göster */}
-							{selectedTrip.lat !== undefined && selectedTrip.lon !== undefined && (
-								<div style={{ height: '350px', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
-									<MapCanvas 
-										lat={selectedTrip.lat} 
-										lon={selectedTrip.lon}
-										routeHistory={selectedTrip.realtimeRoute || []}
-									/>
-								</div>
-							)}								<button
+							{/* Trip Haritası - geçilen yolları göster (koordinat ve rota için güvenli kontroller) */}
+							{(() => {
+								const DEFAULT_LAT = 41.015137; // İstanbul varsayılan
+								const DEFAULT_LON = 28.979530;
+								const centerLat = (selectedTrip.lat ?? DEFAULT_LAT);
+								const centerLon = (selectedTrip.lon ?? DEFAULT_LON);
+								const hasValidCenter = typeof centerLat === 'number' && typeof centerLon === 'number' && !Number.isNaN(centerLat) && !Number.isNaN(centerLon);
+
+								const safeRoute = Array.isArray(selectedTrip.realtimeRoute)
+									? selectedTrip.realtimeRoute.filter((p: any) =>
+										p && typeof p.lat === 'number' && typeof p.lon === 'number' &&
+										!Number.isNaN(p.lat) && !Number.isNaN(p.lon)
+									  )
+									: [];
+
+								if (!hasValidCenter) {
+									console.warn('[AdminPanel] Trip map skipped due to invalid center coords:', selectedTrip.lat, selectedTrip.lon);
+									return null;
+								}
+
+								return (
+									<div style={{ height: '350px', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
+										<MapCanvas 
+											lat={centerLat} 
+											lon={centerLon}
+											routeHistory={safeRoute}
+										/>
+									</div>
+								);
+							})()}								<button
 									onClick={() => setSelectedTrip(null)}
 									className="modal-btn confirm"
 									style={{ width: '100%' }}
@@ -973,7 +1178,16 @@ export default function AdminPanel() {
 														<p><strong>Trip ID:</strong> {trip.tripId}</p>
 														{trip.totalDistance !== undefined && <p><strong>📏 Mesafe:</strong> {Number(trip.totalDistance).toFixed(3)} km</p>}
 														{trip.avgSpeed !== undefined && <p><strong>⚡ Ort. Hız:</strong> {Number(trip.avgSpeed).toFixed(2)} km/h</p>}
-														{trip.tripDuration !== undefined && <p><strong>⏱️ Sürüş Süresi:</strong> {formatDuration(trip.tripDuration)}</p>}
+														{(() => {
+															const rentalSecs = getRentalDurationSeconds(trip);
+															return <p><strong>⏱️ Kiralama Süresi:</strong> {formatDuration(rentalSecs)}</p>;
+														})()}
+														{(() => {
+															const distance = trip.totalDistance || 0;
+															const drive = getDriveDurationSeconds(trip);
+															const total = trip.totalCost ?? calculateTotal(distance, drive, trip.parkDuration || 0);
+															return <p><strong>💰 Ücret:</strong> {Number(total).toFixed(2)} ₺</p>;
+														})()}
 														{trip.speed !== undefined && <p><strong>🚗 Anlık Hız:</strong> {Number(trip.speed).toFixed(2)} km/h</p>}
 														{trip.totalCost !== undefined && <p><strong>💰 Ücret:</strong> {Number(trip.totalCost).toFixed(2)} ₺</p>}
 														{trip.timestamp && <p className="trip-timestamp">{new Date(trip.timestamp).toLocaleString('tr-TR')}</p>}

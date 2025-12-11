@@ -93,41 +93,6 @@ async function upsertDevice(db: D1Database, device: any): Promise<void> {
 	).run();
 }
 
-// Trip kaydet
-async function saveTrip(db: D1Database, trip: any): Promise<void> {
-	const now = new Date().toISOString();
-	await db.prepare(`
-		INSERT INTO trips (trip_id, device_id, lat, lon, speed, total_distance, avg_speed, 
-			trip_duration, park_duration, total_cost, timestamp, end_time, realtime_route)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(trip_id) DO UPDATE SET
-			lat = excluded.lat,
-			lon = excluded.lon,
-			speed = excluded.speed,
-			total_distance = excluded.total_distance,
-			avg_speed = excluded.avg_speed,
-			trip_duration = excluded.trip_duration,
-			park_duration = excluded.park_duration,
-			total_cost = excluded.total_cost,
-			end_time = excluded.end_time,
-			realtime_route = excluded.realtime_route
-	`).bind(
-		trip.tripId,
-		trip.deviceId,
-		trip.lat ?? null,
-		trip.lon ?? null,
-		trip.speed ?? null,
-		trip.totalDistance ?? 0,
-		trip.avgSpeed ?? 0,
-		trip.tripDuration ?? 0,
-		trip.parkDuration ?? 0,
-		trip.totalCost ?? 0,
-		trip.timestamp ?? now,
-		trip.endTime ?? now,
-		trip.realtimeRoute ? JSON.stringify(trip.realtimeRoute) : "[]"
-	).run();
-}
-
 // ===================== API ENDPOINTS =====================
 
 // --- POST data recording (ESP32 binary or JSON) ---
@@ -207,6 +172,50 @@ app.post("/data", async (c: Context<{ Bindings: Env }>) => {
 		
 		// D1'e kaydet
 		await upsertDevice(c.env.DB, merged);
+		
+		// Eğer rental aktifse ve GPS verisi varsa, route point'i trip'e ekle
+		if (merged.rentalActive && merged.tripId && body.lat && body.lon) {
+			try {
+				// Mevcut trip'i al
+				const trip = await c.env.DB.prepare("SELECT realtime_route FROM trips WHERE trip_id = ?")
+					.bind(merged.tripId)
+					.first();
+				
+				if (trip) {
+					// Mevcut route'u parse et
+					let routePoints: any[] = [];
+					if (trip.realtime_route) {
+						try {
+							routePoints = JSON.parse(trip.realtime_route as string);
+						} catch (e) {
+							routePoints = [];
+						}
+					}
+					
+					// Yeni point ekle
+					routePoints.push({
+						lat: body.lat,
+						lon: body.lon,
+						timestamp: body.timestamp || new Date().toISOString()
+					});
+					
+					// Trip'i güncelle
+					await c.env.DB.prepare(
+						"UPDATE trips SET realtime_route = ?, lat = ?, lon = ?, speed = ? WHERE trip_id = ?"
+					).bind(
+						JSON.stringify(routePoints),
+						body.lat,
+						body.lon,
+						body.speed || 0,
+						merged.tripId
+					).run();
+					
+					console.log(`[DATA] Route point added to trip ${merged.tripId}, total points: ${routePoints.length}`);
+				}
+			} catch (e) {
+				console.error(`[DATA] Error updating trip route:`, e);
+			}
+		}
 		
 		console.log(`[DATA] ${body.deviceId} updated`);
 		return c.text("OK");
@@ -334,6 +343,7 @@ app.get("/admin/devices", async (c: Context<{ Bindings: Env }>) => {
 				tripId: row.trip_id,
 				parkDuration: row.park_duration,
 				motionDetected: row.motion_detected === 1,
+				motionDetectedAt: row.last_motion_time, // AdminPanel için
 				lastMotionTime: row.last_motion_time,
 				timestamp: row.updated_at,
 			}
@@ -437,6 +447,55 @@ app.get("/admin/trips", async (c: Context<{ Bindings: Env }>) => {
 	}
 });
 
+// --- ADMIN: Get single trip by ID ---
+app.get("/admin/trips/:tripId", async (c: Context<{ Bindings: Env }>) => {
+	try {
+		const tripId = c.req.param("tripId");
+		if (!tripId) return c.text("Missing tripId", 400);
+		
+		const trip = await c.env.DB.prepare("SELECT * FROM trips WHERE trip_id = ?")
+			.bind(tripId)
+			.first();
+		
+		if (!trip) {
+			return c.json({ ok: false, error: "Trip not found" }, { status: 404 });
+		}
+		
+		// Parse realtime_route
+		let routePoints: any[] = [];
+		if (trip.realtime_route) {
+			try {
+				routePoints = JSON.parse(trip.realtime_route as string);
+			} catch (e) {
+				console.error(`[/admin/trips/:tripId] Error parsing realtime_route:`, e);
+				routePoints = [];
+			}
+		}
+		
+		return c.json({
+			trip: {
+				tripId: trip.trip_id,
+				deviceId: trip.device_id,
+				lat: trip.lat,
+				lon: trip.lon,
+				speed: trip.speed,
+				totalDistance: trip.total_distance,
+				avgSpeed: trip.avg_speed,
+				tripDuration: trip.trip_duration,
+				parkDuration: trip.park_duration,
+				totalCost: trip.total_cost,
+				timestamp: trip.timestamp,
+				rentalEndTime: trip.end_time,
+				realtimeRoute: routePoints
+			},
+			routePoints: routePoints // For backward compatibility with ClientPage
+		});
+	} catch (err) {
+		console.error(err);
+		return c.text("Error fetching trip", 500);
+	}
+});
+
 // --- RENTAL: Start rental ---
 app.post("/rental/start", async (c: Context<{ Bindings: Env }>) => {
 	try {
@@ -445,14 +504,55 @@ app.post("/rental/start", async (c: Context<{ Bindings: Env }>) => {
 		
 		if (!deviceId) return c.text("Missing deviceId", 400);
 		
-		// Mevcut cihazı kontrol et
-		const existing = await getOrCreateDevice(c.env.DB, deviceId);
+		// Mevcut cihazı kontrol et; yoksa oluştur
+		let existing = await getOrCreateDevice(c.env.DB, deviceId);
+		if (!existing) {
+			await upsertDevice(c.env.DB, {
+					deviceId,
+					lat: 39.9334,
+					lon: 32.8597,
+				speed: 0,
+				totalDistance: 0,
+				avgSpeed: 0,
+				tripDuration: 0,
+				rentalActive: false,
+				parkMode: false,
+				gpsSend: true,
+				statsSend: true,
+				tripId: null,
+				parkDuration: 0,
+				parkStartTime: null,
+				motionDetected: false,
+				lastMotionTime: null,
+			});
+			existing = await getOrCreateDevice(c.env.DB, deviceId);
+		}
 		if (existing && existing.rentalActive) {
 			return c.json({ ok: false, error: "Device already rented" }, { status: 409 });
 		}
 		
 		const tripId = generateTripId();
 		const now = new Date().toISOString();
+		
+		// Trip'i hemen oluştur (realtime_route boş başlar)
+		await c.env.DB.prepare(`
+			INSERT INTO trips (trip_id, device_id, lat, lon, speed, total_distance, avg_speed, 
+				trip_duration, park_duration, total_cost, timestamp, realtime_route)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`).bind(
+			tripId,
+			deviceId,
+			existing?.lat ?? 39.9334,
+			existing?.lon ?? 32.8597,
+			existing?.speed || 0,
+			0, // total_distance
+			0, // avg_speed
+			0, // trip_duration
+			0, // park_duration
+			0, // total_cost
+			now,
+			'[]' // realtime_route boş array
+		).run();
 		
 		// Rental başlat
 		await upsertDevice(c.env.DB, {
@@ -478,7 +578,7 @@ app.post("/rental/start", async (c: Context<{ Bindings: Env }>) => {
 		});
 	} catch (err) {
 		console.error(err);
-		return c.text("Error starting rental", 400);
+		return c.json({ ok: false, error: "Error starting rental", details: String(err) }, { status: 400 });
 	}
 });
 
@@ -486,7 +586,7 @@ app.post("/rental/start", async (c: Context<{ Bindings: Env }>) => {
 app.post("/rental/end", async (c: Context<{ Bindings: Env }>) => {
 	try {
 		const body = await c.req.json();
-		const { deviceId, realtimeRoute } = body;
+		const { deviceId } = body;
 		
 		if (!deviceId) return c.text("Missing deviceId", 400);
 		
@@ -519,23 +619,49 @@ app.post("/rental/end", async (c: Context<{ Bindings: Env }>) => {
 		
 		const now = new Date().toISOString();
 		
-		// Trip kaydet
+		// Trip'ten realtime route'u al
+		let savedRoute: any[] = [];
 		if (device.tripId) {
-			await saveTrip(c.env.DB, {
-				tripId: device.tripId,
-				deviceId: device.deviceId,
-				lat: device.lat,
-				lon: device.lon,
-				speed: device.speed,
-				totalDistance: totalDistance,
-				avgSpeed: device.avgSpeed,
-				tripDuration: tripDuration,
-				parkDuration: finalParkDuration,
-				totalCost: totalCost,
-				timestamp: device.updatedAt,
-				endTime: now,
-				realtimeRoute: realtimeRoute || [],
-			});
+			const trip = await c.env.DB.prepare("SELECT realtime_route FROM trips WHERE trip_id = ?")
+				.bind(device.tripId)
+				.first();
+			
+			if (trip && trip.realtime_route) {
+				try {
+					savedRoute = JSON.parse(trip.realtime_route as string);
+				} catch (e) {
+					console.error(`[RENTAL/END] Error parsing realtime_route:`, e);
+					savedRoute = [];
+				}
+			}
+		}
+		
+		// Trip'i güncelle (realtime route database'den gelir, frontend'ten gelen görmezden gelinir)
+		if (device.tripId) {
+			await c.env.DB.prepare(`
+				UPDATE trips SET 
+					lat = ?,
+					lon = ?,
+					speed = ?,
+					total_distance = ?,
+					avg_speed = ?,
+					trip_duration = ?,
+					park_duration = ?,
+					total_cost = ?,
+					end_time = ?
+				WHERE trip_id = ?
+			`).bind(
+				device.lat,
+				device.lon,
+				device.speed,
+				totalDistance,
+				device.avgSpeed,
+				tripDuration,
+				finalParkDuration,
+				totalCost,
+				now,
+				device.tripId
+			).run();
 		}
 		
 		// Device'ı güncelle - rental bitti
@@ -570,7 +696,7 @@ app.post("/rental/end", async (c: Context<{ Bindings: Env }>) => {
 				totalCost: totalCost,
 				timestamp: device.updatedAt,
 				rentalEndTime: now,
-				realtimeRoute: realtimeRoute || []
+				realtimeRoute: savedRoute
 			}
 		});
 	} catch (err) {
@@ -598,7 +724,7 @@ app.get("/rental/status/:deviceId", async (c: Context<{ Bindings: Env }>) => {
 			statsSend: device.statsSend,
 		});
 	} catch (err) {
-		return c.text("Error getting rental status", 500);
+		return c.json({ ok: false, error: "Error getting rental status", details: String(err) }, { status: 500 });
 	}
 });
 
@@ -648,7 +774,7 @@ app.post("/rental/control/:deviceId", async (c: Context<{ Bindings: Env }>) => {
 		
 		return c.json({ ok: true, message: "Device control updated" });
 	} catch (err) {
-		return c.text("Error updating device control", 400);
+		return c.json({ ok: false, error: "Error updating device control", details: String(err) }, { status: 400 });
 	}
 });
 
@@ -678,7 +804,7 @@ app.post("/trip/reset/:deviceId", async (c: Context<{ Bindings: Env }>) => {
 		});
 	} catch (err) {
 		console.error("[trip/reset] Error:", err);
-		return c.text("Error resetting trip", 400);
+		return c.json({ ok: false, error: "Error resetting trip", details: String(err) }, { status: 400 });
 	}
 });
 
@@ -712,6 +838,59 @@ app.get("/get", async (c: Context<{ Bindings: Env }>) => {
 app.get("/control", async (c: Context<{ Bindings: Env }>) => {
 	// Varsayılan değerler döndür
 	return c.text("rent=0&park=0&gps=1&stats=1");
+});
+
+// --- ADMIN: Add device ---
+app.post("/admin/device", async (c: Context<{ Bindings: Env }>) => {
+	try {
+		const body = await c.req.json();
+		const { deviceId } = body;
+		if (!deviceId) return c.json({ ok: false, error: "Missing deviceId" }, { status: 400 });
+
+		const existing = await getOrCreateDevice(c.env.DB, deviceId);
+		if (existing) {
+			return c.json({ ok: true, message: "Device already exists" });
+		}
+
+		await upsertDevice(c.env.DB, {
+			deviceId,
+			lat: null,
+			lon: null,
+			speed: 0,
+			totalDistance: 0,
+			avgSpeed: 0,
+			tripDuration: 0,
+			rentalActive: false,
+			parkMode: false,
+			gpsSend: true,
+			statsSend: true,
+			tripId: null,
+			parkDuration: 0,
+			parkStartTime: null,
+			motionDetected: false,
+			lastMotionTime: null,
+		});
+
+		return c.json({ ok: true, message: `Device ${deviceId} created` });
+	} catch (err) {
+		return c.json({ ok: false, error: "Error creating device", details: String(err) }, { status: 400 });
+	}
+});
+
+// --- ADMIN: Delete device ---
+app.delete("/admin/device/:deviceId", async (c: Context<{ Bindings: Env }>) => {
+	try {
+		const deviceId = c.req.param("deviceId");
+		if (!deviceId) return c.json({ ok: false, error: "Missing deviceId" }, { status: 400 });
+
+		// Delete trips referencing the device due to foreign key constraints
+		await c.env.DB.prepare("DELETE FROM trips WHERE device_id = ?").bind(deviceId).run();
+		const result = await c.env.DB.prepare("DELETE FROM devices WHERE device_id = ?").bind(deviceId).run();
+
+		return c.json({ ok: true, message: `Device ${deviceId} deleted`, changes: result.meta?.changes || 0 });
+	} catch (err) {
+		return c.json({ ok: false, error: "Error deleting device", details: String(err) }, { status: 400 });
+	}
 });
 
 export default app;
