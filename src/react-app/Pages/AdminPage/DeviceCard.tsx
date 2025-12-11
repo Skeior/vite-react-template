@@ -61,7 +61,7 @@ const DeviceCard = memo(function DeviceCardComponent({
   
   // Realtime noktaları güncellerken callback çağır
   const handleRealtimePointsUpdate = (points: Array<{ lat: number; lon: number; timestamp?: string }>) => {
-    console.log(`[DeviceCard] handleRealtimePointsUpdate: deviceId=${deviceId}, points=${points.length}`);
+    // handleRealtimePointsUpdate
     if (onRealtimePointsUpdate) {
       onRealtimePointsUpdate(deviceId, points);
     }

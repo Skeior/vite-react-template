@@ -1005,7 +1005,6 @@ export default function AdminPanel() {
 											onGetMapCanvas={(mapCanvas) => {
 												if (mapCanvas) {
 													mapCanvasRefsRef.current.set(device.deviceId, mapCanvas);
-													console.log(`[AdminPanel] MapCanvas ref stored for passive deviceId: ${device.deviceId}`);
 												}
 											}}
 										/>
@@ -1025,8 +1024,6 @@ export default function AdminPanel() {
 							<h2>🗺️ Sürüş Detayları</h2>
 							<div style={{ marginBottom: '20px' }}>
 								{(() => {
-									console.log('[AdminPanel] Selected trip:', selectedTrip);
-									console.log('[AdminPanel] Route points:', selectedTrip.realtimeRoute);
 									return null;
 								})()}
 								<p style={{ color: '#222', fontWeight: 600 }}><span style={{ color: '#764ba2', fontWeight: 700 }}>Trip ID:</span> <span style={{ color: '#333', fontWeight: 700 }}>{selectedTrip.tripId}</span></p>
@@ -1091,7 +1088,7 @@ export default function AdminPanel() {
 									: [];
 
 								if (!hasValidCenter) {
-									console.warn('[AdminPanel] Trip map skipped due to invalid center coords:', selectedTrip.lat, selectedTrip.lon);
+										// invalid center coords, skip
 									return null;
 								}
 

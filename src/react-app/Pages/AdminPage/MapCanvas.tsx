@@ -51,7 +51,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
             mapRef.current.removeLayer(realtimePolylineRef.current);
             realtimePolylineRef.current = null;
           }
-          console.log('[MapCanvas] Realtime points reset');
+          // Realtime points reset
         },
         invalidateSize: () => {
           if (mapRef.current) {
@@ -59,7 +59,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
           }
         },
         fullReset: () => {
-          console.log('[MapCanvas] Full reset triggered');
+          // Full reset triggered
           // Tüm noktaları temizle
           realtimePointsRef.current = [];
           prevLocationRef.current = null;
@@ -80,7 +80,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
             markerRef.current.setLatLng([39.9334, 32.8597]);
           }
           
-          console.log('[MapCanvas] Full reset completed');
+          // Full reset completed
         }
       };
     }
@@ -114,7 +114,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
       setTimeout(() => {
         if (mapRef.current) {
           mapRef.current.invalidateSize();
-          console.log('[MapCanvas] Initial invalidateSize called');
+          // Initial invalidateSize called
         }
       }, 100);
     } else {
@@ -158,7 +158,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
             lon,
             timestamp: new Date().toISOString(),
           }));
-          console.log(`[MapCanvas] onRealtimePointsUpdate: ${routePoints.length} points`);
+          // onRealtimePointsUpdate
           onRealtimePointsUpdate(routePoints);
         }
       }
@@ -171,7 +171,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
 
     // Route history çiz
     if (routeHistory && routeHistory.length > 1 && mapRef.current) {
-      console.log(`[MapCanvas] Drawing routeHistory: ${routeHistory.length} points`, routeHistory);
+      // Drawing routeHistory
       
       // Realtime marker'ı gizle (route history varken sarı end marker yeterli)
       if (markerRef.current && mapRef.current.hasLayer(markerRef.current)) {
@@ -239,7 +239,7 @@ const MapCanvas = memo(forwardRef<MapCanvasHandle, MapCanvasProps>(function MapC
   // Cleanup: component unmount olduğunda map'i destroy et
   useEffect(() => {
     return () => {
-      console.log('[MapCanvas] Cleanup - destroying map');
+      // Cleanup - destroying map
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;

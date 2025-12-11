@@ -85,12 +85,11 @@ export default function ClientPage() {
   const [parkStartTime, setParkStartTime] = useState<number | null>(null);
 
   const fetchTripRoute = useCallback(async (tripId: string) => {
-    console.log("[ClientPage] Fetching trip route for:", tripId);
+    // fetchTripRoute
     try {
       const res = await fetch(`/admin/trips/${tripId}`);
       if (!res.ok) throw new Error("Trip rotası alınamadı");
       const data = await res.json();
-      console.log("[ClientPage] Trip route data:", data);
       
       // Convert route data to RoutePoint format
       let routePoints = [];
@@ -108,10 +107,9 @@ export default function ClientPage() {
         }));
       }
       
-      console.log("[ClientPage] Converted route points:", routePoints);
       setSelectedTripRoute(routePoints);
     } catch (e) {
-      console.error("Trip route fetch error:", e);
+      // Trip route fetch error
       setSelectedTripRoute([]);
     }
   }, []);
@@ -171,7 +169,7 @@ export default function ClientPage() {
         }
       });
 
-      console.log(`[ClientPage] Active rentals to fetch: ${activeTripsToFetch.length}`);
+      // Active rentals count
 
       // Aktif trip'lerin route'larını fetch et
       for (const tripId of activeTripsToFetch) {
@@ -180,12 +178,12 @@ export default function ClientPage() {
           if (tripRes.ok) {
             const tripData = await tripRes.json();
             if (tripData.routePoints && tripData.routePoints.length > 0) {
-              console.log(`[ClientPage] Fetched ${tripData.routePoints.length} route points for tripId: ${tripId}`);
+              // Fetched route points
               setActiveRentalRoute(tripData.routePoints);
             }
           }
         } catch (err) {
-          console.error(`[ClientPage] Failed to fetch route for tripId ${tripId}:`, err);
+          // Failed to fetch route for trip
         }
       }
 
@@ -198,7 +196,7 @@ export default function ClientPage() {
       } else {
         // Aktif kiralama tespit edildi ama client tarafında başlangıç zamanı yoksa başlat
         if (rentalStartTime === null) {
-          console.log("[ClientPage] Active rental detected. Starting client timer.");
+          // Active rental detected, start timer
           setRentalStartTime(Date.now());
           setRentalTimers({ totalSeconds: 0, driveSeconds: 0, parkSeconds: 0 });
         }
@@ -516,7 +514,7 @@ export default function ClientPage() {
                 ? activeRentalRoute.filter((p: any) => p && typeof p.lat === 'number' && typeof p.lon === 'number' && !Number.isNaN(p.lat) && !Number.isNaN(p.lon))
                 : [];
               if (!hasValidCenter) {
-                console.warn('[ClientPage] Active rental map skipped due to invalid center');
+                // invalid center, skip map
                 return null;
               }
               return (
@@ -540,7 +538,7 @@ export default function ClientPage() {
                 ? selectedTripRoute.filter((p: any) => p && typeof p.lat === 'number' && typeof p.lon === 'number' && !Number.isNaN(p.lat) && !Number.isNaN(p.lon))
                 : [];
               if (!hasValidCenter) {
-                console.warn('[ClientPage] Trip map skipped due to invalid center');
+                // invalid center, skip map
                 return null;
               }
               return (
@@ -622,7 +620,7 @@ export default function ClientPage() {
               className={`history-item ${selectedTrip?.tripId === trip.tripId ? "selected" : ""}`}
               key={trip.tripId}
               onClick={() => {
-                console.log("[ClientPage] Trip clicked:", trip);
+                // Trip clicked
                 setSelectedTrip(trip);
                 fetchTripRoute(trip.tripId);
               }}
@@ -643,7 +641,7 @@ export default function ClientPage() {
 
       {selectedTrip && (
         <div className="rental-modal-overlay" onClick={() => {
-          console.log("[ClientPage] Closing trip modal");
+          // Closing trip modal
           setSelectedTrip(null);
           setSelectedTripRoute([]);
         }}>
@@ -747,7 +745,7 @@ export default function ClientPage() {
                 ? selectedTripRoute.filter((p: any) => p && typeof p.lat === 'number' && typeof p.lon === 'number' && !Number.isNaN(p.lat) && !Number.isNaN(p.lon))
                 : [];
               if (!hasValidCenter) {
-                console.warn('[ClientPage] Modal trip map skipped due to invalid center coords:', selectedTrip.lat, selectedTrip.lon);
+                // invalid modal map center, skip
                 return null;
               }
               return (
